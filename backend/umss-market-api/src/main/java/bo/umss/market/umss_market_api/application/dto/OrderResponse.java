@@ -17,6 +17,12 @@ public class OrderResponse {
 
     private UUID userId;
 
+    private String meetingPoint;
+    private String recipientName;
+    private String recipientPhone;
+    private String paymentMethod;
+    private String paymentStatus;
+
     private BigDecimal total;
 
     private OrderStatus estado;

@@ -859,3 +859,25 @@ flowchart LR
 |---------|-------|-------|--------|
 | v0.1 | 13/05/2026 | Rodriguez / Vargas | Borrador inicial — §0, §1, C4 Nivel 1 |
 | v2.0 | 25/05/2026 | Rodriguez / Vargas | DTI vFinal completo — todas las secciones, checklist marcado, release/2.0.0 |
+
+## Demostración académica de compra — Angular / Spring Boot (2026-09-15)
+
+El flujo de demostración usa `POST /api/orders/checkout/simulated`.
+`SimulatedCheckoutUseCase` valida usuario, publicaciones y cantidades, calcula los
+importes desde persistencia y guarda pedido CONFIRMADO, ítems y descuento de stock
+en una transacción local. El puerto `CheckoutRepositoryPort` mantiene las operaciones
+de bloqueo y persistencia fuera del caso de uso; su adaptador JPA aplica un UPDATE
+de stock con guarda `stock >= quantity`. Bloquea publicaciones en orden estable y
+serializa compras del mismo usuario para recuperar reintentos con el mismo
+`requestId`, utilizado como ID del pedido. Un ID reutilizado con otro contenido
+se rechaza. La inserción no sobrescribe un pedido existente.
+
+Este endpoint representa pago simulado inmediato para la tarea académica; no
+implementa el flujo bancario QR, sus webhooks, TTL ni eventos distribuidos. Los
+contratos de esos flujos permanecen vigentes. El frontend usa un usuario de prueba
+existente configurado en `src/app/core/config/demo.ts`; la integración de login
+no forma parte de esta demo. Las rutas CRUD anteriores conservan su comportamiento.
+
+Validación: `SimulatedCheckoutTest` usa H2 aislada para probar persistencia,
+rollback, stock insuficiente, reintentos y compras concurrentes. Ejecutar
+`./mvnw.cmd -Dtest=SimulatedCheckoutTest test jacoco:report` desde el backend.

@@ -30,6 +30,12 @@ public class OrderEntity {
     @Column(nullable = false)
     private UUID userId;
 
+    private String meetingPoint;
+    private String recipientName;
+    private String recipientPhone;
+    private String paymentMethod;
+    private String paymentStatus;
+
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
 
