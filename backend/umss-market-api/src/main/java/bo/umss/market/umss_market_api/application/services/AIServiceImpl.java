@@ -75,6 +75,11 @@ public class AIServiceImpl implements AIService {
     @Override
     public String chat(String message) {
 
+        if (ChatInputPolicy.exceedsLimit(message)) {
+            return "AI_INPUT_TOO_LONG: La consulta supera el limite de "
+                    + ChatInputPolicy.MAX_MESSAGE_LENGTH + " caracteres UTF-16.";
+        }
+
         String texto = message == null
                 ? ""
                 : message.trim();
