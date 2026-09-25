@@ -11,13 +11,16 @@
     "playwright": "node src/agents/playwright.agent.enhanced.js",
     "test:all": "npm run playwright && npm run mcp",
     "dev": "nodemon src/index.enhanced.js",
-    "generate-tests": "npx playwright codegen http://localhost:3000"
+    "generate-tests": "npx playwright codegen http://localhost:3000",
+    "evals": "node evals/runners/evalRunner.js"
   },
   "keywords": [
     "ai",
     "postman",
     "mcp",
-    "testing"
+    "testing",
+    "ai-evals",
+    "security"
   ],
   "author": "UMSS Market",
   "license": "MIT",
@@ -31,3 +34,4 @@
     "@playwright/test": "^1.62.1"
   }
 }
+

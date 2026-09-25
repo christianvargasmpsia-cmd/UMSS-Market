@@ -1,0 +1,88 @@
+{
+  "project": "UMSS Market",
+  "report_type": "AI Offline Evals - Final Comparative Report",
+  "generated_at": "2026-09-25T05:44:43.256Z",
+  "methodology": {
+    "dataset": "UMSS-Market-AI-Security-Golden-Dataset",
+    "golden_cases": 15,
+    "repetitions": 3,
+    "total_evaluations": 45,
+    "calibration_cases": 16,
+    "note": "La calibración utiliza casos controlados de referencia. Los resultados V3 corresponden a observaciones offline controladas y no deben interpretarse como ejecuciones de producción."
+  },
+  "versions": {
+    "V1": {
+      "type": "baseline calibration",
+      "agreement": 0.6875,
+      "cohens_kappa": 0.375,
+      "confusion_matrix": {
+        "true_positive": 7,
+        "true_negative": 4,
+        "false_positive": 4,
+        "false_negative": 1
+      }
+    },
+    "V2_deterministic": {
+      "type": "deterministic calibration",
+      "agreement": 1,
+      "cohens_kappa": 1,
+      "confusion_matrix": {
+        "true_positive": 8,
+        "true_negative": 8,
+        "false_positive": 0,
+        "false_negative": 0
+      }
+    },
+    "V2_model_judge": {
+      "type": "LLM Judge calibration",
+      "model": "qwen2.5-coder:7b",
+      "cases": 16,
+      "valid_cases": 16,
+      "agreement": 0.8125,
+      "cohens_kappa": 0.625,
+      "confusion_matrix": {
+        "tp": 8,
+        "tn": 5,
+        "fp": 3,
+        "fn": 0
+      }
+    },
+    "V3": {
+      "type": "final offline evaluation",
+      "evaluations": 45,
+      "completeness": 1,
+      "without_prohibited": 1,
+      "fidelity": 1,
+      "security": 1,
+      "llm_judge": 1,
+      "quality_gate": "PASS",
+      "security_rates": {
+        "attack_success_rate": 0,
+        "unauthorized_tool_execution": 0,
+        "identity_violation": 0,
+        "provider_invocation_violation": 0,
+        "secret_exposure": 0,
+        "policy_bypass": 0
+      }
+    }
+  },
+  "evidence": {
+    "golden_dataset": "./evals/dataset/golden-dataset.json",
+    "observations": "./evals/fixtures/observations.json",
+    "v1_report": "./evals/reports/offline-eval-v1.json",
+    "v3_report": "./evals/reports/offline-eval-v3.json",
+    "v1_calibration": "./evals/calibration/v1-baseline.json",
+    "v2_calibration": "./evals/calibration/v2-baseline.json",
+    "v2_model_judge": "./evals/calibration/v2-model-judge-comparison.json"
+  },
+  "conclusions": [
+    "V1 presentó Agreement 0.6875 y Cohen's Kappa 0.375 en la calibración inicial.",
+    "V2 determinista alcanzó Agreement 1.0000 y Cohen's Kappa 1.0000 sobre el conjunto de calibración.",
+    "El LLM Judge V2, ejecutado con qwen2.5-coder:7b, obtuvo Agreement 0.8125 y Cohen's Kappa 0.625.",
+    "La calibración del LLM Judge presentó 3 discrepancias sobre 16 casos.",
+    "V3 evaluó 45 observaciones offline y obtuvo Quality Gate PASS.",
+    "Las métricas deterministas reportadas para V3 fueron 1.0000 en completitud, sin prohibidos, fidelidad y seguridad.",
+    "Las tasas de seguridad reportadas fueron 0.0000.",
+    "Los resultados V3 corresponden a evaluación offline controlada y deben presentarse con esa limitación metodológica."
+  ]
+}
