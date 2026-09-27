@@ -9,6 +9,7 @@ import bo.umss.market.umss_market_api.application.usecases.GetUserInteractionsSe
 import bo.umss.market.umss_market_api.application.usecases.SearchCatalogUseCase;
 import bo.umss.market.umss_market_api.application.usecases.SearchStoresBySemanticUseCase;
 import bo.umss.market.umss_market_api.domain.ports.AIProviderPort;
+import bo.umss.market.umss_market_api.infrastructure.monitoring.AIMonitoringService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ public class AIServiceImpl implements AIService {
 
     private final AIProviderPort provider;
     private final SearchCatalogUseCase searchCatalogUseCase;
+    private final AIMonitoringService aiMonitoringService;
 
     @Autowired(required = false)
     private GetPublicationDetailSemanticUseCase publicationDetailUseCase;
@@ -41,17 +43,34 @@ public class AIServiceImpl implements AIService {
     @Autowired(required = false)
     private GetRecommendationsUseCase recommendationsUseCase;
 
+    /*
+     * Constructor original.
+     *
+     * Se mantiene para no romper los tests unitarios
+     * que crean AIServiceImpl con dos dependencias.
+     */
     public AIServiceImpl(
             AIProviderPort provider,
             SearchCatalogUseCase searchCatalogUseCase) {
 
         this.provider = provider;
         this.searchCatalogUseCase = searchCatalogUseCase;
+        this.aiMonitoringService = null;
     }
 
-    // ============================================================
-    // GENERATE
-    // ============================================================
+    /*
+     * Constructor utilizado por Spring en producción.
+     */
+    @Autowired
+    public AIServiceImpl(
+            AIProviderPort provider,
+            SearchCatalogUseCase searchCatalogUseCase,
+            AIMonitoringService aiMonitoringService) {
+
+        this.provider = provider;
+        this.searchCatalogUseCase = searchCatalogUseCase;
+        this.aiMonitoringService = aiMonitoringService;
+    }
 
     @Override
     public String generate(String prompt) {
@@ -68,29 +87,50 @@ public class AIServiceImpl implements AIService {
         return provider.generate(prompt);
     }
 
-    // ============================================================
-    // CHAT PRINCIPAL
-    // ============================================================
-
     @Override
     public String chat(String message) {
 
+        long startTime = System.nanoTime();
+
+        String texto = message == null ? "" : message.trim();
+
+        UUID currentUserId = getCurrentUserId();
+
+        /*
+         * ============================================================
+         * 1. VALIDACIÓN DE LONGITUD
+         * ============================================================
+         */
+
         if (ChatInputPolicy.exceedsLimit(message)) {
-            return "AI_INPUT_TOO_LONG: La consulta supera el limite de "
-                    + ChatInputPolicy.MAX_MESSAGE_LENGTH + " caracteres UTF-16.";
+
+            String respuesta =
+                    "AI_INPUT_TOO_LONG: La consulta supera el limite de "
+                            + ChatInputPolicy.MAX_MESSAGE_LENGTH
+                            + " caracteres UTF-16.";
+
+            recordMonitoring(
+                    currentUserId,
+                    texto,
+                    respuesta,
+                    "INPUT_POLICY",
+                    "NO_TOOL",
+                    "BLOCK_INPUT_TOO_LONG",
+                    startTime
+            );
+
+            return respuesta;
         }
 
-        String texto = message == null
-                ? ""
-                : message.trim();
-
-        // ========================================================
-        // MENSAJE VACÍO
-        // ========================================================
+        /*
+         * ============================================================
+         * 2. CONSULTA VACÍA
+         * ============================================================
+         */
 
         if (texto.isBlank()) {
 
-            return """
+            String respuesta = """
                     No puedo responder una consulta vacía.
 
                     Puedo ayudarte con:
@@ -102,24 +142,51 @@ public class AIServiceImpl implements AIService {
                     - Consultar tu historial
                     - Generar recomendaciones
                     """;
+
+            recordMonitoring(
+                    currentUserId,
+                    texto,
+                    respuesta,
+                    "INPUT_POLICY",
+                    "NO_TOOL",
+                    "BLOCK_EMPTY_INPUT",
+                    startTime
+            );
+
+            return respuesta;
         }
 
-        // ========================================================
-        // IA DESHABILITADA
-        // ========================================================
+        /*
+         * ============================================================
+         * 3. IA DESHABILITADA
+         * ============================================================
+         */
 
         if (!iaEnabled) {
 
             if (isCatalogSearchRequest(texto)) {
 
-                return executeCatalogSearch(
+                String respuesta =
+                        executeCatalogSearch(
+                                texto,
+                                "KEYWORD",
+                                true
+                        );
+
+                recordMonitoring(
+                        currentUserId,
                         texto,
+                        respuesta,
                         "KEYWORD",
-                        true
+                        "SEARCH_CATALOG",
+                        "ALLOW",
+                        startTime
                 );
+
+                return respuesta;
             }
 
-            return """
+            String respuesta = """
                     Estado IA: DESHABILITADA
 
                     La IA está deshabilitada.
@@ -130,17 +197,31 @@ public class AIServiceImpl implements AIService {
                     - Buscar productos
                     - Buscar servicios
                     """;
+
+            recordMonitoring(
+                    currentUserId,
+                    texto,
+                    respuesta,
+                    "IA_DISABLED",
+                    "NO_TOOL",
+                    "ALLOW",
+                    startTime
+            );
+
+            return respuesta;
         }
 
-        // ========================================================
-        // IA HABILITADA
-        // ========================================================
+        /*
+         * ============================================================
+         * 4. ROUTER DE IA
+         * ============================================================
+         */
 
         ToolDecision decision = provider.selectTool(texto);
 
         if (decision == null || decision.getTool() == null) {
 
-            return """
+            String respuesta = """
                     No pude determinar qué herramienta
                     utilizar para tu consulta.
 
@@ -153,6 +234,18 @@ public class AIServiceImpl implements AIService {
                     - Consultar tu historial
                     - Generar recomendaciones
                     """;
+
+            recordMonitoring(
+                    currentUserId,
+                    texto,
+                    respuesta,
+                    "ROUTER",
+                    "NO_TOOL",
+                    "ALLOW",
+                    startTime
+            );
+
+            return respuesta;
         }
 
         String tool = decision.getTool()
@@ -168,45 +261,58 @@ public class AIServiceImpl implements AIService {
         System.out.println("Query    : " + decision.getQuery());
         System.out.println("=================================");
 
-        // ========================================================
-        // ROUTER
-        // ========================================================
+        /*
+         * ============================================================
+         * 5. EJECUCIÓN DE HERRAMIENTAS
+         * ============================================================
+         *
+         * Cada case tiene su propio bloque {} para evitar conflictos
+         * de variables locales entre los diferentes casos del switch.
+         */
 
         switch (tool) {
 
-            // ====================================================
-            // RAG #1
-            // SEARCH CATALOG
-            // ====================================================
+            case "SEARCH_CATALOG": {
 
-            case "SEARCH_CATALOG":
+                String respuesta =
+                        executeSemanticCatalogSearch(
+                                texto,
+                                "RAG_SEMANTICO_CATALOGO"
+                        );
 
-                return executeSemanticCatalogSearch(
+                return monitoredResponse(
+                        currentUserId,
                         texto,
-                        "RAG_SEMANTICO_CATALOGO"
+                        respuesta,
+                        "RAG_SEMANTICO_CATALOGO",
+                        "SEARCH_CATALOG",
+                        "ALLOW",
+                        startTime
                 );
+            }
 
-            // ====================================================
-            // RAG #2
-            // PUBLICATION DETAIL
-            // ====================================================
-
-            case "PUBLICATION_DETAIL":
+            case "PUBLICATION_DETAIL": {
 
                 if (publicationDetailUseCase == null) {
 
-                    return """
+                    String respuesta = """
                             El módulo de detalle de publicaciones
                             no está disponible actualmente.
                             """;
+
+                    return monitoredResponse(
+                            currentUserId,
+                            texto,
+                            respuesta,
+                            "PUBLICATION_DETAIL",
+                            "PUBLICATION_DETAIL",
+                            "ALLOW",
+                            startTime
+                    );
                 }
 
                 UUID publicationId =
                         extractPublicationId(decision);
-
-                // ------------------------------------------------
-                // UUID DIRECTO
-                // ------------------------------------------------
 
                 if (publicationId != null) {
 
@@ -215,66 +321,114 @@ public class AIServiceImpl implements AIService {
                                     + publicationId
                     );
 
-                    return publicationDetailUseCase
-                            .executeWithContext(
-                                    publicationId,
-                                    texto
-                            );
-                }
+                    String respuesta =
+                            publicationDetailUseCase
+                                    .executeWithContext(
+                                            publicationId,
+                                            texto
+                                    );
 
-                // ------------------------------------------------
-                // BÚSQUEDA SEMÁNTICA
-                // ------------------------------------------------
+                    return monitoredResponse(
+                            currentUserId,
+                            texto,
+                            respuesta,
+                            "PUBLICATION_DETAIL_UUID",
+                            "PUBLICATION_DETAIL",
+                            "ALLOW",
+                            startTime
+                    );
+                }
 
                 System.out.println(
                         "RAG #2 -> búsqueda semántica"
                 );
 
-                return publicationDetailUseCase
-                        .executeSemanticSearch(texto);
+                String respuesta =
+                        publicationDetailUseCase
+                                .executeSemanticSearch(texto);
 
-            // ====================================================
-            // RAG #3
-            // SEARCH STORES
-            // ====================================================
+                return monitoredResponse(
+                        currentUserId,
+                        texto,
+                        respuesta,
+                        "PUBLICATION_DETAIL_SEMANTICO",
+                        "PUBLICATION_DETAIL",
+                        "ALLOW",
+                        startTime
+                );
+            }
 
-            case "SEARCH_STORES":
+            case "SEARCH_STORES": {
 
                 if (searchStoresUseCase == null) {
 
-                    return """
+                    String respuesta = """
                             El módulo de búsqueda de tiendas
                             no está disponible actualmente.
                             """;
+
+                    return monitoredResponse(
+                            currentUserId,
+                            texto,
+                            respuesta,
+                            "SEARCH_STORES",
+                            "SEARCH_STORES",
+                            "ALLOW",
+                            startTime
+                    );
                 }
 
-                return searchStoresUseCase
-                        .executeSemanticSearch(texto);
+                String respuesta =
+                        searchStoresUseCase
+                                .executeSemanticSearch(texto);
 
-            // ====================================================
-            // RAG #4
-            // USER INTERACTIONS
-            // ====================================================
+                return monitoredResponse(
+                        currentUserId,
+                        texto,
+                        respuesta,
+                        "RAG_SEMANTICO_TIENDAS",
+                        "SEARCH_STORES",
+                        "ALLOW",
+                        startTime
+                );
+            }
 
-            case "USER_INTERACTIONS":
+            case "USER_INTERACTIONS": {
 
                 if (userInteractionsUseCase == null) {
 
-                    return """
+                    String respuesta = """
                             El módulo de historial de usuario
                             no está disponible actualmente.
                             """;
-                }
 
-                UUID currentUserId =
-                        getCurrentUserId();
+                    return monitoredResponse(
+                            currentUserId,
+                            texto,
+                            respuesta,
+                            "USER_INTERACTIONS",
+                            "USER_INTERACTIONS",
+                            "ALLOW",
+                            startTime
+                    );
+                }
 
                 if (currentUserId == null) {
 
-                    return """
+                    String respuesta = """
                             Debes iniciar sesión para consultar
                             tu historial de interacciones.
                             """;
+
+                    return monitoredResponse(
+                            null,
+                            texto,
+                            respuesta,
+                            "AUTH_REQUIRED",
+                            "USER_INTERACTIONS",
+                            "BLOCK_UNAUTHENTICATED",
+                            startTime
+                    );
                 }
 
                 System.out.println(
@@ -282,56 +436,88 @@ public class AIServiceImpl implements AIService {
                                 + currentUserId
                 );
 
-                return userInteractionsUseCase
-                        .executeUserHistory(
-                                currentUserId,
-                                texto
-                        );
+                String respuesta =
+                        userInteractionsUseCase
+                                .executeUserHistory(
+                                        currentUserId,
+                                        texto
+                                );
 
-            // ====================================================
-            // RAG #5
-            // RECOMMENDATIONS
-            // ====================================================
+                return monitoredResponse(
+                        currentUserId,
+                        texto,
+                        respuesta,
+                        "RAG_HISTORIAL_USUARIO",
+                        "USER_INTERACTIONS",
+                        "ALLOW",
+                        startTime
+                );
+            }
 
-            case "RECOMMENDATIONS":
+            case "RECOMMENDATIONS": {
 
                 if (recommendationsUseCase == null) {
 
-                    return """
+                    String respuesta = """
                             El módulo de recomendaciones
                             no está disponible actualmente.
                             """;
+
+                    return monitoredResponse(
+                            currentUserId,
+                            texto,
+                            respuesta,
+                            "RECOMMENDATIONS",
+                            "RECOMMENDATIONS",
+                            "ALLOW",
+                            startTime
+                    );
                 }
 
-                UUID recommendationUserId =
-                        getCurrentUserId();
+                if (currentUserId == null) {
 
-                if (recommendationUserId == null) {
-
-                    return """
+                    String respuesta = """
                             Debes iniciar sesión para recibir
                             recomendaciones personalizadas.
                             """;
+
+                    return monitoredResponse(
+                            null,
+                            texto,
+                            respuesta,
+                            "AUTH_REQUIRED",
+                            "RECOMMENDATIONS",
+                            "BLOCK_UNAUTHENTICATED",
+                            startTime
+                    );
                 }
 
                 System.out.println(
                         "RAG #5 -> Usuario autenticado: "
-                                + recommendationUserId
+                                + currentUserId
                 );
 
-                return recommendationsUseCase
-                        .getRecommendations(
-                                recommendationUserId,
-                                texto
-                        );
+                String respuesta =
+                        recommendationsUseCase
+                                .getRecommendations(
+                                        currentUserId,
+                                        texto
+                                );
 
-            // ====================================================
-            // NO TOOL
-            // ====================================================
+                return monitoredResponse(
+                        currentUserId,
+                        texto,
+                        respuesta,
+                        "RAG_RECOMENDACIONES",
+                        "RECOMMENDATIONS",
+                        "ALLOW",
+                        startTime
+                );
+            }
 
-            case "NO_TOOL":
+            case "NO_TOOL": {
 
-                return """
+                String respuesta = """
                         No encontré una herramienta de UMSS Market
                         que corresponda a tu consulta.
 
@@ -345,18 +531,24 @@ public class AIServiceImpl implements AIService {
                         - Generar recomendaciones
                         """;
 
-            // ====================================================
-            // TOOL DESCONOCIDA
-            // ====================================================
+                return monitoredResponse(
+                        currentUserId,
+                        texto,
+                        respuesta,
+                        "NO_TOOL",
+                        "NO_TOOL",
+                        "ALLOW",
+                        startTime
+                );
+            }
 
-            default:
+            default: {
 
                 System.out.println(
-                        "Tool desconocida: "
-                                + tool
+                        "Tool desconocida: " + tool
                 );
 
-                return """
+                String respuesta = """
                         No puedo responder esa consulta.
 
                         Puedo ayudarte con:
@@ -368,15 +560,88 @@ public class AIServiceImpl implements AIService {
                         - Consultar tu historial
                         - Generar recomendaciones
                         """;
+
+                return monitoredResponse(
+                        currentUserId,
+                        texto,
+                        respuesta,
+                        "UNKNOWN_TOOL",
+                        tool,
+                        "ALLOW",
+                        startTime
+                );
+            }
         }
     }
 
-    // ============================================================
-    // DETECTAR BÚSQUEDA DE CATÁLOGO
-    // ============================================================
+    /*
+     * ================================================================
+     * MONITOREO
+     * ================================================================
+     */
 
-    private boolean isCatalogSearchRequest(
-            String message) {
+    private String monitoredResponse(
+            UUID userId,
+            String question,
+            String response,
+            String camino,
+            String herramienta,
+            String guard,
+            long startTime) {
+
+        recordMonitoring(
+                userId,
+                question,
+                response,
+                camino,
+                herramienta,
+                guard,
+                startTime
+        );
+
+        return response;
+    }
+
+    private void recordMonitoring(
+            UUID userId,
+            String question,
+            String response,
+            String camino,
+            String herramienta,
+            String guard,
+            long startTime) {
+
+        /*
+         * Los tests unitarios existentes crean AIServiceImpl
+         * sin AIMonitoringService. En ese caso simplemente
+         * omitimos el registro.
+         */
+        if (aiMonitoringService == null) {
+            return;
+        }
+
+        long latencyMs =
+                (System.nanoTime() - startTime)
+                        / 1_000_000;
+
+        aiMonitoringService.record(
+                userId,
+                question,
+                response,
+                camino,
+                herramienta,
+                guard,
+                latencyMs
+        );
+    }
+
+    /*
+     * ================================================================
+     * BÚSQUEDA POR PALABRAS CLAVE
+     * ================================================================
+     */
+
+    private boolean isCatalogSearchRequest(String message) {
 
         String texto =
                 message.toLowerCase(Locale.ROOT);
@@ -392,10 +657,6 @@ public class AIServiceImpl implements AIService {
                 || texto.contains("servicio")
                 || texto.contains("servicios");
     }
-
-    // ============================================================
-    // BÚSQUEDA KEYWORD
-    // ============================================================
 
     private String executeCatalogSearch(
             String message,
@@ -425,131 +686,126 @@ public class AIServiceImpl implements AIService {
                 new StringBuilder();
 
         if (showDisabledBanner) {
-
             respuesta.append(
                     "Estado IA: DESHABILITADA\n\n"
             );
         }
 
-        respuesta.append("Camino: ")
-                .append(camino)
-                .append("\n\n");
+        respuesta.append(
+                "Camino: "
+        ).append(camino).append("\n\n");
 
         if (publicaciones == null
                 || publicaciones.isEmpty()) {
 
             respuesta.append(
-                    "No encontré publicaciones con esa búsqueda.\n"
+                    "No encontré publicaciones "
+                            + "con esa búsqueda.\n"
             );
 
         } else {
 
             respuesta.append(
                     "Encontré "
-            )
-            .append(publicaciones.size())
-            .append(" publicaciones:\n\n");
+            ).append(publicaciones.size())
+                    .append(" publicaciones:\n\n");
 
-            for (PublicationSummaryResponse p
-                    : publicaciones) {
+            for (PublicationSummaryResponse p :
+                    publicaciones) {
 
                 respuesta.append("📌 ")
                         .append(p.getNombre())
                         .append("\n");
 
-                respuesta.append(
-                        "   Precio: Bs. "
-                )
-                .append(p.getPrecio())
-                .append("\n");
+                respuesta.append("   Precio: Bs. ")
+                        .append(p.getPrecio())
+                        .append("\n");
 
                 respuesta.append(
                         "   Stock disponible: "
-                )
-                .append(p.getStock())
-                .append("\n");
+                ).append(p.getStock())
+                        .append("\n");
 
-                respuesta.append(
-                        "   Tienda: "
-                )
-                .append(p.getNombreTienda())
-                .append("\n\n");
+                respuesta.append("   Tienda: ")
+                        .append(p.getNombreTienda())
+                        .append("\n\n");
             }
         }
 
         return respuesta.toString();
     }
 
-    // ============================================================
-    // RAG #1
-    // BÚSQUEDA SEMÁNTICA DE CATÁLOGO
-    // ============================================================
+    /*
+     * ================================================================
+     * BÚSQUEDA SEMÁNTICA DEL CATÁLOGO
+     * ================================================================
+     */
 
     private String executeSemanticCatalogSearch(
             String message,
             String camino) {
 
         List<PublicationSummaryResponse> publicaciones =
-                searchCatalogUseCase.executeSemanticSearch(
-                        message,
-                        5
-                );
+                searchCatalogUseCase
+                        .executeSemanticSearch(
+                                message,
+                                5
+                        );
 
         StringBuilder respuesta =
                 new StringBuilder();
 
-        respuesta.append("Camino: ")
-                .append(camino)
-                .append("\n\n");
+        respuesta.append(
+                "Camino: "
+        ).append(camino).append("\n\n");
 
         if (publicaciones == null
                 || publicaciones.isEmpty()) {
 
             respuesta.append(
-                    "No encontré publicaciones relevantes.\n"
+                    "No encontré publicaciones "
+                            + "relevantes.\n"
             );
 
         } else {
 
             respuesta.append(
                     "Encontré "
-            )
-            .append(publicaciones.size())
-            .append(" publicaciones relevantes:\n\n");
+            ).append(publicaciones.size())
+                    .append(
+                            " publicaciones relevantes:\n\n"
+                    );
 
-            for (PublicationSummaryResponse p
-                    : publicaciones) {
+            for (PublicationSummaryResponse p :
+                    publicaciones) {
 
                 respuesta.append("📌 ")
                         .append(p.getNombre())
                         .append("\n");
 
-                respuesta.append(
-                        "   Precio: Bs. "
-                )
-                .append(p.getPrecio())
-                .append("\n");
+                respuesta.append("   Precio: Bs. ")
+                        .append(p.getPrecio())
+                        .append("\n");
 
                 respuesta.append(
                         "   Stock disponible: "
-                )
-                .append(p.getStock())
-                .append("\n");
+                ).append(p.getStock())
+                        .append("\n");
 
-                respuesta.append(
-                        "   Tienda: "
-                )
-                .append(p.getNombreTienda())
-                .append("\n\n");
+                respuesta.append("   Tienda: ")
+                        .append(p.getNombreTienda())
+                        .append("\n\n");
             }
         }
 
         return respuesta.toString();
     }
 
-    // ============================================================
-    // EXTRAER UUID DE PUBLICACIÓN
-    // ============================================================
+    /*
+     * ================================================================
+     * UUID DE PUBLICACIÓN
+     * ================================================================
+     */
 
     private UUID extractPublicationId(
             ToolDecision decision) {
@@ -558,21 +814,17 @@ public class AIServiceImpl implements AIService {
             return null;
         }
 
-        String query =
-                decision.getQuery();
+        String query = decision.getQuery();
 
-        if (query == null
-                || query.isBlank()) {
-
+        if (query == null || query.isBlank()) {
             return null;
         }
 
-        String cleanQuery =
-                query.trim();
-
         try {
 
-            return UUID.fromString(cleanQuery);
+            return UUID.fromString(
+                    query.trim()
+            );
 
         } catch (IllegalArgumentException ignored) {
 
@@ -580,9 +832,11 @@ public class AIServiceImpl implements AIService {
         }
     }
 
-    // ============================================================
-    // OBTENER USUARIO AUTENTICADO
-    // ============================================================
+    /*
+     * ================================================================
+     * USUARIO AUTENTICADO
+     * ================================================================
+     */
 
     private UUID getCurrentUserId() {
 
@@ -603,6 +857,7 @@ public class AIServiceImpl implements AIService {
                 authentication.getPrincipal();
 
         if (principal instanceof UUID) {
+
             return (UUID) principal;
         }
 

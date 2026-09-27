@@ -1,0 +1,1 @@
+{"ts":"2026-09-25T18:58:51.5416282-04:00","usuario":"anonymous","version":"m7-v1","pregunta":"Busca productos disponibles relacionados con laptops","respuesta":"Camino: RAG_SEMANTICO_CATALOGO\n\nNo encontré publicaciones relevantes.\n","fuentes":[],"camino":"RAG_SEMANTICO_CATALOGO","herramienta":"SEARCH_CATALOG","guard":"ALLOW","tokens":null,"feedback":null,"latencia_ms":13050}
