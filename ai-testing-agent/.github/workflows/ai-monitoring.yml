@@ -1,0 +1,54 @@
+﻿name: AI Monitoring
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  monitoring:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: monitoring
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pytest
+        run: python -m pip install pytest
+
+      - name: Run monitoring tests
+        run: python -m pytest tests
+
+      - name: Run normal quality gate
+        run: python src/monitor.py data/normal.jsonl
+
+      - name: Run degraded quality gate
+        shell: bash
+        run: |
+          set +e
+          python src/monitor.py data/degraded.jsonl
+          STATUS=$?
+          if [ "$STATUS" -ne 1 ]; then
+            echo "Se esperaba Quality Gate = 1"
+            exit 1
+          fi
+          echo "Escenario degradado detectado correctamente."
+
+      - name: Upload monitoring artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-monitoring-results
+          path: |
+            monitoring/data/*.jsonl
+            monitoring/src/config.json
