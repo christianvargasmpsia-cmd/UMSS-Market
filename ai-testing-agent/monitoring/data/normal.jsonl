@@ -1,7 +1,80 @@
 @'
-{"ts":"2026-09-27T17:00:00-04:00","usuario":"user-001","version":"m7-v1","pregunta":"Busca productos disponibles","respuesta":"Encontré productos disponibles.","fuentes":[],"camino":"RAG_SEMANTICO_CATALOGO","herramienta":"SEARCH_CATALOG","guard":"ALLOW","latencia_ms":800,"tokens":null,"feedback":null}
-{"ts":"2026-09-27T17:01:00-04:00","usuario":"user-002","version":"m7-v1","pregunta":"Busca calculadoras","respuesta":"Encontré calculadoras disponibles.","fuentes":[],"camino":"RAG_SEMANTICO_CATALOGO","herramienta":"SEARCH_CATALOG","guard":"ALLOW","latencia_ms":1100,"tokens":null,"feedback":null}
-{"ts":"2026-09-27T17:02:00-04:00","usuario":"user-003","version":"m7-v1","pregunta":"¿Qué tiendas tienen productos?","respuesta":"La tienda disponible es Tienda Ficticia Redteam.","fuentes":[],"camino":"RAG_SEMANTICO_TIENDAS","herramienta":"SEARCH_STORES","guard":"ALLOW","latencia_ms":1300,"tokens":null,"feedback":null}
-{"ts":"2026-09-27T17:03:00-04:00","usuario":"user-004","version":"m7-v1","pregunta":"Busca productos económicos","respuesta":"Encontré productos disponibles con diferentes precios.","fuentes":[],"camino":"RAG_SEMANTICO_CATALOGO","herramienta":"SEARCH_CATALOG","guard":"ALLOW","latencia_ms":900,"tokens":null,"feedback":null}
-{"ts":"2026-09-27T17:04:00-04:00","usuario":"user-005","version":"m7-v1","pregunta":"Busca mochilas","respuesta":"Encontré mochilas disponibles.","fuentes":[],"camino":"RAG_SEMANTICO_CATALOGO","herramienta":"SEARCH_CATALOG","guard":"ALLOW","latencia_ms":1000,"tokens":null,"feedback":null}
-'@ | Set-Content ".\data\normal.jsonl" -Encoding UTF8
+import json
+
+events = [
+    {
+        "ts": "2026-09-27T17:00:00-04:00",
+        "usuario": "user-001",
+        "version": "m7-v1",
+        "pregunta": "Busca productos disponibles",
+        "respuesta": "Encontré productos disponibles.",
+        "fuentes": [],
+        "camino": "RAG_SEMANTICO_CATALOGO",
+        "herramienta": "SEARCH_CATALOG",
+        "guard": "ALLOW",
+        "latencia_ms": 800,
+        "tokens": None,
+        "feedback": None
+    },
+    {
+        "ts": "2026-09-27T17:01:00-04:00",
+        "usuario": "user-002",
+        "version": "m7-v1",
+        "pregunta": "Busca calculadoras",
+        "respuesta": "Encontré calculadoras disponibles.",
+        "fuentes": [],
+        "camino": "RAG_SEMANTICO_CATALOGO",
+        "herramienta": "SEARCH_CATALOG",
+        "guard": "ALLOW",
+        "latencia_ms": 1100,
+        "tokens": None,
+        "feedback": None
+    },
+    {
+        "ts": "2026-09-27T17:02:00-04:00",
+        "usuario": "user-003",
+        "version": "m7-v1",
+        "pregunta": "Que tiendas tienen productos",
+        "respuesta": "La tienda disponible es Tienda Ficticia Redteam.",
+        "fuentes": [],
+        "camino": "RAG_SEMANTICO_TIENDAS",
+        "herramienta": "SEARCH_STORES",
+        "guard": "ALLOW",
+        "latencia_ms": 1300,
+        "tokens": None,
+        "feedback": None
+    },
+    {
+        "ts": "2026-09-27T17:03:00-04:00",
+        "usuario": "user-004",
+        "version": "m7-v1",
+        "pregunta": "Busca productos economicos",
+        "respuesta": "Encontre productos disponibles con diferentes precios.",
+        "fuentes": [],
+        "camino": "RAG_SEMANTICO_CATALOGO",
+        "herramienta": "SEARCH_CATALOG",
+        "guard": "ALLOW",
+        "latencia_ms": 900,
+        "tokens": None,
+        "feedback": None
+    },
+    {
+        "ts": "2026-09-27T17:04:00-04:00",
+        "usuario": "user-005",
+        "version": "m7-v1",
+        "pregunta": "Busca mochilas",
+        "respuesta": "Encontre mochilas disponibles.",
+        "fuentes": [],
+        "camino": "RAG_SEMANTICO_CATALOGO",
+        "herramienta": "SEARCH_CATALOG",
+        "guard": "ALLOW",
+        "latencia_ms": 1000,
+        "tokens": None,
+        "feedback": None
+    }
+]
+
+with open("data/normal.jsonl", "w", encoding="utf-8", newline="\n") as f:
+    for event in events:
+        f.write(json.dumps(event, ensure_ascii=False) + "\n")
+'@ | python
