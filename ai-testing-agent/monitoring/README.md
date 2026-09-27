@@ -1,75 +1,79 @@
-# Monitoreo online - UMSS Market
+@'
+# Monitoreo de IA — Evals en línea
 
-Este módulo analiza los eventos JSONL generados por el backend de UMSS Market.
+## Objetivo
 
-## Entrada
+Implementar monitoreo online para UMSS Market mediante señales observables sobre el tráfico de interacción con el asistente.
 
-El backend genera:
+## Señales monitoreadas
 
-backend/umss-market-api/logs/ai-monitoring.jsonl
+- Fidelidad promedio.
+- Frases prohibidas.
+- Feedback negativo.
+- Consultas fuera de alcance.
+- P95 de latencia.
+- Bloqueos por usuario en una ventana temporal.
 
-Cada línea representa una interacción.
+## Telemetría
 
-## Señales
+Cada interacción utiliza un evento JSONL con:
 
-El monitor calcula:
+- `ts`
+- `usuario`
+- `version`
+- `pregunta`
+- `respuesta`
+- `fuentes`
+- `camino`
+- `herramienta`
+- `guard`
+- `latencia_ms`
+- `tokens`
+- `feedback`
 
-- número de interacciones
-- p95 de latencia
-- frases prohibidas
-- feedback negativo cuando está disponible
-- fuera de alcance
-- bloqueos
-- disponibilidad de tokens
-- disponibilidad de feedback
+No se registran contraseñas, tokens JWT, API keys ni credenciales.
 
-## Alertas
+## Umbrales
 
-### CRÍTICA
+Los umbrales están versionados en:
 
-- frases prohibidas
-- ráfagas de bloqueos por usuario
+`src/config.json`
 
-Acción:
+Principales valores:
 
-revertir versión o limitar usuario.
+| Señal | Umbral |
+|---|---:|
+| Fidelidad mínima | 0.90 |
+| Frases prohibidas máximas | 0 |
+| Feedback negativo máximo | 0.15 |
+| Fuera de alcance máximo | 0.15 |
+| P95 máximo | 3000 ms |
+| Bloqueos por usuario | 3 en 10 minutos |
 
-### ALTA
+## Severidad
 
-- fidelidad por debajo del umbral cuando exista evidencia suficiente.
-
-Acción:
-
-investigar timeline.
-
-### MEDIA
-
-- feedback negativo
-- fuera de alcance
-- latencia p95
-
-Acción:
-
-revisar muestra y decidir.
+| Severidad | Acción |
+|---|---|
+| CRITICA | revertir versión o limitar usuario |
+| ALTA | investigar timeline |
+| MEDIA | revisar muestra y decidir |
 
 ## Quality Gate
 
 El monitor devuelve:
 
-0 = PASS
+- `0`: tráfico aceptable.
+- `1`: se detectó una condición que requiere revisión.
 
-1 = FAIL
+## Evidencia controlada
 
-## Ejecución
+### Tráfico normal
 
-Desde:
+Archivo:
 
-ai-testing-agent/monitoring
+`data/normal.jsonl`
 
-Ejecutar:
+Resultado:
 
-python src/monitor.py "../../backend/umss-market-api/logs/ai-monitoring.jsonl"
-
-## Tests
-
-pytest tests/test_monitor.py
+```text
+QUALITY GATE: 0
