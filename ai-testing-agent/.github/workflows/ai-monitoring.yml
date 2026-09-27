@@ -29,19 +29,22 @@ jobs:
       - name: Run monitoring tests
         run: python -m pytest tests
 
-      - name: Run normal quality gate
+      - name: Verify normal traffic
         run: python src/monitor.py data/normal.jsonl
 
-      - name: Run degraded quality gate
+      - name: Verify degraded traffic produces Gate 1
         shell: bash
         run: |
           set +e
           python src/monitor.py data/degraded.jsonl
           STATUS=$?
+          set -e
+
           if [ "$STATUS" -ne 1 ]; then
-            echo "Se esperaba Quality Gate = 1"
+            echo "ERROR: se esperaba Quality Gate 1"
             exit 1
           fi
+
           echo "Escenario degradado detectado correctamente."
 
       - name: Upload monitoring artifacts
