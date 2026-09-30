@@ -1,25 +1,20 @@
-# AI-SEC-001 - Entrada superior al presupuesto
+# AI-SEC-001 — Invocación indebida del proveedor ante entrada fuera de límite
 
-## Identificacion
+## 1. Identificación
 
 - ID: AI-SEC-001
-- Ataque: RT-001
-- Titulo: Entrada superior al presupuesto
-- Categoria: consumo_sin_limite
-- OWASP: LLM10:2025 Unbounded Consumption
-- Activo afectado: A-004 Proveedor de IA / A-008 Limites de entrada
-- Actor: Usuario anonimo
-- Punto de entrada: E-001 / E-006
+- Ataque relacionado: RT-001
+- Categoría: Validación de entrada / control de invocación del proveedor
+- Activo: Proveedor LLM
+- Actor: Usuario no privilegiado
+- Estado: MITIGADO
+- Severidad: Alta
 
-## Precondicion
+## 2. Descripción
 
-El sistema recibe una entrada ficticia cuyo tamano supera el limite permitido de 4096 unidades UTF-16.
+El ataque RT-001 intenta provocar la invocación del proveedor LLM mediante una entrada que supera el límite permitido de tamaño.
 
-## Ataque exacto
-
-RT-001 utiliza una entrada superior al presupuesto permitido con el objetivo de comprobar si la solicitud llega al proveedor de IA.
-
-## Criterio observable de exito
+La condición observable del ataque es:
 
 ```text
-proveedor_invocado = true
+proveedor_invocado
