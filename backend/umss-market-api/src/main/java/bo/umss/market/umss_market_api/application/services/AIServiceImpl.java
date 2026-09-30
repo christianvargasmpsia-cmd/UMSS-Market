@@ -43,12 +43,6 @@ public class AIServiceImpl implements AIService {
     @Autowired(required = false)
     private GetRecommendationsUseCase recommendationsUseCase;
 
-    /*
-     * Constructor original.
-     *
-     * Se mantiene para no romper los tests unitarios
-     * que crean AIServiceImpl con dos dependencias.
-     */
     public AIServiceImpl(
             AIProviderPort provider,
             SearchCatalogUseCase searchCatalogUseCase) {
@@ -58,9 +52,6 @@ public class AIServiceImpl implements AIService {
         this.aiMonitoringService = null;
     }
 
-    /*
-     * Constructor utilizado por Spring en producción.
-     */
     @Autowired
     public AIServiceImpl(
             AIProviderPort provider,
@@ -70,6 +61,23 @@ public class AIServiceImpl implements AIService {
         this.provider = provider;
         this.searchCatalogUseCase = searchCatalogUseCase;
         this.aiMonitoringService = aiMonitoringService;
+    }
+
+    /*
+     * ================================================================
+     * CONTROL EXCLUSIVO PARA RED TEAMING
+     * ================================================================
+     *
+     * Por defecto las mitigaciones permanecen ACTIVAS.
+     *
+     * Para una prueba de baseline controlada:
+     *
+     * -Dredteam.disableMitigations=true
+     *
+     * Este interruptor solo se utiliza durante las pruebas Red Team.
+     */
+    private boolean redTeamMitigationsDisabled() {
+        return Boolean.getBoolean("redteam.disableMitigations");
     }
 
     @Override
@@ -100,9 +108,18 @@ public class AIServiceImpl implements AIService {
          * ============================================================
          * 1. VALIDACIÓN DE LONGITUD
          * ============================================================
+         *
+         * Mitigación RT-001.
+         *
+         * En ejecución normal:
+         *     límite ACTIVO
+         *
+         * En baseline Red Team:
+         *     límite DESACTIVADO
          */
 
-        if (ChatInputPolicy.exceedsLimit(message)) {
+        if (!redTeamMitigationsDisabled()
+                && ChatInputPolicy.exceedsLimit(message)) {
 
             String respuesta =
                     "AI_INPUT_TOO_LONG: La consulta supera el limite de "
@@ -265,9 +282,6 @@ public class AIServiceImpl implements AIService {
          * ============================================================
          * 5. EJECUCIÓN DE HERRAMIENTAS
          * ============================================================
-         *
-         * Cada case tiene su propio bloque {} para evitar conflictos
-         * de variables locales entre los diferentes casos del switch.
          */
 
         switch (tool) {
@@ -574,12 +588,6 @@ public class AIServiceImpl implements AIService {
         }
     }
 
-    /*
-     * ================================================================
-     * MONITOREO
-     * ================================================================
-     */
-
     private String monitoredResponse(
             UUID userId,
             String question,
@@ -611,11 +619,6 @@ public class AIServiceImpl implements AIService {
             String guard,
             long startTime) {
 
-        /*
-         * Los tests unitarios existentes crean AIServiceImpl
-         * sin AIMonitoringService. En ese caso simplemente
-         * omitimos el registro.
-         */
         if (aiMonitoringService == null) {
             return;
         }
@@ -634,12 +637,6 @@ public class AIServiceImpl implements AIService {
                 latencyMs
         );
     }
-
-    /*
-     * ================================================================
-     * BÚSQUEDA POR PALABRAS CLAVE
-     * ================================================================
-     */
 
     private boolean isCatalogSearchRequest(String message) {
 
@@ -735,12 +732,6 @@ public class AIServiceImpl implements AIService {
         return respuesta.toString();
     }
 
-    /*
-     * ================================================================
-     * BÚSQUEDA SEMÁNTICA DEL CATÁLOGO
-     * ================================================================
-     */
-
     private String executeSemanticCatalogSearch(
             String message,
             String camino) {
@@ -801,12 +792,6 @@ public class AIServiceImpl implements AIService {
         return respuesta.toString();
     }
 
-    /*
-     * ================================================================
-     * UUID DE PUBLICACIÓN
-     * ================================================================
-     */
-
     private UUID extractPublicationId(
             ToolDecision decision) {
 
@@ -832,12 +817,6 @@ public class AIServiceImpl implements AIService {
         }
     }
 
-    /*
-     * ================================================================
-     * USUARIO AUTENTICADO
-     * ================================================================
-     */
-
     private UUID getCurrentUserId() {
 
         Authentication authentication =
@@ -857,7 +836,6 @@ public class AIServiceImpl implements AIService {
                 authentication.getPrincipal();
 
         if (principal instanceof UUID) {
-
             return (UUID) principal;
         }
 
