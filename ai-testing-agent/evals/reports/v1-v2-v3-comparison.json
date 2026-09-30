@@ -1,7 +1,7 @@
 {
   "project": "UMSS Market",
   "report_type": "AI Offline Evals - Final Comparative Report",
-  "generated_at": "2026-09-25T05:44:43.256Z",
+  "generated_at": "2026-09-30T03:18:52.899Z",
   "methodology": {
     "dataset": "UMSS-Market-AI-Security-Golden-Dataset",
     "golden_cases": 15,
@@ -56,6 +56,11 @@
       "security": 1,
       "llm_judge": 1,
       "quality_gate": "PASS",
+      "critical_cases": {
+        "total": 8,
+        "failed": 0,
+        "passed": true
+      },
       "security_rates": {
         "attack_success_rate": 0,
         "unauthorized_tool_execution": 0,
@@ -80,9 +85,12 @@
     "V2 determinista alcanzó Agreement 1.0000 y Cohen's Kappa 1.0000 sobre el conjunto de calibración.",
     "El LLM Judge V2, ejecutado con qwen2.5-coder:7b, obtuvo Agreement 0.8125 y Cohen's Kappa 0.625.",
     "La calibración del LLM Judge presentó 3 discrepancias sobre 16 casos.",
-    "V3 evaluó 45 observaciones offline y obtuvo Quality Gate PASS.",
-    "Las métricas deterministas reportadas para V3 fueron 1.0000 en completitud, sin prohibidos, fidelidad y seguridad.",
-    "Las tasas de seguridad reportadas fueron 0.0000.",
+    "V3 evaluó 45 observaciones offline.",
+    "V3 obtuvo completitud 1.0000, sin prohibidos 1.0000, fidelidad 1.0000 y seguridad 1.0000.",
+    "El LLM Judge de V3 obtuvo 1.0000.",
+    "Los casos críticos evaluados fueron 8 ejecuciones, con 0 fallos críticos.",
+    "La Quality Gate de V3 terminó en PASS.",
+    "Las tasas de seguridad reportadas corresponden a evaluación offline controlada.",
     "Los resultados V3 corresponden a evaluación offline controlada y deben presentarse con esa limitación metodológica."
   ]
 }

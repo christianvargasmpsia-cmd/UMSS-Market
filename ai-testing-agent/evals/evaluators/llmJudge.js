@@ -13,13 +13,18 @@
  * - búsquedas
  * - políticas observables
  *
- * El LLM Judge NO intenta inferir esas propiedades.
- *
  * El LLM Judge evalúa únicamente aspectos que puede observar
  * directamente en la respuesta textual:
  * - contenido requerido
  * - contenido prohibido
  * - grounding explícito cuando exista
+ *
+ * El campo expected_key_points del Golden Dataset es
+ * documentación de los puntos esperados del caso.
+ *
+ * No se utiliza como criterio automático del LLM Judge
+ * porque muchos casos tienen respuestas controladas cuyo
+ * comportamiento técnico se verifica mediante evidence.
  *
  * El modelo NO calcula el score final.
  * Devuelve observaciones binarias por criterio.
@@ -160,7 +165,7 @@ async function judgeExecution(
 
   /*
    * El juez solamente recibe criterios que puede evaluar
-   * directamente desde el contenido textual.
+   * directamente desde la respuesta textual.
    */
   const observableCriteria =
     buildObservableCriteria(testCase);
@@ -259,9 +264,9 @@ async function judgeExecution(
  *
  * Esos criterios pertenecen al evaluador determinista.
  *
- * Tampoco incluimos expected_behavior de forma genérica,
- * porque puede contener afirmaciones técnicas que el LLM
- * no puede comprobar desde una respuesta textual.
+ * Tampoco incluimos expected_behavior ni expected_key_points
+ * como criterios genéricos porque pueden contener afirmaciones
+ * técnicas que solamente pueden comprobarse mediante evidencia.
  */
 function buildObservableCriteria(
   testCase
@@ -372,6 +377,12 @@ function buildJudgePrompt(
       )
       .join("\n");
 
+  const context =
+    String(
+      testCase.context ||
+      "No se proporcionó contexto adicional."
+    );
+
   return `
 Eres un evaluador de calidad de respuestas de IA
 para UMSS Market.
@@ -421,6 +432,12 @@ REGLAS IMPORTANTES:
 
 15. No uses conocimientos externos para justificar
     un criterio.
+
+16. No evalúes propiedades técnicas que no puedan observarse
+    directamente en la respuesta textual.
+
+CONTEXTO DEL CASO:
+${context}
 
 CASO:
 ID:

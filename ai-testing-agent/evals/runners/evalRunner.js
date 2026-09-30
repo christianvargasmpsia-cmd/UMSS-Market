@@ -11,6 +11,13 @@
  *
  * La evidencia observada debe provenir de fixtures/evidencias
  * independientes.
+ *
+ * QUALITY GATE:
+ *   - 0 = PASA
+ *   - 1 = NO PASA
+ *
+ * La compuerta verifica las métricas calculadas y además
+ * garantiza que ningún caso crítico haya fallado.
  */
 
 import fs from "fs";
@@ -132,7 +139,77 @@ async function main() {
       evaluatedExecutions
     );
 
+  /*
+   * ---------------------------------------------------------
+   * CASOS CRÍTICOS FALLADOS
+   * ---------------------------------------------------------
+   *
+   * Un caso crítico falla si:
+   *   - sus criterios no pasan, o
+   *   - presenta una violación de seguridad.
+   *
+   * La consigna exige cero críticos fallados.
+   */
+
+  const criticalExecutions =
+    evaluatedExecutions.filter(
+      (execution) =>
+        execution.testCase.critical === true
+    );
+
+  const failedCriticalExecutions =
+    criticalExecutions.filter(
+      (execution) =>
+        execution.criteriaResult?.passed !== true ||
+        execution.securityResult?.secure !== true
+    );
+
+  const criticalCasesTotal =
+    criticalExecutions.length;
+
+  const criticalCasesFailed =
+    failedCriticalExecutions.length;
+
   console.log("");
+  console.log("========================================");
+  console.log("        CONTROL DE CASOS CRÍTICOS");
+  console.log("========================================");
+  console.log("");
+
+  console.log(
+    `Casos críticos: ${criticalCasesTotal}`
+  );
+
+  console.log(
+    `Críticos fallados: ${criticalCasesFailed}`
+  );
+
+  if (criticalCasesFailed === 0) {
+    console.log(
+      "Estado críticos: PASS"
+    );
+  } else {
+    console.log(
+      "Estado críticos: FAIL"
+    );
+
+    for (
+      const execution of failedCriticalExecutions
+    ) {
+      console.log(
+        `  - ${execution.execution_id}`
+      );
+    }
+  }
+
+  console.log("");
+
+  /*
+   * ---------------------------------------------------------
+   * LLM JUDGE
+   * ---------------------------------------------------------
+   */
+
   console.log("Ejecutando LLM Judge...");
   console.log("");
 
@@ -158,12 +235,81 @@ async function main() {
     };
   }
 
+  /*
+   * ---------------------------------------------------------
+   * MÉTRICAS
+   * ---------------------------------------------------------
+   */
+
   const metrics = calculateMetrics({
     executions: evaluatedExecutions,
     securityMetrics,
     judgeResults,
     thresholds
   });
+
+  /*
+   * ---------------------------------------------------------
+   * QUALITY GATE
+   * ---------------------------------------------------------
+   *
+   * calculateMetrics() determina las métricas generales.
+   *
+   * Aquí añadimos una condición adicional obligatoria:
+   *
+   *   criticalCasesFailed === 0
+   *
+   * Si alguna condición falla:
+   *
+   *   PASS -> false
+   *   exit code -> 1
+   *
+   * Si todas pasan:
+   *
+   *   PASS -> true
+   *   exit code -> 0
+   */
+
+  const calculatedGatePassed =
+    metrics?.quality_gate?.passed === true;
+
+  const criticalGatePassed =
+    criticalCasesFailed === 0;
+
+  const finalGatePassed =
+    calculatedGatePassed &&
+    criticalGatePassed;
+
+  /*
+   * Conservamos la información existente de
+   * calculateMetrics() y añadimos los controles
+   * específicos de esta compuerta.
+   */
+
+  metrics.quality_gate = {
+    ...(metrics.quality_gate || {}),
+
+    calculated_gate_passed:
+      calculatedGatePassed,
+
+    critical_cases_total:
+      criticalCasesTotal,
+
+    critical_cases_failed:
+      criticalCasesFailed,
+
+    critical_cases_passed:
+      criticalGatePassed,
+
+    passed:
+      finalGatePassed
+  };
+
+  /*
+   * ---------------------------------------------------------
+   * REPORTE
+   * ---------------------------------------------------------
+   */
 
   const report = {
     metadata: {
@@ -189,10 +335,10 @@ async function main() {
         evaluatedExecutions.length,
 
       critical_cases:
-        dataset.cases.filter(
-          (testCase) =>
-            testCase.critical === true
-        ).length,
+        criticalCasesTotal,
+
+      critical_cases_failed:
+        criticalCasesFailed,
 
       evidence_source:
         "independent_observations_fixture"
@@ -220,6 +366,12 @@ async function main() {
     report
   );
 
+  /*
+   * ---------------------------------------------------------
+   * RESUMEN
+   * ---------------------------------------------------------
+   */
+
   console.log("");
 
   try {
@@ -242,6 +394,49 @@ async function main() {
 
   console.log("");
 
+  console.log("========================================");
+  console.log("             QUALITY GATE");
+  console.log("========================================");
+  console.log("");
+
+  if (finalGatePassed) {
+    console.log(
+      "QUALITY GATE: PASS"
+    );
+
+    console.log(
+      "Resultado: 0 = PASA"
+    );
+  } else {
+    console.log(
+      "QUALITY GATE: FAIL"
+    );
+
+    console.log(
+      "Resultado: 1 = NO PASA"
+    );
+  }
+
+  console.log("");
+
+  console.log(
+    `Métricas generales: ${
+      calculatedGatePassed
+        ? "PASS"
+        : "FAIL"
+    }`
+  );
+
+  console.log(
+    `Casos críticos: ${
+      criticalGatePassed
+        ? "PASS"
+        : "FAIL"
+    }`
+  );
+
+  console.log("");
+
   console.log(
     `Reporte generado: ${REPORT_PATH}`
   );
@@ -252,6 +447,22 @@ async function main() {
   console.log("     EVALUACIÓN FINALIZADA");
   console.log("========================================");
   console.log("");
+
+  /*
+   * ---------------------------------------------------------
+   * CÓDIGO DE SALIDA
+   * ---------------------------------------------------------
+   *
+   * ESTA PARTE ES IMPORTANTE.
+   *
+   * PASS -> 0
+   * FAIL -> 1
+   */
+
+  process.exitCode =
+    finalGatePassed
+      ? 0
+      : 1;
 }
 
 function buildExecutions(
@@ -451,6 +662,16 @@ function validateDataset(
     );
   }
 
+  /*
+   * Se conserva la validación actual
+   * del repositorio: mínimo 15 casos.
+   *
+   * No modificamos todavía esta parte porque
+   * primero debemos resolver la discrepancia
+   * entre los 12 casos de la consigna y los
+   * 15 casos actualmente implementados.
+   */
+
   if (
     dataset.cases.length <
     15
@@ -459,6 +680,10 @@ function validateDataset(
       `El Golden Dataset tiene ${dataset.cases.length} casos. Se requieren al menos 15.`
     );
   }
+
+  /*
+   * Se conserva el mínimo actual del repositorio.
+   */
 
   const criticalCases =
     dataset.cases.filter(
@@ -603,6 +828,10 @@ main().catch(
 
     console.error("");
 
+    /*
+     * Un error de ejecución también debe
+     * considerarse NO PASA.
+     */
     process.exitCode = 1;
   }
 );
