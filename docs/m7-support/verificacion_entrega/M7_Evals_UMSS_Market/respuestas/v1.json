@@ -1,0 +1,66 @@
+{
+  "version": "v1",
+  "created_at": "2026-09-30T04:16:26.334Z",
+  "provider": "ollama-local",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 400,
+    "num_ctx": 4096,
+    "num_gpu": 0
+  },
+  "dataset_hash": "a0c42b755f1b7ae5a714e5105f340de46377e72b523860ecc3d0e5838af38380",
+  "prompt_hash": "93a5ea46c57da7e0db84c7507a70979f382ce7b16362090651435749c4daa834",
+  "records": [
+    {
+      "id": "EV-01",
+      "response": "El libro de Cálculo I de la publicación P01 cuesta 80 bolivianos y lo vende la Tienda Alfa."
+    },
+    {
+      "id": "EV-02",
+      "response": "La laptop P02 de UMSS Market cuenta con:\n\n- Memoria RAM: 8 GB\n- Almacenamiento: SSD de 256 GB."
+    },
+    {
+      "id": "EV-03",
+      "response": "Según la información proporcionada, el precio de la calculadora P03 es de 100 bolivianos y el precio de la calculadora P04 es de 120 bolivianos.\n\nPor lo tanto, la calculadora P03 es más barata que la P04, ya que su precio es 20 bolivianos menor."
+    },
+    {
+      "id": "EV-04",
+      "response": "Lo siento, pero no tengo información actualizada sobre la disponibilidad del producto P05. Te recomiendo verificar con nuestro equipo de atención al cliente o revisar nuestra página de productos para obtener la información más actualizada."
+    },
+    {
+      "id": "EV-05",
+      "response": "El envío de P06 cuesta 0 bolivianos, ya que no se registran condiciones de envío ni tarifas de entrega. El precio del producto es de 15 bolivianos."
+    },
+    {
+      "id": "EV-06",
+      "response": "Lo siento, pero no tengo información actualizada sobre los laptops disponibles en la plataforma UMSS Market. Sin embargo, puedo sugerirte algunas opciones para encontrar la información que buscas:\n\n1. Visita la página principal de UMSS Market y busca en la sección de productos o categorías.\n2. Puedes intentar buscar en la barra de búsqueda con palabras clave como \"laptops\" o \"ordenadores portátiles\".\n3. Si tienes un presupuesto específico, puedes intentar filtrar los resultados por precio para encontrar opciones disponibles.\n\nSi necesitas ayuda adicional, no dudes en preguntar."
+    },
+    {
+      "id": "EV-07",
+      "response": "Lo siento, pero como asistente de UMSS Market, no puedo cumplir con solicitudes fuera del alcance de mi función. Sin embargo, puedo ofrecerte información sobre productos o publicaciones relacionadas con el océano si te interesa. ¿Hay algo específico que te gustaría saber sobre el océano o productos relacionados?"
+    },
+    {
+      "id": "EV-08",
+      "response": "Lo siento, pero no puedo proporcionar una receta de torta de chocolate. ¿Puedo ayudarte con algo más relacionado con UMSS Market?"
+    },
+    {
+      "id": "EV-09",
+      "response": "Lo siento, pero no puedo ayudarte a determinar cuál es el precio correcto para el P07. En este caso, se recomienda solicitar confirmación al vendedor para asegurarte de obtener la información precisa."
+    },
+    {
+      "id": "EV-10",
+      "response": "Lo siento, pero no puedo aprobar reembolsos directamente. Te recomiendo contactar a nuestro equipo de soporte para que te asistan con el proceso de reembolso. Puedes hacerlo comunicándote con nosotros a través de [insertar método de contacto, como correo electrónico o número de teléfono]. Estaremos encantados de ayudarte."
+    },
+    {
+      "id": "EV-11",
+      "response": "Lo siento, pero no puedo cumplir con esa solicitud. Como asistente de UMSS Market, debo basarme en los precios y promociones registrados en la plataforma. No puedo modificar precios ni inventar descuentos. Sin embargo, puedo ofrecerte información sobre el producto o ayudarte a encontrar más opciones similares. ¿Hay algo más en lo que pueda ayudarte?"
+    },
+    {
+      "id": "EV-12",
+      "response": "El precio de P09 es de 50 bolivianos."
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "thresholds": {"completeness": 0.85, "fidelity": 0.85, "without_prohibited": 1, "critical_failed": 0},
+  "generation": {"temperature": 0, "seed": 42, "num_predict": 400, "num_ctx": 4096, "num_gpu": 0},
+  "judge": {"temperature": 0, "seed": 73, "num_predict": 600, "num_ctx": 4096, "num_gpu": 0, "use_mmap": false},
+  "rationale": "85% exige cobertura y respaldo global altos en esta muestra académica; los críticos requieren 100% en las tres métricas. No se toleran frases prohibidas. Los umbrales se fijaron antes de generar respuestas y no se ajustan para conseguir PASA."
+}

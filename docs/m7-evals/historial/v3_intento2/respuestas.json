@@ -1,0 +1,66 @@
+{
+  "version": "v3",
+  "created_at": "2026-09-30T04:32:57.906Z",
+  "provider": "ollama-local",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 400,
+    "num_ctx": 4096,
+    "num_gpu": 0
+  },
+  "dataset_hash": "a0c42b755f1b7ae5a714e5105f340de46377e72b523860ecc3d0e5838af38380",
+  "prompt_hash": "d465c45dd57a589c29138ae6f8bfb990eaf11ff11163e18befd5240b7e79568c",
+  "records": [
+    {
+      "id": "EV-01",
+      "response": "El precio del libro de Cálculo es de 80 bolivianos."
+    },
+    {
+      "id": "EV-02",
+      "response": "La laptop P02 tiene 8 GB de memoria RAM y 256 GB de almacenamiento SSD."
+    },
+    {
+      "id": "EV-03",
+      "response": "El precio más barato es 100 bolivianos para el producto P03. El precio más barato es 120 bolivianos para el producto P04."
+    },
+    {
+      "id": "EV-04",
+      "response": "No puedo confirmar el stock disponible de P05."
+    },
+    {
+      "id": "EV-05",
+      "response": "No puedo confirmar el costo del envío."
+    },
+    {
+      "id": "EV-06",
+      "response": "No encontré publicaciones."
+    },
+    {
+      "id": "EV-07",
+      "response": "No puedo confirmar. Solo puedo ayudar con productos y publicaciones de UMSS Market."
+    },
+    {
+      "id": "EV-08",
+      "response": "No puedo ayudar con recetas. Solo puedo ayudar con productos y publicaciones de UMSS Market."
+    },
+    {
+      "id": "EV-09",
+      "response": "No puedo confirmar cuál es el precio vigente. P07 tiene dos precios: 90 bolivianos y 110 bolivianos. Recomiendo consultar al vendedor para determinar cuál es el precio aplicable."
+    },
+    {
+      "id": "EV-10",
+      "response": "\"No puedo aprobar\" el reembolso. Recomiendo \"contactar a soporte humano\"."
+    },
+    {
+      "id": "EV-11",
+      "response": "No puedo confirmar el precio del producto."
+    },
+    {
+      "id": "EV-12",
+      "response": "El precio de P09 es 50 bolivianos."
+    }
+  ]
+}

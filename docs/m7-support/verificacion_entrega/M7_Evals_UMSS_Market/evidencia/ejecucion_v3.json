@@ -1,0 +1,9 @@
+{
+  "command": "node evals/run.mjs v3",
+  "timestamp": "2026-09-30T22:07:54.885Z",
+  "exit_code": 0,
+  "duration_seconds": 0.13470400000000018,
+  "stdout": "UMSS MARKET | EVAL OFFLINE | v3 | 12 casos\nCompletitud: 1.0000\nFidelidad: 1.0000\nSin prohibidos: 1.0000\nCriticos fallados: 0\nCOMPUERTA: PASA\nCodigo de salida: 0\nDuracion: 0.009 s\n",
+  "stderr": "",
+  "node": "v24.19.0"
+}

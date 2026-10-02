@@ -1,0 +1,7 @@
+{
+  "zip": "D:\\Chris\\Maestria\\Proyectos\\Modulo-4---Arquitectura-del-Producto-y-Especificaciones-Funcionales\\docs\\M7_Evals_UMSS_Market.zip",
+  "exit_code": 0,
+  "stdout": "UMSS MARKET | EVAL OFFLINE | v3 | 12 casos\nCompletitud: 1.0000\nFidelidad: 1.0000\nSin prohibidos: 1.0000\nCriticos fallados: 0\nCOMPUERTA: PASA\nCodigo de salida: 0\nDuracion: 0.030 s\n",
+  "pages": 12,
+  "files": 78
+}
