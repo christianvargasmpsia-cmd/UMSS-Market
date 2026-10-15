@@ -1,4 +1,4 @@
-# Auditoría 12-factor — <NOMBRE DEL GRUPO>
+# Auditoría 12-factor — G1 — UMSS Market
 
 > **Módulo 8 · Actividad de auditoría (parte 1 de 2) · Entrega: domingo 18 de octubre de 2026, 23:59.**
 > Este archivo es a la vez **las instrucciones para el asistente de IA** y **la ficha que se entrega**. El asistente lo rellena en su lugar; el grupo lo revisa, responde las preguntas y lo sube a su repositorio.
@@ -49,23 +49,23 @@
 
 ## 1. Datos del repositorio (oleada 0)
 
-- **Grupo:** <nombre>
-- **Repositorio:** <URL>
-- **Commit auditado (`release/8.0.0`):** <hash>
-- **Fecha de la auditoría:** <aaaa-mm-dd>
-- **Stack detectado:** <lenguajes, frameworks, base de datos, cola, otros servicios>
-- **Carpetas de código fuente:** <por ejemplo `src/`, `backend/app/`>
-- **Cómo se ejecuta (verificado):** <comando y si funcionó>
-- **Integrantes y qué revisó cada uno:** <nombre → comprobaciones>
+- **Grupo:** G1 — UMSS Market (E-Commerce UMSS).
+- **Repositorio:** https://github.com/christianvargasmpsia-cmd/Modulo-4---Arquitectura-del-Producto-y-Especificaciones-Funcionales
+- **Commit auditado (`release/8.0.0`):** 824eb0f5a00ef586d467d23dda8856ac576dabae
+- **Fecha de la auditoría:** 2026-10-15
+- **Stack detectado:** Java 21, Spring Boot 3.5.15, Maven, JPA/PostgreSQL, Ollama; Node.js con Newman y Playwright (agente CLI auxiliar). Evidencia: backend/umss-market-api/pom.xml:8,30,35,76; ai-testing-agent/package.json:8,28,30,34.
+- **Carpetas de código fuente:** `backend/umss-market-api/src/main/`, `ai-testing-agent/src/`; `poc/` y `demo/` son prototipos, no servicios desplegados. No se encontró frontend Angular versionado.
+- **Cómo se ejecuta (verificado):** README.md:504 y 505 documenta Maven; ai-testing-agent/package.json:9 define `npm run start:enhanced`. Arranque NO VERIFICABLE: `.\mvnw.cmd -v`, desde backend/umss-market-api, falló con `Cannot start maven from wrapper`. No se lanzó la aplicación contra la base configurada.
+- **Integrantes y qué revisó cada uno:** Análisis automático: Codex. Reparto 50/50 solicitado por el grupo: Abad Melani Rodriguez Gonzales → F12-01, F12-02 y F12-03; Christian Bernardo Vargas Sandoval → F12-04, F12-05 y F12-06. Asignación de revisión; realización y commits aún no acreditados.
 
 ## 2. Plan y avance por oleadas
 
 | Oleada | Qué se hizo | Estado |
 |--------|-------------|--------|
-| 0 · Reconocimiento | | |
-| 1 · Evidencia | | |
-| 2 · Juicio | | |
-| 3 · Cierre | | |
+| 0 · Reconocimiento | HEAD y rama verificados con git; inventario de archivos versionados. Revisar backend y agente CLI: búsquedas de configuración (01), inventario e historial sin valores sensibles (02), estado y escrituras (03), logging (04), clientes y puertos (05), build y cierre (06). Usar git grep, git ls-files, git log y lectura numerada con redacción. | Completada |
+| 1 · Evidencia | Búsquedas por factor, inventario e historial dirigido; valores sensibles omitidos. Maven -v falla. | Completada |
+| 2 · Juicio | Cinco fallas verificadas; construcción y apagado sin evidencia suficiente. P1 y P2 presentadas al grupo. | Completada |
+| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; revisión efectiva y commits humanos no acreditados. | Completada |
 
 ## 3. Comprobaciones
 
@@ -78,10 +78,10 @@
   git grep -nE "localhost|127\.0\.0\.1|:5432|:3306|:6379|:27017|https?://" -- <carpetas de código>
   git grep -nE "process\.env|ConfigService|getOrThrow|@Value|@ConfigurationProperties|BaseSettings|os\.environ|os\.getenv" -- <carpetas de código>
   ```
-- **Evidencia:**
-- **Estado:**
-- **Observación:**
-- **Auditó:**
+- **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:3`: URL JDBC local fija; línea 18: `server.port=8080`; línea 22: `ia.enabled=${IA_HABILITADA:true}`. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/adapters/OllamaAdapter.java:25` y 28: URLs fijas de generaci?n y embeddings; `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/config/SecurityConfig.java:41`: origen CORS local fijo. Agente: `ai-testing-agent/src/services/Ollama.service.js:11` usa `process.env.OLLAMA_BASE_URL` y línea 15 usa `OLLAMA_MODEL`. Búsqueda ejecutada: `git grep -n -E 'localhost|@Value|ConfigurationProperties|System.getenv|process.env' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'` (salida filtrada para omitir líneas sensibles).
+- **Estado:** FALLA
+- **Observación:** Backend: FALLA por URLs de Ollama y CORS incrustadas en Java. Spring admite configuración externa, pero no se acredita validación integral al inicio. El agente usa variables con valores por defecto: PARCIAL. El resultado agregado refleja el peor componente.
+- **Auditó:** Codex (análisis automático). Revisión asignada: Abad Melani Rodriguez Gonzales; realización y commit aún no acreditados.
 
 ### F12-02 · Secretos fuera del repositorio y de su historial (factor III)
 
@@ -95,10 +95,10 @@
   git log --all --pickaxe-regex -S'(?i)password' --oneline --name-only
   gitleaks detect --source . --redact --no-banner   # opcional, si está instalado
   ```
-- **Evidencia:**
-- **Estado:**
-- **Observación:**
-- **Auditó:**
+- **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:7`: contraseña literal no vacía, sin referencia al entorno (valor omitido). `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/JwtService.java:17` y 18: declaración de secreto JWT literal (valor omitido). `ai-testing-agent/src/services/auth.service.js:598` y 599: contraseña fija de prueba (valor omitido). `git check-ignore -v .env backend/umss-market-api/.env ai-testing-agent/.env` devuelve únicamente `ai-testing-agent/.gitignore:8:.env ai-testing-agent/.env`. Inventario: solo `ai-testing-agent/.env.example`; no se abrió. `git log --all --format='%h %as' --name-only -- .env ':(glob)**/.env'`: sin salida. `git log --all --format='%h %as' -G 'password' -- backend/umss-market-api/src/main/resources/application.properties`: primeras líneas `0d49894 2026-10-14`, `c2229b6 2026-09-27`, `44f3d70 2026-09-27`. `git rev-parse --is-shallow-repository`: `false`. Se ejecutó además `git grep -c -I -i -E '(password|secret|api[_-]?key|token)[[:space:]]*[:=]' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'`: application.properties devuelve 1 y auth.service.js devuelve 5; son coincidencias, no cinco secretos confirmados. Gitleaks no está disponible.
+- **Estado:** FALLA
+- **Observación:** FALLA: credenciales literales en backend y agente. No se verificó su vigencia ni se intentó usarlas. La revisión dirigida del historial no certifica ausencia de otros secretos. No se abrieron archivos .env ni de claves.
+- **Auditó:** Codex (análisis automático). Revisión asignada: Abad Melani Rodriguez Gonzales; realización y commit aún no acreditados.
 
 ### F12-03 · Procesos sin estado (factor VI)
 
@@ -109,10 +109,10 @@
   git grep -nE "writeFileSync|writeFile\(|createWriteStream|diskStorage|mkdirSync|open\(.*['\"]w|UploadFile" -- <carpetas de código>
   git grep -nE "express-session|MemoryStore|new Map\(|@Cron|setInterval\(" -- <carpetas de código>
   ```
-- **Evidencia:**
-- **Estado:**
-- **Observación:**
-- **Auditó:**
+- **Evidencia:** `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/TokenBlacklistService.java:11` y 12: `private final Set<String> blacklistedTokens` con `ConcurrentHashMap.newKeySet()`; líneas 15 y 19: inserción y consulta. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/controllers/AuthController.java:142`: `tokenBlacklistService.blacklist(token)`; `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/JwtAuthenticationFilter.java:50`: consulta esa lista. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/monitoring/AIMonitoringService.java:97`: `Files.writeString`. Agente CLI: `ai-testing-agent/src/utils/FileManager.js:52` y 66, `fs.writeFileSync` para artefactos. Búsqueda ejecutada: `git grep -n -E 'ConcurrentHashMap|static.*Map|HttpSession|@Scheduled|Files\.|FileOutputStream|MultipartFile|SessionCreationPolicy' -- backend/umss-market-api/src/main`; encontró lista de revocación y monitoreo local.
+- **Estado:** FALLA
+- **Observación:** FALLA en backend: las revocaciones JWT se pierden al reiniciar y no se comparten entre réplicas. El monitoreo depende del disco local. Los reportes de la CLI auxiliar son artefactos de pruebas, no sesiones entre peticiones.
+- **Auditó:** Codex (análisis automático). Revisión asignada: Abad Melani Rodriguez Gonzales; realización y commit aún no acreditados.
 
 ### F12-04 · Logs a la salida estándar (factor XI)
 
@@ -123,10 +123,10 @@
   git grep -nE "transports\.File|DailyRotateFile|pino\.destination|FileHandler|RotatingFileHandler|logging\.file|logback.*FILE" -- .
   git grep -nE "winston|pino|nestjs-pino|Logger|logging\.basicConfig|logback" -- <carpetas de código>
   ```
-- **Evidencia:**
-- **Estado:**
-- **Observación:**
-- **Auditó:**
+- **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:30`: `ai.monitoring.enabled=true`; línea 37: `ai.monitoring.log-path=logs/ai-monitoring.jsonl`. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/monitoring/AIMonitoringService.java:97` y 103 escriben con `Files.writeString` y `StandardOpenOption.APPEND`; líneas 64 y 65 guardan pregunta y respuesta. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/application/services/AIServiceImpl.java:276`: impresión de pregunta a consola. Agente: `ai-testing-agent/src/utils/Logger.js:11`: `console.log`. Evidencia localizada con `git grep -n -E 'Logger|System.out|console.log|Files\.' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'` y lectura numerada del servicio de monitoreo.
+- **Estado:** FALLA
+- **Observación:** FALLA en backend: el monitoreo activo escribe eventos en un archivo propio y registra preguntas y respuestas que pueden contener información privada. El agente usa consola; sus reportes de pruebas no equivalen a logs operativos.
+- **Auditó:** Codex (análisis automático). Revisión asignada: Christian Bernardo Vargas Sandoval; realización y commit aún no acreditados.
 
 ### F12-05 · Servicios de apoyo intercambiables (factor IV)
 
@@ -137,10 +137,10 @@
   git grep -nE "DATABASE_URL|REDIS_URL|AMQP_URL|S3_|BUCKET|OPENAI|ANTHROPIC|_URL\b" -- <carpetas de código>
   git grep -nE "createConnection|TypeOrmModule\.forRoot\(|PrismaClient|create_engine|MongoClient|new Redis\(" -- <carpetas de código>
   ```
-- **Evidencia:**
-- **Estado:**
-- **Observación:**
-- **Auditó:**
+- **Evidencia:** `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/adapters/OllamaAdapter.java:25` y 28: `http://localhost:11434/api/generate` y `http://localhost:11434/api/embed`. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/config/OllamaConfig.java:12`: `return new RestTemplate()`. `backend/umss-market-api/src/main/resources/application.properties:3`: conexión PostgreSQL en propiedades; `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/persistence/repositories/JpaOrderItemRepository.java:12`: `extends JpaRepository`. Agente: `ai-testing-agent/src/services/llm.service.js:18` y 23 permite `OLLAMA_BASE_URL` y `OLLAMA_MODEL`. Búsqueda ejecutada: `git grep -n -E 'localhost|process.env|baseURL' -- ai-testing-agent/src/config ai-testing-agent/src/services/llm.service.js ai-testing-agent/src/services/AI.service.js` con exclusión de líneas sensibles; primeras coincidencias llm.service.js:17 y 18.
+- **Estado:** FALLA
+- **Observación:** FALLA en backend: cambiar el host de Ollama exige editar Java, aunque exista un adaptador. JPA y la URL configurable del agente son avances parciales. No se presupone Redis o RabbitMQ implementado por figurar en documentación.
+- **Auditó:** Codex (análisis automático). Revisión asignada: Christian Bernardo Vargas Sandoval; realización y commit aún no acreditados.
 
 ### F12-06 · Construcción inmutable y apagado limpio (factores V y IX)
 
@@ -152,39 +152,45 @@
   git grep -nE "COPY \.env|^ENV .*(PASS|SECRET|KEY|TOKEN)|^CMD [^\[]" -- '*Dockerfile*'
   git grep -nE "SIGTERM|enableShutdownHooks|onModuleDestroy|beforeApplicationShutdown|server\.shutdown|lifespan" -- .
   ```
-- **Evidencia:**
-- **Estado:**
-- **Observación:**
-- **Auditó:**
+- **Evidencia:** `git ls-files '*Dockerfile*' '*compose*' ':!:**/node_modules/**'`: sin salida. `git grep -n -E 'SIGTERM|enableShutdownHooks|PreDestroy|server.shutdown|timeout-per-shutdown-phase' -- backend/umss-market-api/src/main ai-testing-agent/src`: sin salida (código 1: sin coincidencias). `backend/umss-market-api/pom.xml:111`: `spring-boot-maven-plugin`; línea 8: Spring Boot 3.5.15. `README.md:769`: `.\mvnw.cmd spring-boot:run`. `ai-testing-agent/package.json:9`: `node src/index.enhanced.js`. `.\mvnw.cmd -v`, ejecutado desde backend/umss-market-api: código 1, primera línea `icm : No se puede indizar en una matriz nula.`; termina con `Cannot start maven from wrapper`. No se ejecutaron build, arranque ni prueba SIGTERM. La ausencia de hooks explícitos no demuestra que Spring carezca de cierre gestionado.
+- **Estado:** NO VERIFICABLE
+- **Observación:** El grupo confirmó en P1: solo ejecución local, sin prueba de apagado. Se mantiene NO VERIFICABLE: no existe evidencia de reutilización del artefacto entre entornos ni de cierre durante una petición. La ausencia de hooks explícitos no demuestra que Spring carezca de cierre gestionado. El wrapper falla al consultar su versión.
+- **Auditó:** Codex (análisis automático). Revisión asignada: Christian Bernardo Vargas Sandoval; realización y commit aún no acreditados.
 
 ## 4. Preguntas al grupo
 
 | N.º | Comprobación | Pregunta | Respuesta del grupo | Estado (respondida / sin respuesta) |
 |-----|--------------|----------|---------------------|--------------------------------------|
-| P1 | | | | |
+| P1 | F12-06 | ¿Cómo se despliega y qué evidencia existe de reutilizar el artefacto y apagar durante peticiones? | Solo ejecución local; sin prueba de apagado, según respuesta del grupo. F12-06 sigue NO VERIFICABLE por falta de evidencia operativa. | respondida |
+| P2 | Revisión humana / todas | ¿Qué revisó cada integrante y qué commits corresponden a la auditoría? | El grupo solicita reparto 50/50: Abad Melani Rodriguez Gonzales revisará F12-01 a F12-03; Christian Bernardo Vargas Sandoval revisará F12-04 a F12-06. Sin commits aportados ni confirmación de revisión terminada: NO VERIFICABLE esa acreditación. | respondida |
 
 ## 5. Hallazgos priorizados
 
 | # | Comprobación | Severidad (alta / media / baja) | Qué falla | Corrección propuesta | Responsable | ¿Antes de contenedorizar (S07)? |
 |---|--------------|---------------------------------|-----------|----------------------|-------------|---------------------------------|
-| 1 | | | | | | |
+| 1 | F12-02 | alta | Contraseña de BD y secreto JWT literales; credencial fija en agente. | Externalizar y validar al inicio; evaluar exposición, revocar/rotar valores afectados y sanear historial de forma coordinada. Añadir exclusión de .env en raíz/backend y escaneo del historial. | Christian Bernardo Vargas Sandoval (propuesto; aceptación no confirmada) | Sí |
+| 2 | F12-03 | alta | Revocaciones JWT en memoria de una JVM. | Persistir revocaciones en servicio compartido con expiración y probar reinicio/dos réplicas. | Abad Melani Rodriguez Gonzales (propuesta; aceptación no confirmada) | Sí |
+| 3 | F12-01 / F12-05 | media | Ollama y CORS fijados en Java; configuración sin validación integral acreditada. | Parametrizar endpoints, orígenes y parámetros por entorno; validar presencia/formato al arrancar. | Christian Bernardo Vargas Sandoval (propuesto) | Sí |
+| 4 | F12-04 / F12-03 | media | Monitoreo en disco local y contenido de consultas en logs. | Emitir eventos estructurados a stdout, redactar datos y delegar retención en la plataforma. | Abad Melani Rodriguez Gonzales (propuesta) | Sí |
+| 5 | F12-06 | media | Sin evidencia de promoción inmutable ni prueba de apagado; wrapper no funciona aquí. | Diagnosticar wrapper, construir artefacto identificable y aportar prueba de SIGTERM con petición en curso y cierre de conexiones. | Ambos integrantes (propuesto) | Sí, verificar durante la preparación |
 
 ## 6. Autoverificación (la marca el asistente; el grupo la confirma)
 
-- [ ] Las seis comprobaciones F12-01 a F12-06 están en la sección 3, una vez cada una.
-- [ ] Ninguna quedó en `PENDIENTE` ni sin estado; todos los estados son de los cinco permitidos.
-- [ ] Todo estado distinto de `N/A` y `NO VERIFICABLE` tiene evidencia con ruta y línea, o con comando y salida.
-- [ ] Cada `NO VERIFICABLE` y cada `N/A` explica su motivo.
-- [ ] Todas las preguntas de la sección 4 están respondidas o marcadas "sin respuesta".
-- [ ] Los hallazgos de severidad alta tienen responsable.
-- [ ] No hay ningún secreto copiado en este archivo.
-- [ ] No se modificó código del producto (`git diff --stat <commit auditado>..HEAD` solo muestra este archivo y el de aportes).
-- [ ] Cada integrante aparece como auditor de al menos una comprobación y tiene al menos un commit con su propia identidad.
+- [x] Las seis comprobaciones F12-01 a F12-06 están en la sección 3, una vez cada una.
+- [x] Ninguna quedó en `PENDIENTE` ni sin estado; todos los estados son de los cinco permitidos.
+- [x] Todo estado distinto de `N/A` y `NO VERIFICABLE` tiene evidencia con ruta y línea, o con comando y salida.
+- [x] Cada `NO VERIFICABLE` y cada `N/A` explica su motivo.
+- [x] Todas las preguntas de la sección 4 están respondidas o marcadas "sin respuesta".
+- [x] Los hallazgos de severidad alta tienen responsable propuesto; el grupo debe confirmar la asignación.
+- [x] No hay ningún secreto copiado en este archivo.
+- [x] Esta auditoría solo editó `docs/auditoria/12FACTOR.md`. No se hicieron commits: comparar el commit auditado con HEAD da una salida vacía. Se revisó también `git diff --stat`; el cambio en `CONCURRENCIA.md` ya existía y no fue editado aquí.
+- [ ] Cada integrante completó su revisión y tiene un commit propio de esta auditoría. El reparto está acordado, pero su ejecución y los commits siguen NO VERIFICABLES; no se marcaron como realizados.
 
 ## 7. Resumen
 
 | OK | PARCIAL | FALLA | N/A | NO VERIFICABLE | Preguntas sin respuesta |
 |---:|--------:|------:|----:|---------------:|------------------------:|
-| | | | | | |
+| 0 | 0 | 5 | 0 | 1 | 0 |
 
-**Conclusión en dos líneas:** <qué está bien y qué hay que corregir primero>
+**Conclusión en dos líneas:** Hay separación de adaptadores, persistencia JPA y configuración externa parcial en el agente.
+Primero deben corregirse secretos versionados y revocaciones locales; luego configuración, logs y verificación de construcción/apagado.
