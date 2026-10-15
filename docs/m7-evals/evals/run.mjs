@@ -8,7 +8,7 @@ try {
   const r=read(`respuestas/${version}.json`);
   requireThat(r.prompt_hash===hash(readText(`prompts/${version}.txt`)),'Prompt cambiado');
   const report=evaluate(read('dataset/golden.json'),r,read(`evals/dictamenes/${version}.json`),read('evals/config.json').thresholds,readText('evals/rubrica.txt'));
-  console.log(`UMSS MARKET | EVAL OFFLINE | ${version} | 12 casos`);
+  console.log(`UMSS MARKET | EVAL OFFLINE | ${version} | 15 casos`);
   console.log('Completitud:',report.metrics.completeness.toFixed(4));
   console.log('Fidelidad:',report.metrics.fidelity.toFixed(4));
   console.log('Sin prohibidos:',report.metrics.without_prohibited.toFixed(4));

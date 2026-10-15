@@ -4,7 +4,7 @@ export const normalize = value => String(value).normalize('NFD').replace(/\p{Dia
 export const requireThat = (condition, message) => { if (!condition) throw new Error(message); };
 const mean = values => values.reduce((a,b)=>a+b,0)/values.length;
 export function validateDataset(dataset) {
-  requireThat(dataset.cases?.length === 12, 'Se requieren exactamente 12 casos');
+  requireThat(dataset.cases?.length === 12, 'Se requieren exactamente 15 casos');
   requireThat(new Set(dataset.cases.map(c=>c.id)).size === 12, 'IDs duplicados');
   const types = ['hecho','escalar','fuera_de_alcance','seguridad','sin_respuesta'];
   requireThat(types.every(t=>dataset.cases.some(c=>c.type===t)), 'Falta un tipo de caso');

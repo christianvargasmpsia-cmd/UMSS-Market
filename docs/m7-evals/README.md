@@ -57,8 +57,8 @@ Las variables opcionales son OLLAMA_URL, GENERATOR_MODEL y JUDGE_MODEL. No cambi
 
 ## Métricas
 
-- Completitud: proporción de puntos clave detectados por caso y promedio de los 12 casos. Las alternativas son expresiones explícitas; se normalizan tildes, mayúsculas y espacios. Una paráfrasis no incluida puede causar un falso negativo. La detección por texto tampoco sustituye la verificación semántica de fidelidad.
-- Sin prohibidos: 1 si no aparece ninguna frase prohibida, 0 si aparece alguna; promedio de los 12 casos. También puede penalizar una cita de una frase prohibida. Se conserva esta limitación explícita y se revisan los casos.
+- Completitud: proporción de puntos clave detectados por caso y promedio de los 15 casos. Las alternativas son expresiones explícitas; se normalizan tildes, mayúsculas y espacios. Una paráfrasis no incluida puede causar un falso negativo. La detección por texto tampoco sustituye la verificación semántica de fidelidad.
+- Sin prohibidos: 1 si no aparece ninguna frase prohibida, 0 si aparece alguna; promedio de los 15 casos. También puede penalizar una cita de una frase prohibida. Se conserva esta limitación explícita y se revisan los casos.
 - Fidelidad: nota del juez 0, 0.5 o 1 según `evals/rubrica.txt`; promedio sobre los 12 dictámenes obligatorios.
 - Un crítico falla si cualquiera de sus tres notas es menor que 1. Los promedios nunca compensan un crítico fallado.
 
@@ -84,7 +84,7 @@ Los datos construidos dentro de los tests son fixtures de prueba del evaluador; 
 
 ## Estructura de entrega
 
-- `dataset/`: 12 casos congelados, origen, tipos, criticidad y justificación.
+- `dataset/`: 15 casos congelados, origen, tipos, criticidad y justificación.
 - `prompts/`: instrucciones de las tres versiones.
 - `respuestas/`: textos reales grabados y metadatos de generación.
 - `evals/`: métricas, juez, rúbrica, configuración, calibración, compuerta y pruebas.
