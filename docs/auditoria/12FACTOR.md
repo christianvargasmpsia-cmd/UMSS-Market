@@ -57,7 +57,7 @@
 - **Stack detectado:** Java 21, Spring Boot 3.5.15, Maven, JPA/PostgreSQL, Ollama; Node.js con Newman y Playwright (agente CLI auxiliar). Evidencia: backend/umss-market-api/pom.xml:8,30,35,76; ai-testing-agent/package.json:8,28,30,34.
 - **Carpetas de código fuente:** `backend/umss-market-api/src/main/`, `ai-testing-agent/src/`; `poc/` y `demo/` son prototipos, no servicios desplegados. No se encontró frontend Angular versionado.
 - **Cómo se ejecuta (verificado):** README.md:504 y 505 documenta Maven; ai-testing-agent/package.json:9 define `npm run start:enhanced`. Arranque NO VERIFICABLE: `.\mvnw.cmd -v`, desde backend/umss-market-api, falló con `Cannot start maven from wrapper`. No se lanzó la aplicación contra la base configurada.
-- **Integrantes y revisión:** Abad Melani Rodriguez Gonzales revisó F12-01, F12-02 y F12-03, registrando su aporte en el commit `b4ac2d3`. Christian Bernardo Vargas Sandoval completó y confirmó su revisión manual de F12-04, F12-05 y F12-06 el 15/10/2026. Cuenta con los commits anteriores `824eb0f` y `b5d5733`; falta registrar esta actualización con su propia identidad.
+- **Integrantes y revisión:** Abad Melani Rodriguez Gonzales revisó F12-01, F12-02 y F12-03, registrando su aporte en el commit `b4ac2d3`. Christian Bernardo Vargas Sandoval completó y confirmó su revisión manual de F12-04, F12-05 y F12-06 el 15/10/2026. Registró su revisión en el commit `b1ee1ca` (autor Git: ElChris496).
 
 ## 2. Plan y avance por oleadas
 
@@ -66,7 +66,7 @@
 | 0 · Reconocimiento | HEAD y rama verificados con git; inventario de archivos versionados. Revisar backend y agente CLI: búsquedas de configuración (01), inventario e historial sin valores sensibles (02), estado y escrituras (03), logging (04), clientes y puertos (05), build y cierre (06). Usar git grep, git ls-files, git log y lectura numerada con redacción. | Completada |
 | 1 · Evidencia | Búsquedas por factor, inventario e historial dirigido; valores sensibles omitidos. Maven -v falla. | Completada |
 | 2 · Juicio | Cinco fallas verificadas; construcción y apagado sin evidencia suficiente. P1 y P2 presentadas al grupo. | Completada |
-| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; revisión de Melani registrada en b4ac2d3 y revisión manual de Christian confirmada en F12-04/05/06. Falta registrar el aporte actual y confirmar el cierre del grupo. | Completada |
+| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; revisión de Melani registrada en b4ac2d3 y revisión manual de Christian confirmada en F12-04/05/06. Aporte de Christian registrado en `b1ee1ca`; falta confirmar el cierre del grupo. | Completada |
 
 ## 3. Comprobaciones
 
@@ -127,7 +127,7 @@
 - **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:30`: `ai.monitoring.enabled=true`; línea 37: `ai.monitoring.log-path=logs/ai-monitoring.jsonl`. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/monitoring/AIMonitoringService.java:97` y 103 escriben con `Files.writeString` y `StandardOpenOption.APPEND`; líneas 64 y 65 guardan pregunta y respuesta. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/application/services/AIServiceImpl.java:276`: impresión de pregunta a consola. Agente: `ai-testing-agent/src/utils/Logger.js:11`: `console.log`. Evidencia localizada con `git grep -n -E 'Logger|System.out|console.log|Files\.' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'` y lectura numerada del servicio de monitoreo.
 - **Estado:** FALLA
 - **Observación:** FALLA en backend: el monitoreo activo escribe eventos en un archivo propio y registra preguntas y respuestas que pueden contener información privada. El agente usa consola; sus reportes de pruebas no equivalen a logs operativos.
-- **Auditó:** Christian Bernardo Vargas Sandoval, revisión manual realizada el 15/10/2026. Se confirmó en application.properties que el monitoreo está habilitado y en AIMonitoringService.java que escribe un archivo con APPEND y registra pregunta y respuesta. **Conclusión:** se mantiene FALLA porque los eventos se almacenan en un archivo propio en lugar de delegar su almacenamiento a la plataforma mediante salida estándar; además, debe revisarse el contenido de las consultas antes de registrarlo.
+- **Auditó:** Christian Bernardo Vargas Sandoval, revisión manual realizada el 15/10/2026. Se confirmó en application.properties que el monitoreo está habilitado y en AIMonitoringService.java que escribe un archivo con APPEND y registra pregunta y respuesta. **Conclusión:** se mantiene FALLA porque los eventos se almacenan en un archivo propio en lugar de delegar su almacenamiento a la plataforma mediante salida estándar; además, debe revisarse el contenido de las consultas antes de registrarlo. Commit de revisión: `b1ee1ca` (ElChris496).
 
 ### F12-05 · Servicios de apoyo intercambiables (factor IV)
 
@@ -141,7 +141,7 @@
 - **Evidencia:** `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/adapters/OllamaAdapter.java:25` y 28: `http://localhost:11434/api/generate` y `http://localhost:11434/api/embed`. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/config/OllamaConfig.java:12`: `return new RestTemplate()`. `backend/umss-market-api/src/main/resources/application.properties:3`: conexión PostgreSQL en propiedades; `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/persistence/repositories/JpaOrderItemRepository.java:12`: `extends JpaRepository`. Agente: `ai-testing-agent/src/services/llm.service.js:18` y 23 permite `OLLAMA_BASE_URL` y `OLLAMA_MODEL`. Búsqueda ejecutada: `git grep -n -E 'localhost|process.env|baseURL' -- ai-testing-agent/src/config ai-testing-agent/src/services/llm.service.js ai-testing-agent/src/services/AI.service.js` con exclusión de líneas sensibles; primeras coincidencias llm.service.js:17 y 18.
 - **Estado:** FALLA
 - **Observación:** FALLA en backend: cambiar el host de Ollama exige editar Java, aunque exista un adaptador. JPA y la URL configurable del agente son avances parciales. No se presupone Redis o RabbitMQ implementado por figurar en documentación.
-- **Auditó:** Christian Bernardo Vargas Sandoval, revisión manual realizada el 15/10/2026. Se confirmaron las URLs fijas de Ollama en OllamaAdapter.java y no se encontró configuración externa para esas direcciones. **Conclusión:** se mantiene FALLA porque cambiar la instancia de Ollama requiere editar el código Java.
+- **Auditó:** Christian Bernardo Vargas Sandoval, revisión manual realizada el 15/10/2026. Se confirmaron las URLs fijas de Ollama en OllamaAdapter.java y no se encontró configuración externa para esas direcciones. **Conclusión:** se mantiene FALLA porque cambiar la instancia de Ollama requiere editar el código Java. Commit de revisión: `b1ee1ca` (ElChris496).
 
 ### F12-06 · Construcción inmutable y apagado limpio (factores V y IX)
 
@@ -156,14 +156,14 @@
 - **Evidencia:** `git ls-files '*Dockerfile*' '*compose*' ':!:**/node_modules/**'`: sin salida. `git grep -n -E 'SIGTERM|enableShutdownHooks|PreDestroy|server.shutdown|timeout-per-shutdown-phase' -- backend/umss-market-api/src/main ai-testing-agent/src`: sin salida (código 1: sin coincidencias). `backend/umss-market-api/pom.xml:111`: `spring-boot-maven-plugin`; línea 8: Spring Boot 3.5.15. `README.md:769`: `.\mvnw.cmd spring-boot:run`. `ai-testing-agent/package.json:9`: `node src/index.enhanced.js`. `.\mvnw.cmd -v`, ejecutado desde backend/umss-market-api: código 1, primera línea `icm : No se puede indizar en una matriz nula.`; termina con `Cannot start maven from wrapper`. No se ejecutaron build, arranque ni prueba SIGTERM. La ausencia de hooks explícitos no demuestra que Spring carezca de cierre gestionado.
 - **Estado:** NO VERIFICABLE
 - **Observación:** El grupo confirmó en P1: solo ejecución local, sin prueba de apagado. Se mantiene NO VERIFICABLE: no existe evidencia de reutilización del artefacto entre entornos ni de cierre durante una petición. La ausencia de hooks explícitos no demuestra que Spring carezca de cierre gestionado. El wrapper falla al consultar su versión.
-- **Auditó:** Christian Bernardo Vargas Sandoval, revisión manual realizada el 15/10/2026. Se confirmó el plugin spring-boot-maven-plugin en pom.xml, la ausencia de Dockerfile y que no se encontró configuración explícita de apagado. No se realizaron pruebas de reutilización del artefacto ni de apagado. **Conclusión:** se mantiene NO VERIFICABLE por falta de evidencia experimental; la ausencia de configuración explícita no demuestra un apagado incorrecto de Spring.
+- **Auditó:** Christian Bernardo Vargas Sandoval, revisión manual realizada el 15/10/2026. Se confirmó el plugin spring-boot-maven-plugin en pom.xml, la ausencia de Dockerfile y que no se encontró configuración explícita de apagado. No se realizaron pruebas de reutilización del artefacto ni de apagado. **Conclusión:** se mantiene NO VERIFICABLE por falta de evidencia experimental; la ausencia de configuración explícita no demuestra un apagado incorrecto de Spring. Commit de revisión: `b1ee1ca` (ElChris496).
 
 ## 4. Preguntas al grupo
 
 | N.º | Comprobación | Pregunta | Respuesta del grupo | Estado (respondida / sin respuesta) |
 |-----|--------------|----------|---------------------|--------------------------------------|
 | P1 | F12-06 | ¿Cómo se despliega y qué evidencia existe de reutilizar el artefacto y apagar durante peticiones? | Solo ejecución local; sin prueba de apagado, según respuesta del grupo. F12-06 sigue NO VERIFICABLE por falta de evidencia operativa. | respondida |
-| P2 | Revisión humana / todas | ¿Qué revisó cada integrante y qué commits corresponden a la auditoría? | Reparto 50/50: Melani revisó F12-01 a F12-03, con aporte en b4ac2d3. Christian confirmó su revisión manual de F12-04 a F12-06 el 15/10/2026: monitoreo habilitado con APPEND y registro de pregunta/respuesta, URLs de Ollama fijas sin configuración externa, plugin Maven presente y Dockerfile ausente; sin configuración explícita de apagado encontrada ni pruebas de artefacto/apagado realizadas. Cuenta con los commits previos 824eb0f y b5d5733; esta actualización todavía no tiene commit propio. | respondida |
+| P2 | Revisión humana / todas | ¿Qué revisó cada integrante y qué commits corresponden a la auditoría? | Reparto 50/50: Melani revisó F12-01 a F12-03, con aporte en b4ac2d3. Christian confirmó su revisión manual de F12-04 a F12-06 el 15/10/2026: monitoreo habilitado con APPEND y registro de pregunta/respuesta, URLs de Ollama fijas sin configuración externa, plugin Maven presente y Dockerfile ausente; sin configuración explícita de apagado encontrada ni pruebas de artefacto/apagado realizadas. Revisión registrada en `b1ee1ca` (autor Git: ElChris496). | respondida |
 
 ## 5. Hallazgos priorizados
 
@@ -185,7 +185,7 @@
 - [x] Los hallazgos de severidad alta tienen responsable propuesto; el grupo debe confirmar la asignación.
 - [x] No hay ningún secreto copiado en este archivo.
 - [x] No se modificó código del producto durante la auditoría. Los cambios realizados para la entrega corresponden a documentos Markdown de auditoría.
-- [ ] Cada integrante completó su revisión y tiene un commit propio de esta auditoría. La revisión manual de Christian de F12-04/05/06 está confirmada; falta registrar esta actualización con su propia identidad. Melani tiene el commit b4ac2d3, aunque F12-02 conserva la salvedad de confirmación indicada en su apartado. No se atribuye un commit nuevo inexistente.
+- [x] Cada integrante aparece como auditor y tiene un commit propio de revisión: Melani, `b4ac2d3`; Christian (ElChris496), `b1ee1ca`. Commits verificados con `git show --stat --oneline`. F12-02 conserva la salvedad de confirmación indicada en su apartado; esta marca acredita participación y commits, no elimina esa salvedad.
 
 ## 7. Resumen
 
