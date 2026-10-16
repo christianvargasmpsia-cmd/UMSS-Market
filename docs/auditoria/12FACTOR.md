@@ -57,7 +57,7 @@
 - **Stack detectado:** Java 21, Spring Boot 3.5.15, Maven, JPA/PostgreSQL, Ollama; Node.js con Newman y Playwright (agente CLI auxiliar). Evidencia: backend/umss-market-api/pom.xml:8,30,35,76; ai-testing-agent/package.json:8,28,30,34.
 - **Carpetas de código fuente:** `backend/umss-market-api/src/main/`, `ai-testing-agent/src/`; `poc/` y `demo/` son prototipos, no servicios desplegados. No se encontró frontend Angular versionado.
 - **Cómo se ejecuta (verificado):** README.md:504 y 505 documenta Maven; ai-testing-agent/package.json:9 define `npm run start:enhanced`. Arranque NO VERIFICABLE: `.\mvnw.cmd -v`, desde backend/umss-market-api, falló con `Cannot start maven from wrapper`. No se lanzó la aplicación contra la base configurada.
-- **Integrantes y qué revisó cada uno:** Análisis automático: Codex. Reparto 50/50 solicitado por el grupo: Abad Melani Rodriguez Gonzales → F12-01, F12-02 y F12-03; Christian Bernardo Vargas Sandoval → F12-04, F12-05 y F12-06. Asignación de revisión; realización y commits aún no acreditados.
+- **Integrantes y revisión:** Abad Melani Rodriguez Gonzales revisó F12-01, F12-02 y F12-03, registrando su aporte en el commit `b4ac2d3`. Christian Bernardo Vargas Sandoval tiene asignadas F12-04, F12-05 y F12-06, y cuenta con los commits `824eb0f` y `b5d5733` relacionados con las auditorías. Queda pendiente su confirmación final de revisión.
 
 ## 2. Plan y avance por oleadas
 
