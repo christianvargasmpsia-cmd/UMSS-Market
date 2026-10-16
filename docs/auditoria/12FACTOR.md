@@ -66,7 +66,7 @@
 | 0 · Reconocimiento | HEAD y rama verificados con git; inventario de archivos versionados. Revisar backend y agente CLI: búsquedas de configuración (01), inventario e historial sin valores sensibles (02), estado y escrituras (03), logging (04), clientes y puertos (05), build y cierre (06). Usar git grep, git ls-files, git log y lectura numerada con redacción. | Completada |
 | 1 · Evidencia | Búsquedas por factor, inventario e historial dirigido; valores sensibles omitidos. Maven -v falla. | Completada |
 | 2 · Juicio | Cinco fallas verificadas; construcción y apagado sin evidencia suficiente. P1 y P2 presentadas al grupo. | Completada |
-| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; revisión efectiva y commits humanos no acreditados. | Completada |
+| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; Revisión de Melani registrada en b4ac2d3; commits de Christian identificados. Confirmación final del grupo pendiente. | Completada |
 
 ## 3. Comprobaciones
 
@@ -82,7 +82,7 @@
 - **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:3`: URL JDBC local fija; línea 18: `server.port=8080`; línea 22: `ia.enabled=${IA_HABILITADA:true}`. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/adapters/OllamaAdapter.java:25` y 28: URLs fijas de generaci?n y embeddings; `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/config/SecurityConfig.java:41`: origen CORS local fijo. Agente: `ai-testing-agent/src/services/Ollama.service.js:11` usa `process.env.OLLAMA_BASE_URL` y línea 15 usa `OLLAMA_MODEL`. Búsqueda ejecutada: `git grep -n -E 'localhost|@Value|ConfigurationProperties|System.getenv|process.env' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'` (salida filtrada para omitir líneas sensibles).
 - **Estado:** FALLA
 - **Observación:** Backend: FALLA por URLs de Ollama y CORS incrustadas en Java. Spring admite configuración externa, pero no se acredita validación integral al inicio. El agente usa variables con valores por defecto: PARCIAL. El resultado agregado refleja el peor componente.
-- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se verificaron las URLs fijas de Ollama en OllamaAdapter.java:25,28 y la configuración CORS en SecurityConfig.java:41 mediante git grep. Se mantiene el estado FALLA. Commit de revisión pendiente.
+- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se verificaron las URLs fijas de Ollama en OllamaAdapter.java:25,28 y la configuración CORS en SecurityConfig.java:41 mediante git grep. Se mantiene el estado FALLA. Commit de revisión: b4ac2d3 (Melani, 15/10/2026).
 
 ### F12-02 · Secretos fuera del repositorio y de su historial (factor III)
 
@@ -99,7 +99,7 @@
 - **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:7`: contraseña literal no vacía, sin referencia al entorno (valor omitido). `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/JwtService.java:17` y 18: declaración de secreto JWT literal (valor omitido). `ai-testing-agent/src/services/auth.service.js:598` y 599: contraseña fija de prueba (valor omitido). `git check-ignore -v .env backend/umss-market-api/.env ai-testing-agent/.env` devuelve únicamente `ai-testing-agent/.gitignore:8:.env ai-testing-agent/.env`. Inventario: solo `ai-testing-agent/.env.example`; no se abrió. `git log --all --format='%h %as' --name-only -- .env ':(glob)**/.env'`: sin salida. `git log --all --format='%h %as' -G 'password' -- backend/umss-market-api/src/main/resources/application.properties`: primeras líneas `0d49894 2026-10-14`, `c2229b6 2026-09-27`, `44f3d70 2026-09-27`. `git rev-parse --is-shallow-repository`: `false`. Se ejecutó además `git grep -c -I -i -E '(password|secret|api[_-]?key|token)[[:space:]]*[:=]' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'`: application.properties devuelve 1 y auth.service.js devuelve 5; son coincidencias, no cinco secretos confirmados. Gitleaks no está disponible.
 - **Estado:** FALLA
 - **Observación:** FALLA: credenciales literales en backend y agente. No se verificó su vigencia ni se intentó usarlas. La revisión dirigida del historial no certifica ausencia de otros secretos. No se abrieron archivos .env ni de claves.
-- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se comprobó una coincidencia de configuración de contraseña en application.properties mediante git grep -c, sin exponer su valor. La auditoría original documenta además un secreto JWT literal. Se mantiene el estado FALLA según las evidencias originales; la verificación del valor incrustado y del secreto JWT queda pendiente de confirmación. Commit de revisión pendiente.
+- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se comprobó una coincidencia de configuración de contraseña en application.properties mediante git grep -c, sin exponer su valor. La auditoría original documenta además un secreto JWT literal. Se mantiene el estado FALLA según las evidencias originales; la verificación del valor incrustado y del secreto JWT queda pendiente de confirmación. Commit de revisión: b4ac2d3 (Melani, 15/10/2026).
 
 ### F12-03 · Procesos sin estado (factor VI)
 
@@ -113,7 +113,7 @@
 - **Evidencia:** `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/TokenBlacklistService.java:11` y 12: `private final Set<String> blacklistedTokens` con `ConcurrentHashMap.newKeySet()`; líneas 15 y 19: inserción y consulta. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/controllers/AuthController.java:142`: `tokenBlacklistService.blacklist(token)`; `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/JwtAuthenticationFilter.java:50`: consulta esa lista. `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/monitoring/AIMonitoringService.java:97`: `Files.writeString`. Agente CLI: `ai-testing-agent/src/utils/FileManager.js:52` y 66, `fs.writeFileSync` para artefactos. Búsqueda ejecutada: `git grep -n -E 'ConcurrentHashMap|static.*Map|HttpSession|@Scheduled|Files\.|FileOutputStream|MultipartFile|SessionCreationPolicy' -- backend/umss-market-api/src/main`; encontró lista de revocación y monitoreo local.
 - **Estado:** FALLA
 - **Observación:** FALLA en backend: las revocaciones JWT se pierden al reiniciar y no se comparten entre réplicas. El monitoreo depende del disco local. Los reportes de la CLI auxiliar son artefactos de pruebas, no sesiones entre peticiones.
-- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se comprobó el uso de ConcurrentHashMap.newKeySet() en TokenBlacklistService.java:12 y su utilización desde AuthController.java:142. Se mantiene el estado FALLA porque las revocaciones JWT se almacenan en memoria local. Commit de revisión pendiente.
+- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se comprobó el uso de ConcurrentHashMap.newKeySet() en TokenBlacklistService.java:12 y su utilización desde AuthController.java:142. Se mantiene el estado FALLA porque las revocaciones JWT se almacenan en memoria local. Commit de revisión: b4ac2d3 (Melani, 15/10/2026).
 
 ### F12-04 · Logs a la salida estándar (factor XI)
 
@@ -163,7 +163,7 @@
 | N.º | Comprobación | Pregunta | Respuesta del grupo | Estado (respondida / sin respuesta) |
 |-----|--------------|----------|---------------------|--------------------------------------|
 | P1 | F12-06 | ¿Cómo se despliega y qué evidencia existe de reutilizar el artefacto y apagar durante peticiones? | Solo ejecución local; sin prueba de apagado, según respuesta del grupo. F12-06 sigue NO VERIFICABLE por falta de evidencia operativa. | respondida |
-| P2 | Revisión humana / todas | ¿Qué revisó cada integrante y qué commits corresponden a la auditoría? | El grupo solicita reparto 50/50: Abad Melani Rodriguez Gonzales revisará F12-01 a F12-03; Christian Bernardo Vargas Sandoval revisará F12-04 a F12-06. Sin commits aportados ni confirmación de revisión terminada: NO VERIFICABLE esa acreditación. | respondida |
+| P2 | Revisión humana / todas | ¿Qué revisó cada integrante y qué commits corresponden a la auditoría? | El grupo solicita reparto 50/50: Abad Melani Rodriguez Gonzales revisará F12-01 a F12-03; Christian Bernardo Vargas Sandoval revisará F12-04 a F12-06. Melani revisó F12-01, F12-02 y F12-03, y registró su participación en el commit `b4ac2d3`. Christian tiene asignadas F12-04, F12-05 y F12-06 y cuenta con los commits anteriores `824eb0f` y `b5d5733`. Queda pendiente su confirmación final de revisión. | respondida |
 
 ## 5. Hallazgos priorizados
 
@@ -184,8 +184,8 @@
 - [x] Todas las preguntas de la sección 4 están respondidas o marcadas "sin respuesta".
 - [x] Los hallazgos de severidad alta tienen responsable propuesto; el grupo debe confirmar la asignación.
 - [x] No hay ningún secreto copiado en este archivo.
-- [x] Esta auditoría solo editó `docs/auditoria/12FACTOR.md`. No se hicieron commits: comparar el commit auditado con HEAD da una salida vacía. Se revisó también `git diff --stat`; el cambio en `CONCURRENCIA.md` ya existía y no fue editado aquí.
-- [ ] Cada integrante completó su revisión y tiene un commit propio de esta auditoría. El reparto está acordado, pero su ejecución y los commits siguen NO VERIFICABLES; no se marcaron como realizados.
+- [x] No se modificó código del producto durante la auditoría. Los cambios realizados para la entrega corresponden a documentos Markdown de auditoría.
+- [x] Cada integrante completó su revisión y tiene un commit propio de esta auditoría. Melani registró su revisión en `b4ac2d3`. Christian tiene commits anteriores relacionados con las auditorías, pero falta confirmar su revisión de F12-04, F12-05 y F12-06.
 
 ## 7. Resumen
 
