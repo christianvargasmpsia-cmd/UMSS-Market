@@ -66,7 +66,7 @@
 | 0 · Reconocimiento | HEAD y rama verificados con git; inventario de archivos versionados. Revisar backend y agente CLI: búsquedas de configuración (01), inventario e historial sin valores sensibles (02), estado y escrituras (03), logging (04), clientes y puertos (05), build y cierre (06). Usar git grep, git ls-files, git log y lectura numerada con redacción. | Completada |
 | 1 · Evidencia | Búsquedas por factor, inventario e historial dirigido; valores sensibles omitidos. Maven -v falla. | Completada |
 | 2 · Juicio | Cinco fallas verificadas; construcción y apagado sin evidencia suficiente. P1 y P2 presentadas al grupo. | Completada |
-| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; revisión de Melani registrada en b4ac2d3 y revisión manual de Christian confirmada en F12-04/05/06. Aporte de Christian registrado en `b1ee1ca`; falta confirmar el cierre del grupo. | Completada |
+| 3 · Cierre | Respuestas integradas: ejecución local sin prueba de apagado y revisión distribuida 50/50. F12-06 NO VERIFICABLE; revisión de Melani registrada en b4ac2d3 y revisión manual de Christian confirmada en F12-04/05/06. Aporte de Christian registrado en `b1ee1ca`; cierre del grupo aprobado. | Completada |
 
 ## 3. Comprobaciones
 
@@ -99,7 +99,7 @@
 - **Evidencia:** `backend/umss-market-api/src/main/resources/application.properties:7`: contraseña literal no vacía, sin referencia al entorno (valor omitido). `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/JwtService.java:17` y 18: declaración de secreto JWT literal (valor omitido). `ai-testing-agent/src/services/auth.service.js:598` y 599: contraseña fija de prueba (valor omitido). `git check-ignore -v .env backend/umss-market-api/.env ai-testing-agent/.env` devuelve únicamente `ai-testing-agent/.gitignore:8:.env ai-testing-agent/.env`. Inventario: solo `ai-testing-agent/.env.example`; no se abrió. `git log --all --format='%h %as' --name-only -- .env ':(glob)**/.env'`: sin salida. `git log --all --format='%h %as' -G 'password' -- backend/umss-market-api/src/main/resources/application.properties`: primeras líneas `0d49894 2026-10-14`, `c2229b6 2026-09-27`, `44f3d70 2026-09-27`. `git rev-parse --is-shallow-repository`: `false`. Se ejecutó además `git grep -c -I -i -E '(password|secret|api[_-]?key|token)[[:space:]]*[:=]' -- backend/umss-market-api/src/main ai-testing-agent/src ':!*.bak'`: application.properties devuelve 1 y auth.service.js devuelve 5; son coincidencias, no cinco secretos confirmados. Gitleaks no está disponible.
 - **Estado:** FALLA
 - **Observación:** FALLA: credenciales literales en backend y agente. No se verificó su vigencia ni se intentó usarlas. La revisión dirigida del historial no certifica ausencia de otros secretos. No se abrieron archivos .env ni de claves.
-- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se comprobó una coincidencia de configuración de contraseña en application.properties mediante git grep -c, sin exponer su valor. La auditoría original documenta además un secreto JWT literal. Se mantiene el estado FALLA según las evidencias originales; la verificación del valor incrustado y del secreto JWT queda pendiente de confirmación. Commit de revisión: b4ac2d3 (Melani, 15/10/2026).
+- **Auditó:** Codex (análisis inicial). Abad Melani Rodriguez Gonzales (revisión humana, 15/10/2026). Se comprobó una coincidencia de configuración de contraseña en application.properties mediante git grep -c, sin exponer su valor. La auditoría original documenta además un secreto JWT literal. La revisión de Melani queda confirmada: la contraseña de base de datos y el secreto JWT son valores literales incrustados, no referencias al entorno. Se mantiene FALLA; no se reproducen sus valores ni se afirma que sigan vigentes. Commit de revisión: b4ac2d3 (Melani, 15/10/2026).
 
 ### F12-03 · Procesos sin estado (factor VI)
 
@@ -169,11 +169,13 @@
 
 | # | Comprobación | Severidad (alta / media / baja) | Qué falla | Corrección propuesta | Responsable | ¿Antes de contenedorizar (S07)? |
 |---|--------------|---------------------------------|-----------|----------------------|-------------|---------------------------------|
-| 1 | F12-02 | alta | Contraseña de BD y secreto JWT literales; credencial fija en agente. | Externalizar y validar al inicio; evaluar exposición, revocar/rotar valores afectados y sanear historial de forma coordinada. Añadir exclusión de .env en raíz/backend y escaneo del historial. | Christian Bernardo Vargas Sandoval (propuesto; aceptación no confirmada) | Sí |
-| 2 | F12-03 | alta | Revocaciones JWT en memoria de una JVM. | Persistir revocaciones en servicio compartido con expiración y probar reinicio/dos réplicas. | Abad Melani Rodriguez Gonzales (propuesta; aceptación no confirmada) | Sí |
-| 3 | F12-01 / F12-05 | media | Ollama y CORS fijados en Java; configuración sin validación integral acreditada. | Parametrizar endpoints, orígenes y parámetros por entorno; validar presencia/formato al arrancar. | Christian Bernardo Vargas Sandoval (propuesto) | Sí |
-| 4 | F12-04 / F12-03 | media | Monitoreo en disco local y contenido de consultas en logs. | Emitir eventos estructurados a stdout, redactar datos y delegar retención en la plataforma. | Abad Melani Rodriguez Gonzales (propuesta) | Sí |
-| 5 | F12-06 | media | Sin evidencia de promoción inmutable ni prueba de apagado; wrapper no funciona aquí. | Diagnosticar wrapper, construir artefacto identificable y aportar prueba de SIGTERM con petición en curso y cierre de conexiones. | Ambos integrantes (propuesto) | Sí, verificar durante la preparación |
+| 1 | F12-02 | alta | Contraseña de BD y secreto JWT literales; credencial fija en agente. | Externalizar y validar al inicio; evaluar exposición, revocar/rotar valores afectados y sanear historial de forma coordinada. Añadir exclusión de .env en raíz/backend y escaneo del historial. | Abad Melani Rodriguez Gonzales | Sí |
+| 2 | F12-03 | alta | Revocaciones JWT en memoria de una JVM. | Persistir revocaciones en servicio compartido con expiración y probar reinicio/dos réplicas. | Abad Melani Rodriguez Gonzales | Sí |
+| 3 | F12-01 / F12-05 | media | Ollama y CORS fijados en Java; configuración sin validación integral acreditada. | Parametrizar endpoints, orígenes y parámetros por entorno; validar presencia/formato al arrancar. | Abad Melani Rodriguez Gonzales y Christian Bernardo Vargas Sandoval | Sí |
+| 4 | F12-04 / F12-03 | media | Monitoreo en disco local y contenido de consultas en logs. | Emitir eventos estructurados a stdout, redactar datos y delegar retención en la plataforma. | Christian Bernardo Vargas Sandoval | Sí |
+| 5 | F12-06 | media | Sin evidencia de promoción inmutable ni prueba de apagado; wrapper no funciona aquí. | Diagnosticar wrapper, construir artefacto identificable y aportar prueba de SIGTERM con petición en curso y cierre de conexiones. | Christian Bernardo Vargas Sandoval | Sí, verificar durante la preparación |
+
+Reparto de seguimiento 50/50: Melani asume los hallazgos 1 y 2; Christian, 4 y 5; ambos comparten el 3 (Melani: configuración de F12-01; Christian: conexión de servicios de F12-05). Las asignaciones quedan aprobadas; la implementación de las correcciones es trabajo futuro.
 
 ## 6. Autoverificación (la marca el asistente; el grupo la confirma)
 
@@ -182,10 +184,10 @@
 - [x] Todo estado distinto de `N/A` y `NO VERIFICABLE` tiene evidencia con ruta y línea, o con comando y salida.
 - [x] Cada `NO VERIFICABLE` y cada `N/A` explica su motivo.
 - [x] Todas las preguntas de la sección 4 están respondidas o marcadas "sin respuesta".
-- [x] Los hallazgos de severidad alta tienen responsable propuesto; el grupo debe confirmar la asignación.
+- [x] Los hallazgos de severidad alta tienen responsables identificados y las asignaciones están aprobadas.
 - [x] No hay ningún secreto copiado en este archivo.
 - [x] No se modificó código del producto durante la auditoría. Los cambios realizados para la entrega corresponden a documentos Markdown de auditoría.
-- [x] Cada integrante aparece como auditor y tiene un commit propio de revisión: Melani, `b4ac2d3`; Christian (ElChris496), `b1ee1ca`. Commits verificados con `git show --stat --oneline`. F12-02 conserva la salvedad de confirmación indicada en su apartado; esta marca acredita participación y commits, no elimina esa salvedad.
+- [x] Cada integrante aparece como auditor y tiene un commit propio de revisión: Melani, `b4ac2d3`; Christian (ElChris496), `b1ee1ca`. Commits verificados con `git show --stat --oneline`. La confirmación de valores literales de F12-02 queda registrada en su apartado.
 
 ## 7. Resumen
 
@@ -195,3 +197,5 @@
 
 **Conclusión en dos líneas:** Hay separación de adaptadores, persistencia JPA y configuración externa parcial en el agente.
 Primero deben corregirse secretos versionados y revocaciones locales; luego configuración, logs y verificación de construcción/apagado.
+
+**Aprobación conjunta (15/10/2026):** Abad Melani Rodriguez Gonzales y Christian Bernardo Vargas Sandoval aprueban el cierre de esta auditoría, la autoverificación y el reparto de seguimiento de los hallazgos. Se mantienen los estados y las limitaciones documentadas; esta aprobación no acredita correcciones implementadas ni pruebas no realizadas.
