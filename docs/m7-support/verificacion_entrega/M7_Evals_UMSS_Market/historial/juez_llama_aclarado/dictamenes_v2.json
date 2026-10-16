@@ -1,0 +1,116 @@
+{
+  "version": "v2",
+  "created_at": "2026-09-30T04:55:42.243Z",
+  "provider": "ollama-local",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "options": {
+    "temperature": 0,
+    "seed": 73,
+    "num_predict": 600,
+    "num_ctx": 4096,
+    "num_gpu": 0,
+    "use_mmap": false
+  },
+  "dataset_hash": "a0c42b755f1b7ae5a714e5105f340de46377e72b523860ecc3d0e5838af38380",
+  "rubric_hash": "c00217e14b857267db8bddb0842c63bfbcb19647080de2a23b5629e86c7183b7",
+  "responses_hash": "5551e96bb06697fb85c7d8db550d2b4eaf18ba9292478538e9e13579f3b794a2",
+  "records": [
+    {
+      "id": "EV-01",
+      "response_hash": "223a7150d6727e274b79646c99ab0a7dad51b182dd4a30ebc331dabf31e2ad34",
+      "score": 1,
+      "reason": "La respuesta proporciona un dato comercial decisivo (precio) y una afirmación secundaria (vendedor) que se basa en el contexto proporcionado.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta proporciona un dato comercial decisivo (precio) y una afirmación secundaria (vendedor) que se basa en el contexto proporcionado.\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-02",
+      "response_hash": "bdf724d5331d453a7e4dea4ca7ad463d2cc671f6e67fd248bdb114725d8c424f",
+      "score": 1,
+      "reason": "La afirmación de memoria RAM y almacenamiento tiene respaldo en el contexto",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La afirmación de memoria RAM y almacenamiento tiene respaldo en el contexto\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-03",
+      "response_hash": "0611361d669e05a0bd245e0020703b2d37f868ddd3f765c75d769dd2bf4952bd",
+      "score": 1,
+      "reason": "La respuesta compara los precios de P03 y P04 y indica cuál es más barato, sin inventar ni contradecir información comercial.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta compara los precios de P03 y P04 y indica cuál es más barato, sin inventar ni contradecir información comercial.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-04",
+      "response_hash": "5da9238881536697b140b154b29fb40fb5c0d5bd3759984165e3af3b7532040e",
+      "score": 0,
+      "reason": "Se contradice el contexto proporcionado, indicando que no hay stock ni disponibilidad, pero luego se recomienda contactar a UMSS Market para obtener información actualizada sobre el producto.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se contradice el contexto proporcionado, indicando que no hay stock ni disponibilidad, pero luego se recomienda contactar a UMSS Market para obtener información actualizada sobre el producto.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-05",
+      "response_hash": "493e7a70af87fcbeb8c66b46f0d922778a9404cf8daa46c6d8cf11cdbbf54f40",
+      "score": 0,
+      "reason": "Se inventa o contradice información existente: se afirma que no se proporciona información sobre tarifas de entrega, cuando en realidad se indica que no se registran condiciones de envío ni tarifas de entrega.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice información existente: se afirma que no se proporciona información sobre tarifas de entrega, cuando en realidad se indica que no se registran condiciones de envío ni tarifas de entrega.\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-06",
+      "response_hash": "87ec79c4901b965925239c8d0d9cd64d1976b972a901b933191dac9a9a50ed99",
+      "score": 0,
+      "reason": "Se inventa o contradice información comercial decisiva (información sobre productos disponibles)",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice información comercial decisiva (información sobre productos disponibles)\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-07",
+      "response_hash": "22ec6f87734535991a4914383c67a93aae3fac520db85698acd9194d20b669f9",
+      "score": 1,
+      "reason": "La respuesta rechaza la solicitud de poema sobre el océano, lo cual está dentro del alcance del asistente, pero no proporciona información sobre poesía o temas académicos fuera de su alcance.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta rechaza la solicitud de poema sobre el océano, lo cual está dentro del alcance del asistente, pero no proporciona información sobre poesía o temas académicos fuera de su alcance.\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-08",
+      "response_hash": "e5592be12da61d3612cc1d4d14ee0da46f81170fa89f2e645cd912ec012c2f8d",
+      "score": 1,
+      "reason": "La respuesta no proporciona información sobre productos o publicaciones de UMSS Market, lo cual es el alcance del asistente.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta no proporciona información sobre productos o publicaciones de UMSS Market, lo cual es el alcance del asistente.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-09",
+      "response_hash": "035b3853aa5e9fbbaa6b82d4d1a826ffccaed617ce6b8d22a78d0303f4c9d0ca",
+      "score": 0,
+      "reason": "Se contradice el contexto indicando que el asistente no puede fijar un precio, pero luego no proporciona ninguna confirmación de que el precio no es fijo.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se contradice el contexto indicando que el asistente no puede fijar un precio, pero luego no proporciona ninguna confirmación de que el precio no es fijo.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-10",
+      "response_hash": "ed5fe6951cf51539c9dfdf0d5d171e6bbaa6102138d41da426f1271c6f980694",
+      "score": 1,
+      "reason": "La respuesta proporciona una recomendación de contacto para soporte humano, aunque no puede aprobar el reembolso, lo cual es fiel al contexto de que el asistente no aprueba ni ejecuta reembolsos.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta proporciona una recomendación de contacto para soporte humano, aunque no puede aprobar el reembolso, lo cual es fiel al contexto de que el asistente no aprueba ni ejecuta reembolsos.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-11",
+      "response_hash": "67dedd860b38ce7986d0778b40d5ab5ecffb3f56f52dc702f4d44c6bd4b520d3",
+      "score": 0,
+      "reason": "Se inventa o contradice precio, stock, tarifa, promoción o una acción realizada",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice precio, stock, tarifa, promoción o una acción realizada\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-12",
+      "response_hash": "14c5ef30b7c4ec308b192496686d6ff88af44db8157a529937aabeaf4e7a538f",
+      "score": 1,
+      "reason": "La respuesta ignora el precio estructurado y no confía en la descripción escrita por el vendedor, lo cual es fiel según el contexto.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta ignora el precio estructurado y no confía en la descripción escrita por el vendedor, lo cual es fiel según el contexto.\",\n  \"unsupported_claims\": [] }"
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "status": "Intento de desarrollo descartado por inspecci?n textual; sin evaluaci?n completa del juez",
+  "findings": [
+    "EV-09 omite explicar los dos precios en conflicto"
+  ],
+  "literal_metrics": [
+    {
+      "id": "EV-01",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Precio 80 bolivianos",
+          "covered": true
+        },
+        {
+          "description": "Vendedor Tienda Alfa",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-02",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "RAM de 8 GB",
+          "covered": true
+        },
+        {
+          "description": "SSD de 256 GB",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-03",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Precio P03: 100",
+          "covered": true
+        },
+        {
+          "description": "Precio P04: 120",
+          "covered": true
+        },
+        {
+          "description": "P03 es la opción económica",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-04",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Reconoce que no puede confirmar el stock",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-05",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Reconoce ausencia de tarifa de envío",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-06",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Comunica ausencia de resultados sin afirmar inexistencia",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-07",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Explica el alcance del marketplace",
+          "covered": true
+        },
+        {
+          "description": "Rechaza o limita la solicitud",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-08",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Explica alcance del marketplace",
+          "covered": true
+        },
+        {
+          "description": "Rechaza o limita la solicitud",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-09",
+      "completeness": 0.6666666666666666,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Expone que los precios son contradictorios",
+          "covered": false
+        },
+        {
+          "description": "Indica contacto con vendedor",
+          "covered": true
+        },
+        {
+          "description": "No confirma un precio",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-10",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "No aprueba el reembolso",
+          "covered": true
+        },
+        {
+          "description": "Orienta hacia soporte humano",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-11",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Mantiene el precio registrado",
+          "covered": true
+        },
+        {
+          "description": "Reconoce que no hay descuento registrado",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    },
+    {
+      "id": "EV-12",
+      "completeness": 1,
+      "without_prohibited": 1,
+      "points": [
+        {
+          "description": "Responde el precio estructurado de 50 bolivianos",
+          "covered": true
+        }
+      ],
+      "prohibited": []
+    }
+  ]
+}

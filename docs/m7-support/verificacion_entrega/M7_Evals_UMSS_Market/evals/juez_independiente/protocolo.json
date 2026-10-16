@@ -1,0 +1,15 @@
+{
+  "provider": "agente independiente de Codex",
+  "model": "GPT-6 (familia declarada; identificador exacto de ejecución no expuesto)",
+  "model_digest": null,
+  "options": {
+    "configuration": "Heredada de la sesión; parámetros de muestreo y digest no expuestos"
+  },
+  "model_identity_basis": "Las instrucciones dicen explícitamente que soy Codex, un agente basado en GPT-6. No exponen el identificador exacto del modelo que ejecuta esta evaluación; no lo infiero del nombre Codex ni de la lista de modelos disponibles.",
+  "created_at": "2026-09-30T22:07:01.118Z",
+  "authorization": "El usuario autorizó explícitamente un segundo agente como juez.",
+  "procedure": "Un agente nuevo, sin historial de conversación, recibió únicamente entrada.json: rúbrica y 36 registros mezclados sin versiones, puntos esperados, notas humanas ni dictámenes anteriores. Emitió todas las notas en una única revisión; el agente principal solo validó estructura e integridad y las vinculó mediante mapa.json. No se solicitó lograr PASA ni se editaron sus notas.",
+  "limitations": "El agente principal preparó los prompts y seleccionó el juez después de observar errores del juez local. Es una corrección del instrumento de medida posterior a la observación. Se reevaluaron las tres versiones con el mismo juez y rúbrica; se preservan los resultados anteriores. El orden mezclado no impide que un juez infiera patrones entre respuestas similares.",
+  "input_hash": "5e888cc994d852e4f0c69eafbc1dc81198b7df4d58a1e673447ba2e6ac3abe55",
+  "output_hash": "b4eb23e575e86ebaf5cee79b77f35f29726c5874cb077b9608f9f834c622d23d"
+}

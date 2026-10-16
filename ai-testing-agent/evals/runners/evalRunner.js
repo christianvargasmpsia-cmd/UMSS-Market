@@ -668,7 +668,7 @@ function validateDataset(
    *
    * No modificamos todavía esta parte porque
    * primero debemos resolver la discrepancia
-   * entre los 12 casos de la consigna y los
+   * entre los 15 casos de la consigna y los
    * 15 casos actualmente implementados.
    */
 

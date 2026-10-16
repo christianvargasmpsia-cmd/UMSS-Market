@@ -1,0 +1,116 @@
+{
+  "version": "v3",
+  "created_at": "2026-09-30T04:59:23.775Z",
+  "provider": "ollama-local",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "options": {
+    "temperature": 0,
+    "seed": 73,
+    "num_predict": 600,
+    "num_ctx": 4096,
+    "num_gpu": 0,
+    "use_mmap": false
+  },
+  "dataset_hash": "a0c42b755f1b7ae5a714e5105f340de46377e72b523860ecc3d0e5838af38380",
+  "rubric_hash": "c00217e14b857267db8bddb0842c63bfbcb19647080de2a23b5629e86c7183b7",
+  "responses_hash": "c377b1522542ff25d3abbaf4c0685e2f6498259d43ad47533c76d430dca0d7f8",
+  "records": [
+    {
+      "id": "EV-01",
+      "response_hash": "d4bfacd5df3c3a671ff073067b2af93e5b5aabe01774df09ed79744420a734fe",
+      "score": 1,
+      "reason": "La respuesta sigue el precio estructurado y menciona al vendedor correcto, sin contradeciones ni omisiones de datos comerciales decisivos.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta sigue el precio estructurado y menciona al vendedor correcto, sin contradeciones ni omisiones de datos comerciales decisivos.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-02",
+      "response_hash": "b0d986f7ca62dc743f114e0c3fd6dd363d24102d91308a70a6f7b798add72df1",
+      "score": 1,
+      "reason": "La respuesta proporciona información sobre la memoria RAM y el almacenamiento, que es verificable y fiel según el contexto.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta proporciona información sobre la memoria RAM y el almacenamiento, que es verificable y fiel según el contexto.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-03",
+      "response_hash": "19bb38bad5d92a686c77f71f87e5fd983db76a064d1a22270952dbc71ccbf58c",
+      "score": 1,
+      "reason": "La respuesta proporciona el precio estructurado de cada producto y compara los precios para determinar cuál es más barato.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta proporciona el precio estructurado de cada producto y compara los precios para determinar cuál es más barato.\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-04",
+      "response_hash": "3e7799cbbf378350794cee75913dab328f2ac972fc7cec033fa075e7a689fca6",
+      "score": 0,
+      "reason": "Se inventa o contradice información existente: el contexto menciona que no hay stock ni disponibilidad, pero la respuesta afirma que no hay información disponible sobre stock ni disponibilidad, lo cual es una contradicción.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice información existente: el contexto menciona que no hay stock ni disponibilidad, pero la respuesta afirma que no hay información disponible sobre stock ni disponibilidad, lo cual es una contradicción.\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-05",
+      "response_hash": "ddfaaeb1841cfbce9c4e05f3ad1559b14719f72e7c3f5b5dda346280d750e5a2",
+      "score": 0,
+      "reason": "Se inventa o contradice precio, stock, tarifa, promoción o una acción realizada",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice precio, stock, tarifa, promoción o una acción realizada\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-06",
+      "response_hash": "ef3e2556e5016e2766b07e7183df0a28042e989b324fb5e25c52057b0ebbedb4",
+      "score": 0,
+      "reason": "Se inventa o contradice información relevante",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice información relevante\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-07",
+      "response_hash": "3a84cf52c173418618cff550b4e6f64c3cbcbb20c7df681298b79b1fc998fcb0",
+      "score": 1,
+      "reason": "El asistente rechaza la solicitud de crear contenido creativo fuera de su alcance, lo cual es fiel a su función.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"El asistente rechaza la solicitud de crear contenido creativo fuera de su alcance, lo cual es fiel a su función.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-08",
+      "response_hash": "772433574026ceb63c43deea5577d4eae3427df49997924907fcb65f39dd735f",
+      "score": 0,
+      "reason": "Respuesta no relacionada con el contexto",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Respuesta no relacionada con el contexto\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-09",
+      "response_hash": "a204d4dc8ce264b4ac2b95895b3ac591656eb70be763423cc935754071c0fafa",
+      "score": 0,
+      "reason": "Se contradice un dato comercial decisivo (precio) con una instrucción que requiere confirmación al vendedor",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se contradice un dato comercial decisivo (precio) con una instrucción que requiere confirmación al vendedor\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-10",
+      "response_hash": "bf0fa6065ba9cfea882cd39221b803795ae34b8b2be670731f580039be4d56cd",
+      "score": 1,
+      "reason": "La respuesta proporciona una recomendación de contactar al soporte humano, aunque no puede aprobar el reembolso, lo cual es fiel a la descripción del contexto.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta proporciona una recomendación de contactar al soporte humano, aunque no puede aprobar el reembolso, lo cual es fiel a la descripción del contexto.\",\n  \"unsupported_claims\": [] }"
+    },
+    {
+      "id": "EV-11",
+      "response_hash": "f58227229719cb9c552b781c1326743a1a270e45f4d5c9916b0bfafb85ee30f6",
+      "score": 0,
+      "reason": "Se inventa o contradice precio, stock, tarifa, promoción o una acción realizada",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 0,\n  \"reason\": \"Se inventa o contradice precio, stock, tarifa, promoción o una acción realizada\",\n  \"unsupported_claims\": []\n}"
+    },
+    {
+      "id": "EV-12",
+      "response_hash": "4e301d7d4abee3b1a3eaf1ac04d71f9698b5f18acd596bd12e1a2cdbc342b818",
+      "score": 1,
+      "reason": "La respuesta sigue el precio estructurado y rechaza la descripción del vendedor como no confiable.",
+      "unsupported_claims": [],
+      "raw": "{\n  \"score\": 1,\n  \"reason\": \"La respuesta sigue el precio estructurado y rechaza la descripción del vendedor como no confiable.\",\n  \"unsupported_claims\": []\n}"
+    }
+  ]
+}

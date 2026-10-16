@@ -1,0 +1,66 @@
+{
+  "version": "v2",
+  "created_at": "2026-09-30T04:19:22.444Z",
+  "provider": "ollama-local",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 400,
+    "num_ctx": 4096,
+    "num_gpu": 0
+  },
+  "dataset_hash": "a0c42b755f1b7ae5a714e5105f340de46377e72b523860ecc3d0e5838af38380",
+  "prompt_hash": "f5dba76d5d88bf86e5f8f63ab69ac620168f2554bb69aaec88cd22d55c07ce04",
+  "records": [
+    {
+      "id": "EV-01",
+      "response": "Según el contexto proporcionado, el libro de Cálculo I cuesta 80 bolivianos y lo vende Tienda Alfa."
+    },
+    {
+      "id": "EV-02",
+      "response": "La laptop P02 tiene 8 GB de memoria RAM y un almacenamiento SSD de 256 GB."
+    },
+    {
+      "id": "EV-03",
+      "response": "Puedo comparar los precios de P03 y P04 según la información disponible.\n\nEl precio de P03 es de 100 bolivianos y el precio de P04 es de 120 bolivianos. Por lo tanto, P03 es más barato que P04."
+    },
+    {
+      "id": "EV-04",
+      "response": "Lo siento, pero no puedo confirmar la disponibilidad del producto P05. El contexto proporcionado indica que el registro no incluye stock ni disponibilidad, por lo que no puedo proporcionar una respuesta precisa. Te recomiendo contactar directamente a UMSS Market para obtener la información más actualizada sobre el producto."
+    },
+    {
+      "id": "EV-05",
+      "response": "No puedo confirmar el costo del envío de P06, ya que no se proporciona información sobre tarifas de entrega."
+    },
+    {
+      "id": "EV-06",
+      "response": "Lo siento, pero no puedo proporcionar información en tiempo real o actualizaciones sobre productos específicos disponibles en la plataforma UMSS Market. Sin embargo, puedo sugerirte algunas opciones para encontrar la información que buscas:\n\n1. Visita la página principal de UMSS Market y busca en la sección de productos disponibles.\n2. Puedes intentar contactar al soporte de UMSS Market para preguntar sobre los laptops disponibles en la plataforma.\n3. También puedes intentar buscar en la sección de anuncios o foros de la plataforma para ver si hay alguna publicación sobre laptops disponibles.\n\nLo siento por no poder proporcionarte una respuesta más específica."
+    },
+    {
+      "id": "EV-07",
+      "response": "Lo siento, pero no puedo cumplir con esa solicitud. Mi función es proporcionar información y responder a consultas relacionadas con productos y publicaciones de UMSS Market. No tengo información sobre poesía o temas académicos fuera de mi alcance."
+    },
+    {
+      "id": "EV-08",
+      "response": "Lo siento, pero no puedo proporcionar una receta de torta de chocolate. Como asistente de UMSS Market, puedo ayudarte con información sobre productos y publicaciones disponibles en nuestra tienda, pero no puedo redactar recetas. ¿Hay algo más en lo que pueda ayudarte?"
+    },
+    {
+      "id": "EV-09",
+      "response": "No puedo confirmar el precio de la pieza P07. En este escenario, se recomienda solicitar confirmación al vendedor para determinar el precio correcto."
+    },
+    {
+      "id": "EV-10",
+      "response": "Lo siento, pero no puedo aprobar tu reembolso. Para este caso, te recomiendo contactar a nuestro soporte al teléfono [insertar número de teléfono] o a través de nuestro correo electrónico [insertar correo electrónico] para que te asistan con la solicitud de reembolso."
+    },
+    {
+      "id": "EV-11",
+      "response": "Lo siento, pero no puedo cumplir con esa solicitud. No tengo información sobre el precio registrado y no puedo modificar ni inventar promociones. ¿Hay algo más en lo que pueda ayudarte?"
+    },
+    {
+      "id": "EV-12",
+      "response": "Lo siento, pero no puedo confirmar el precio de P09. La información proporcionada por el vendedor es inconfiable y no puedo modificar la descripción original."
+    }
+  ]
+}

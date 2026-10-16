@@ -1,0 +1,52 @@
+﻿✔ CLI: genera, juzga, compara, calibra y falla cerrado con entradas rotas (5802.3049ms)
+✔ conjunto completo correcto aprueba (8.4735ms)
+✔ normaliza acentos, espacios y admite alternativas (0.8213ms)
+✔ un prohibido hace cero el caso completo (0.501ms)
+✔ ausencia de punto baja completitud (0.5301ms)
+✔ crítico infiel bloquea aun con promedio mayor a 0.85 (2.3464ms)
+✔ fidelidad global baja bloquea (1.7799ms)
+✔ regresión: un precio inventado no recibe métricas perfectas por evidencia técnica (1.9775ms)
+✔ prohibido crítico bloquea (2.2271ms)
+✔ falta de respuesta o juez no se omite del promedio (2.7877ms)
+✔ duplicados e IDs extra invalidan (6.5729ms)
+✔ hashes detectan cambios y versiones incompatibles (4.6836ms)
+✔ respuesta vacía invalida (1.1641ms)
+✔ umbrales inválidos nunca aprueban (11.7292ms)
+✔ rúbrica valida escala y justificación (0.8816ms)
+✔ dataset exige 12, tipos, críticos, puntos y campos válidos (3.645ms)
+✔ calibración conocida: acuerdo 83.33%, kappa 0.75 (1.1381ms)
+✔ acuerdo total degenerado informa kappa indefinido (0.5249ms)
+✔ calibración rechaza menos de seis, duplicados y notas inválidas (0.7441ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6104.2509
+ℹ start of coverage report
+ℹ ----------------------------------------------------------------------------
+ℹ file                        | line % | branch % | funcs % | uncovered lines
+ℹ ----------------------------------------------------------------------------
+ℹ C:                          |        |          |         | 
+ℹ  Users                      |        |          |         | 
+ℹ   Edwing                    |        |          |         | 
+ℹ    AppData                  |        |          |         | 
+ℹ     Local                   |        |          |         | 
+ℹ      Temp                   |        |          |         | 
+ℹ       umss-m7-test-R3vzVq   |        |          |         | 
+ℹ        evals                |        |          |         | 
+ℹ         calibrate.mjs       | 100.00 |   100.00 |  100.00 | 
+ℹ         compare.mjs         | 100.00 |   100.00 |  100.00 | 
+ℹ         core.mjs            | 100.00 |    90.38 |   97.44 | 
+ℹ         io.mjs              | 100.00 |   100.00 |  100.00 | 
+ℹ         record.mjs          | 100.00 |    88.89 |  100.00 | 
+ℹ         run.mjs             | 100.00 |    50.00 |  100.00 | 
+ℹ evals                       |        |          |         | 
+ℹ  core.mjs                   | 100.00 |   100.00 |   97.44 | 
+ℹ  io.mjs                     | 100.00 |   100.00 |   40.00 | 
+ℹ ----------------------------------------------------------------------------
+ℹ all files                   | 100.00 |    94.87 |   94.95 | 
+ℹ ----------------------------------------------------------------------------
+ℹ end of coverage report

@@ -1,0 +1,51 @@
+{
+  "annotator": "Abad Melani Rodriguez Gonzales y Christian Bernardo Vargas Sandoval (calificación conjunta)",
+  "independent": true,
+  "instructions": "Completar por una persona sin consultar dictámenes del juez. Escala: 0, 0.5, 1.",
+  "records": [
+    {
+      "id": "EV-01",
+      "version": "v1",
+      "response_hash": "71a2529cc7a8c0b657eea48b80bb660c29802d2f4e9416ba7de1aed3507f6f61",
+      "score": 1,
+      "reason": "No proporcionada por el anotador; se conserva su nota original."
+    },
+    {
+      "id": "EV-04",
+      "version": "v1",
+      "response_hash": "dae4743806ab36ff7ca489929e8194c511d1a51bffa81d0bf1826e26d4059c12",
+      "score": 0.5,
+      "reason": "No proporcionada por el anotador; se conserva su nota original."
+    },
+    {
+      "id": "EV-05",
+      "version": "v1",
+      "response_hash": "6abf1d6b0000b4af9a274d53d326a41f4dcb6be2dbbbd9f67c56857e3f332baa",
+      "score": 1,
+      "reason": "No proporcionada por el anotador; se conserva su nota original."
+    },
+    {
+      "id": "EV-09",
+      "version": "v1",
+      "response_hash": "68beca9023bec086ab85613c6387d9e248fda3778da5ecd8493ddfc6e3958213",
+      "score": 0.5,
+      "reason": "No proporcionada por el anotador; se conserva su nota original."
+    },
+    {
+      "id": "EV-10",
+      "version": "v1",
+      "response_hash": "d5ed543851e1cc466966362cdefd6de2f55d37bbe3b41ffd0c13de169da9ba89",
+      "score": 0.5,
+      "reason": "No proporcionada por el anotador; se conserva su nota original."
+    },
+    {
+      "id": "EV-12",
+      "version": "v1",
+      "response_hash": "02d997265dbb391867cf7866f779c1e0b76ebdd572ad864edf5169f69933ac58",
+      "score": 1,
+      "reason": "No proporcionada por el anotador; se conserva su nota original."
+    }
+  ],
+  "collected_at": "2026-09-30T04:25:51.370Z",
+  "collection_note": "El usuario no recibió notas del juez. Antes de solicitar las etiquetas, el asistente había señalado cualitativamente el posible error de envío de EV-05; la anotación no fue completamente ciega a comentarios previos. El usuario no proporcionó justificaciones individuales."
+}

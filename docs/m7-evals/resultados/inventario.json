@@ -1,0 +1,254 @@
+[
+  {
+    "path": "dataset/golden.json",
+    "purpose": "12 preguntas y contextos ficticios congelados; puntos clave, alternativas, prohibidos, tipos, criticidad y motivos de selección."
+  },
+  {
+    "path": "evals/calibrate.mjs",
+    "purpose": "Compara etiquetas humanas con el juez sobre las mismas respuestas y calcula acuerdo y kappa."
+  },
+  {
+    "path": "evals/calificacion_humana.json",
+    "purpose": "Seis notas reales del usuario, identificadas por caso, versión y hash; registra que no proporcionó justificaciones individuales."
+  },
+  {
+    "path": "evals/cli.test.mjs",
+    "purpose": "Prueba integral de comandos con servidor local ficticio y archivos temporales; sus respuestas son solo datos de test."
+  },
+  {
+    "path": "evals/compare.mjs",
+    "purpose": "Verifica que solo varíe el prompt del generador y recalcula la comparación de las tres versiones."
+  },
+  {
+    "path": "evals/config.json",
+    "purpose": "Parámetros fijos de generación y juez; umbrales fijados antes de observar resultados y su justificación."
+  },
+  {
+    "path": "evals/core.mjs",
+    "purpose": "Validación, métricas, compuerta, integridad SHA-256, acuerdo y kappa."
+  },
+  {
+    "path": "evals/core.test.mjs",
+    "purpose": "Pruebas unitarias de métricas, criticidad, integridad, errores y calibración."
+  },
+  {
+    "path": "evals/dictamenes/v1.json",
+    "purpose": "12 calificaciones del agente independiente para v1, justificación, ID ciego y hashes; sin edición de sus notas."
+  },
+  {
+    "path": "evals/dictamenes/v2.json",
+    "purpose": "12 calificaciones del agente independiente para v2, justificación, ID ciego y hashes; sin edición de sus notas."
+  },
+  {
+    "path": "evals/dictamenes/v3.json",
+    "purpose": "12 calificaciones del agente independiente para v3, justificación, ID ciego y hashes; sin edición de sus notas."
+  },
+  {
+    "path": "evals/io.mjs",
+    "purpose": "Lectura y escritura de archivos relativas a la raíz del paquete; grabaciones sin sobrescritura."
+  },
+  {
+    "path": "evals/juez_independiente/dictamenes.json",
+    "purpose": "Salida íntegra del agente independiente con las 36 notas y su identidad declarada."
+  },
+  {
+    "path": "evals/juez_independiente/entrada.json",
+    "purpose": "Rúbrica y 36 registros mezclados que recibió el agente, sin versiones ni etiquetas humanas."
+  },
+  {
+    "path": "evals/juez_independiente/mapa.json",
+    "purpose": "Correspondencia de IDs ciegos con caso, versión y hash; no fue mostrada al juez."
+  },
+  {
+    "path": "evals/juez_independiente/protocolo.json",
+    "purpose": "Autorización, identidad del juez, límites de identificación, procedimiento y hashes de entrada/salida."
+  },
+  {
+    "path": "evals/record.mjs",
+    "purpose": "Llamadas reales a Ollama para generar respuestas o registrar dictámenes del juez. Solo preparación."
+  },
+  {
+    "path": "evals/rubrica.txt",
+    "purpose": "Instrucciones completas del juez, escala 0/0.5/1 y defensa contra instrucciones insertadas en los datos."
+  },
+  {
+    "path": "evals/run.mjs",
+    "purpose": "Evaluación offline de una versión; muestra métricas y devuelve 0 o 1."
+  },
+  {
+    "path": "evidencia/compuerta_v3.png",
+    "purpose": "Captura visual de la salida real y el código observado del proceso, sin simular una consola."
+  },
+  {
+    "path": "evidencia/ejecucion_v3.json",
+    "purpose": "Comando, salida textual, código del proceso real, fecha y duración de la evaluación de v3."
+  },
+  {
+    "path": "evidencia/tests.txt",
+    "purpose": "Salida real de las pruebas y cobertura del evaluador."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/calibracion.json",
+    "purpose": "Antecedente del juez local con rúbrica aclarada, separado de los resultados finales."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/comparacion.json",
+    "purpose": "Antecedente del juez local con rúbrica aclarada, separado de los resultados finales."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/dictamenes_v1.json",
+    "purpose": "Juicios locales de Llama con rúbrica aclarada, conservados íntegros antes del cambio de juez."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/dictamenes_v2.json",
+    "purpose": "Juicios locales de Llama con rúbrica aclarada, conservados íntegros antes del cambio de juez."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/dictamenes_v3.json",
+    "purpose": "Juicios locales de Llama con rúbrica aclarada, conservados íntegros antes del cambio de juez."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/resultado_v1.json",
+    "purpose": "Resultado previo con juez local; permite auditar por qué se revisó el instrumento de evaluación."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/resultado_v2.json",
+    "purpose": "Resultado previo con juez local; permite auditar por qué se revisó el instrumento de evaluación."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/resultado_v3.json",
+    "purpose": "Resultado previo con juez local; permite auditar por qué se revisó el instrumento de evaluación."
+  },
+  {
+    "path": "historial/juez_llama_aclarado/rubrica.txt",
+    "purpose": "Antecedente del juez local con rúbrica aclarada, separado de los resultados finales."
+  },
+  {
+    "path": "historial/juez_llama/calibracion.json",
+    "purpose": "Calibración inicial: 33.33% de acuerdo y kappa 0.20. No se mezcla con la calibración final."
+  },
+  {
+    "path": "historial/juez_llama/dictamenes_v1.json",
+    "purpose": "Dictámenes originales de Llama para v1 antes de aclarar la rúbrica."
+  },
+  {
+    "path": "historial/juez_llama/dictamenes_v2.json",
+    "purpose": "Dictámenes originales de Llama para v2 antes de aclarar la rúbrica."
+  },
+  {
+    "path": "historial/juez_llama/resultado_v1.json",
+    "purpose": "Evaluación inicial de v1 con el juez anterior; se conserva como antecedente, no como resultado final."
+  },
+  {
+    "path": "historial/juez_llama/rubrica.txt",
+    "purpose": "Rúbrica original del juez antes de aclarar los errores observados en la calibración."
+  },
+  {
+    "path": "historial/v3_intento1/prompt.txt",
+    "purpose": "Primer prompt de desarrollo de v3, conservado para transparencia."
+  },
+  {
+    "path": "historial/v3_intento1/respuestas.json",
+    "purpose": "12 respuestas reales del primer intento de v3; no se sobrescribieron."
+  },
+  {
+    "path": "historial/v3_intento1/revision.json",
+    "purpose": "Errores detectados por inspección y métricas literales del intento descartado. No afirma una evaluación completa del juez."
+  },
+  {
+    "path": "historial/v3_intento2/prompt.txt",
+    "purpose": "Prompt del intento de desarrollo 2 de v3, conservado para trazabilidad."
+  },
+  {
+    "path": "historial/v3_intento2/respuestas.json",
+    "purpose": "Respuestas reales del intento 2, descartado antes de una evaluación completa del juez."
+  },
+  {
+    "path": "historial/v3_intento2/revision.json",
+    "purpose": "Errores observados y métricas literales del intento 2; no es un reporte de compuerta completo."
+  },
+  {
+    "path": "historial/v3_intento3/prompt.txt",
+    "purpose": "Prompt del intento de desarrollo 3 de v3, conservado para trazabilidad."
+  },
+  {
+    "path": "historial/v3_intento3/respuestas.json",
+    "purpose": "Respuestas reales del intento 3, descartado antes de una evaluación completa del juez."
+  },
+  {
+    "path": "historial/v3_intento3/revision.json",
+    "purpose": "Errores observados y métricas literales del intento 3; no es un reporte de compuerta completo."
+  },
+  {
+    "path": "historial/v3_prueba_prompt/prueba.json",
+    "purpose": "Prueba parcial de desarrollo con prompt completo y respuestas reales; conserva los intentos de corrección y no se usa como conjunto de prueba independiente."
+  },
+  {
+    "path": "historial/v3_prueba_prompt/prueba2.json",
+    "purpose": "Prueba parcial de desarrollo con prompt completo y respuestas reales; conserva los intentos de corrección y no se usa como conjunto de prueba independiente."
+  },
+  {
+    "path": "historial/v3_prueba_prompt/prueba3.json",
+    "purpose": "Prueba parcial de desarrollo con prompt completo y respuestas reales; conserva los intentos de corrección y no se usa como conjunto de prueba independiente."
+  },
+  {
+    "path": "informe_evals.pdf",
+    "purpose": "Documento final con método, selección de casos, comparación, calibración, correcciones, inventario y defensa."
+  },
+  {
+    "path": "prompts/v1.txt",
+    "purpose": "Prompt íntegro del generador para v1; única variable del experimento."
+  },
+  {
+    "path": "prompts/v2.txt",
+    "purpose": "Prompt íntegro del generador para v2; única variable del experimento."
+  },
+  {
+    "path": "prompts/v3.txt",
+    "purpose": "Prompt íntegro del generador para v3; única variable del experimento."
+  },
+  {
+    "path": "README.md",
+    "purpose": "Requisitos, preparación, ejecución offline, limitaciones y comandos de verificación."
+  },
+  {
+    "path": "respuestas/v1.json",
+    "purpose": "12 respuestas reales de v1, modelo y digest, fecha, parámetros y hashes."
+  },
+  {
+    "path": "respuestas/v2.json",
+    "purpose": "12 respuestas reales de v2, modelo y digest, fecha, parámetros y hashes."
+  },
+  {
+    "path": "respuestas/v3.json",
+    "purpose": "12 respuestas reales de v3, modelo y digest, fecha, parámetros y hashes."
+  },
+  {
+    "path": "resultados/analisis.json",
+    "purpose": "Errores observados, diferencias exactas entre prompts y explicación de correcciones de v3."
+  },
+  {
+    "path": "resultados/calibracion.json",
+    "purpose": "Pares humano-juez, porcentaje de acuerdo, kappa y justificaciones."
+  },
+  {
+    "path": "resultados/comparacion.json",
+    "purpose": "Resultados completos de v1/v2/v3 recalculados con criterios idénticos."
+  },
+  {
+    "path": "resultados/inventario.json",
+    "purpose": "Descripción de cada archivo entregado; fuente del inventario del PDF."
+  },
+  {
+    "path": "resultados/v1.json",
+    "purpose": "Métricas por caso y globales de v1, umbrales y decisión de compuerta."
+  },
+  {
+    "path": "resultados/v2.json",
+    "purpose": "Métricas por caso y globales de v2, umbrales y decisión de compuerta."
+  },
+  {
+    "path": "resultados/v3.json",
+    "purpose": "Métricas por caso y globales de v3, umbrales y decisión de compuerta."
+  }
+]

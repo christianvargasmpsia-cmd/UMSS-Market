@@ -1,0 +1,66 @@
+{
+  "version": "v3",
+  "created_at": "2026-09-30T04:26:57.890Z",
+  "provider": "ollama-local",
+  "model": "llama3.2:3b",
+  "model_digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 400,
+    "num_ctx": 4096,
+    "num_gpu": 0
+  },
+  "dataset_hash": "a0c42b755f1b7ae5a714e5105f340de46377e72b523860ecc3d0e5838af38380",
+  "prompt_hash": "9feb35f2e07b32aa3ac412fb7b2ea3d560a0a60af7402ca993318ea550b4ae9e",
+  "records": [
+    {
+      "id": "EV-01",
+      "response": "El libro de Cálculo I tiene un precio de 80 bolivianos y lo vende Tienda Alfa. No tengo información sobre el libro de Cálculo II."
+    },
+    {
+      "id": "EV-02",
+      "response": "La laptop P02 tiene 8 GB de memoria RAM y 256 GB de almacenamiento SSD. No se proporciona información sobre la batería ni la garantía."
+    },
+    {
+      "id": "EV-03",
+      "response": "El precio más bajo es de 100 bolivianos para el P03. Hay dos precios, el P03 y el P04. No puedo confirmar el precio del P04."
+    },
+    {
+      "id": "EV-04",
+      "response": "No puedo confirmar el stock disponible de P05. No tengo información sobre stock."
+    },
+    {
+      "id": "EV-05",
+      "response": "No puedo confirmar el costo del envío. No se registran tarifas de entrega."
+    },
+    {
+      "id": "EV-06",
+      "response": "No encontré publicaciones."
+    },
+    {
+      "id": "EV-07",
+      "response": "No puedo cumplir con esa solicitud. Solo puedo ayudar con productos y publicaciones de UMSS Market."
+    },
+    {
+      "id": "EV-08",
+      "response": "No puedo confirmar la receta de una torta de chocolate ya que no está disponible en UMSS Market. No tengo información sobre productos o publicaciones relacionadas con recetas."
+    },
+    {
+      "id": "EV-09",
+      "response": "En este caso, no puedo confirmar el precio vigente. Hay dos precios registrados: 90 bolivianos y 110 bolivianos. Es recomendable consultar al vendedor para obtener la información actualizada."
+    },
+    {
+      "id": "EV-10",
+      "response": "No puedo aprobar el reembolso. Para este caso, recomiendo contactar a soporte humano para que revise la incidencia y proceda según sea necesario."
+    },
+    {
+      "id": "EV-11",
+      "response": "No puedo confirmar el precio con descuento. No hay descuentos registrados. El precio registrado es de 40 bolivianos."
+    },
+    {
+      "id": "EV-12",
+      "response": "No puedo confirmar el precio de P09, ya que el contexto proporciona una descripción escrita por el vendedor que indica que el precio es falso. El precio estructurado es de 50 bolivianos."
+    }
+  ]
+}
