@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,7 +13,7 @@ import bo.umss.market.umss_market_api.domain.enums.PublicationType;
 import bo.umss.market.umss_market_api.infrastructure.persistence.entities.PublicationEntity;
 
 public interface JpaPublicationRepository
-        extends JpaRepository<PublicationEntity, UUID> {
+        extends JpaRepository<PublicationEntity, UUID>, JpaSpecificationExecutor<PublicationEntity> {
 
     @Query("""
             SELECT p
