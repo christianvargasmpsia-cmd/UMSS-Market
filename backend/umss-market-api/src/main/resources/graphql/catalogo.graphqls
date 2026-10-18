@@ -1,0 +1,48 @@
+"Catálogo público de UMSS Market (solo lectura). Las categorías pertenecen a las tiendas."
+type Query {
+  catalogo(filtro: FiltroCatalogo, pagina: Int = 1, limite: Int = 10): PaginaProductos!
+  producto(id: ID!): Producto
+  tiendas(categoria: String, pagina: Int = 1, limite: Int = 10): PaginaTiendas!
+  categorias: [String!]!
+}
+
+enum TipoPublicacion { PRODUCTO SERVICIO }
+input FiltroCatalogo {
+  texto: String
+  tipo: TipoPublicacion
+  precioMin: String
+  precioMax: String
+  tiendaId: ID
+  categoria: String
+  disponible: Boolean
+}
+type Producto {
+  id: ID!
+  nombre: String!
+  descripcion: String
+  precio: String!
+  tipo: TipoPublicacion!
+  stock: Int
+  disponible: Boolean!
+  tienda: Tienda
+}
+type Tienda {
+  id: ID!
+  nombre: String!
+  descripcion: String
+  categoria: String
+}
+type PaginaProductos {
+  items: [Producto!]!
+  total: Int!
+  pagina: Int!
+  limite: Int!
+  paginas: Int!
+}
+type PaginaTiendas {
+  items: [Tienda!]!
+  total: Int!
+  pagina: Int!
+  limite: Int!
+  paginas: Int!
+}
