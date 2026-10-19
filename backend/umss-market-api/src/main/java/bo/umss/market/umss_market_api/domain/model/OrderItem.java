@@ -21,4 +21,7 @@ public class OrderItem {
     private BigDecimal unitPrice;
 
     private BigDecimal subtotal;
+
+    // null/false: pedido legado o servicio sin inventario reservado.
+    private Boolean stockReserved;
 }

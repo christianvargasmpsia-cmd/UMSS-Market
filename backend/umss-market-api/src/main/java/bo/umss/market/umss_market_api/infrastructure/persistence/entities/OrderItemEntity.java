@@ -37,4 +37,8 @@ public class OrderItemEntity {
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal subtotal;
+
+    @Column(name = "stock_reserved", nullable = false, columnDefinition = "boolean default false")
+    @Builder.Default
+    private Boolean stockReserved = false;
 }

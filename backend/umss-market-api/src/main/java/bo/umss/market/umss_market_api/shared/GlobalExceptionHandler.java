@@ -72,6 +72,22 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    // Stock o ciclo de vida de pedidos
+    @ExceptionHandler(bo.umss.market.umss_market_api.domain.exceptions.InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientStock(RuntimeException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(bo.umss.market.umss_market_api.domain.exceptions.InvalidOrderStateException.class)
+    public ResponseEntity<ErrorResponse> handleOrderState(RuntimeException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleOrderRequest(IllegalArgumentException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     // =========================
     // 500 INTERNAL SERVER ERROR
     // =========================

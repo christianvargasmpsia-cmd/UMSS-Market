@@ -21,6 +21,7 @@ public class OrderItemMapper {
                 .quantity(orderItem.getQuantity())
                 .unitPrice(orderItem.getUnitPrice())
                 .subtotal(orderItem.getSubtotal())
+                .stockReserved(Boolean.TRUE.equals(orderItem.getStockReserved()))
                 .build();
     }
 
@@ -37,6 +38,7 @@ public class OrderItemMapper {
                 .quantity(entity.getQuantity())
                 .unitPrice(entity.getUnitPrice())
                 .subtotal(entity.getSubtotal())
+                .stockReserved(Boolean.TRUE.equals(entity.getStockReserved()))
                 .build();
     }
 }

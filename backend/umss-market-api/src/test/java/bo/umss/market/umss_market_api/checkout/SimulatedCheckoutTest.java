@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import bo.umss.market.umss_market_api.application.dto.SimulatedCheckoutRequest;
 import bo.umss.market.umss_market_api.application.dto.SimulatedCheckoutRequest.Item;
 import bo.umss.market.umss_market_api.application.usecases.*;
+import bo.umss.market.umss_market_api.application.services.InventoryReservationService;
+import bo.umss.market.umss_market_api.application.dto.UpdateOrderStatusRequest;
 import bo.umss.market.umss_market_api.domain.enums.OrderStatus;
 import bo.umss.market.umss_market_api.domain.exceptions.CheckoutException;
 import bo.umss.market.umss_market_api.infrastructure.adapters.*;
@@ -32,7 +34,8 @@ import bo.umss.market.umss_market_api.infrastructure.persistence.repositories.*;
 @ContextConfiguration(classes = SimulatedCheckoutTest.Config.class)
 @Import({SimulatedCheckoutUseCase.class, GetOrderByIdUseCase.class,
     JpaCheckoutRepositoryAdapter.class, JpaOrderRepositoryAdapter.class,
-    JpaOrderItemRepositoryAdapter.class, JpaPublicationRepositoryAdapter.class})
+    JpaOrderItemRepositoryAdapter.class, JpaPublicationRepositoryAdapter.class,
+    UpdateOrderStatusUseCase.class, InventoryReservationService.class})
 class SimulatedCheckoutTest {
     @Configuration
     @EnableJpaRepositories(basePackageClasses = JpaOrderRepository.class)
@@ -40,6 +43,7 @@ class SimulatedCheckoutTest {
     static class Config {}
 
     @Autowired SimulatedCheckoutUseCase checkout;
+    @Autowired UpdateOrderStatusUseCase updateOrderStatus;
     @Autowired JpaOrderRepository orders;
     @Autowired JpaOrderItemRepository items;
     @Autowired JpaUserRepository users;
@@ -118,6 +122,25 @@ class SimulatedCheckoutTest {
     boolean attempt(SimulatedCheckoutRequest request) {
         try { checkout.execute(request); return true; }
         catch (CheckoutException ex) { assertEquals(409, ex.getStatus()); return false; }
+    }
+
+    @Test void cancelledSimulatedCheckoutRestoresStockOnlyOnce() {
+        UUID requestId = UUID.randomUUID();
+        var original = request(requestId, 2);
+        checkout.execute(original);
+        assertEquals(3, publications.findById(product).orElseThrow().getStock());
+        assertEquals(Boolean.TRUE, items.findByOrderId(requestId).getFirst().getStockReserved());
+
+        var cancel = new UpdateOrderStatusRequest();
+        cancel.setStatus(OrderStatus.CANCELADO);
+        updateOrderStatus.execute(requestId, cancel);
+        assertEquals(5, publications.findById(product).orElseThrow().getStock());
+        assertEquals(Boolean.FALSE, items.findByOrderId(requestId).getFirst().getStockReserved());
+
+        // Reintentar la cancelacion no debe restituir las mismas unidades otra vez.
+        updateOrderStatus.execute(requestId, cancel);
+        assertEquals(5, publications.findById(product).orElseThrow().getStock());
+        assertEquals(409, assertThrows(CheckoutException.class, () -> checkout.execute(original)).getStatus());
     }
 
     @Test void rejectsMalformedRequests() {

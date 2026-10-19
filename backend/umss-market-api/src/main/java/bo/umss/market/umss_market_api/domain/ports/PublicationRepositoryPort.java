@@ -15,7 +15,16 @@ public interface PublicationRepositoryPort {
 
     Optional<Publication> findById(UUID id);
 
+    /** Lectura bloqueada para ediciones que deban respetar reservas concurrentes. */
+    Optional<Publication> findByIdForUpdate(UUID id);
+
     List<Publication> findByFilters(CatalogFilter filter);
+
+    // Actualizacion condicional atomica, indispensable contra la sobreventa.
+    boolean reserveIfAvailable(UUID id, int quantity);
+
+    // Restituye inventario reservado; no aplica a servicios sin stock.
+    void returnReservedStock(UUID id, int quantity);
 
     void deleteById(UUID id);
 }

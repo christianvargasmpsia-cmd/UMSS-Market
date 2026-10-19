@@ -44,6 +44,12 @@ public class JpaOrderRepositoryAdapter implements OrderRepositoryPort {
     }
 
     @Override
+    public Optional<Order> findByIdForUpdate(UUID id) {
+        return repository.findByIdForUpdate(id)
+                .map(OrderMapper::toDomain);
+    }
+
+    @Override
     public List<Order> findByUserId(UUID userId) {
 
         return repository.findByUserId(userId)
