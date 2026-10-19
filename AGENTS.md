@@ -329,3 +329,17 @@ para este adaptador. Fallas o referencias invalidas devuelven UNAVAILABLE, sin o
 No hay herramientas ejecutables para la IA. Se filtran conservadoramente fragmentos
 con marcadores frecuentes de instrucciones; la seguridad no depende solo del prompt.
 Los originales no se alteran. Detalles: docs/M8_FEATURE_2_REVIEWS.md.
+
+## Modulo 8 - deteccion de duplicados semanticos (2026-10-19)
+
+POST /api/stores/{storeId}/publications/duplicates requiere JWT EMPRENDEDOR,
+usuario persistido con ese rol y propiedad de la tienda. DetectDuplicatePublicationsUseCase
+valida tambien la propiedad de excludePublicationId y lo excluye antes de comparar.
+DuplicateCatalogPort y su adaptador JPA consultan solo la tienda, incluyendo inactivas.
+DuplicateEmbeddingPort usa la infraestructura Ollama/nomic-embed-text existente con
+un lote de textos titulo/descripcion, CPU, timeout total de 45000 ms y una solicitud
+concurrente por instancia. No reutiliza vectores anteriores con precio u otros campos.
+Compara coseno, ordena descendente y aplica umbral/limite externos (0.90 y 5).
+Errores y vectores invalidos producen 503 explicito, nunca ausencia de coincidencias.
+Las coincidencias son advertencias para revision humana; no modifica ni bloquea CRUD.
+No hay cambios de esquema. Detalles y limites: docs/M8_FEATURE_3_DUPLICATES.md.

@@ -252,6 +252,20 @@
         </plugin></plugins></build>
     </profile>
     <profile>
+        <id>duplicates-coverage</id>
+        <build><plugins><plugin>
+            <groupId>org.jacoco</groupId><artifactId>jacoco-maven-plugin</artifactId>
+            <executions><execution><id>check</id><configuration>
+                <excludes combine.self="override"/>
+                <includes>
+                    <include>**/Duplicate*.class</include>
+                    <include>**/DetectDuplicatePublicationsUseCase.class</include>
+                    <include>**/SecurityConfig.class</include>
+                </includes>
+            </configuration></execution></executions>
+        </plugin></plugins></build>
+    </profile>
+    <profile>
         <id>reviews-coverage</id>
         <build><plugins><plugin>
             <groupId>org.jacoco</groupId><artifactId>jacoco-maven-plugin</artifactId>

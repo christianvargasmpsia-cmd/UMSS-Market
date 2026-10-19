@@ -91,6 +91,7 @@ public class SecurityConfig {
                         ).authenticated()
 
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/publications/*/reviews").authenticated()
+                        .requestMatchers("/api/stores/*/publications/duplicates").hasRole("EMPRENDEDOR")
                         .anyRequest().permitAll()
                 )
 
