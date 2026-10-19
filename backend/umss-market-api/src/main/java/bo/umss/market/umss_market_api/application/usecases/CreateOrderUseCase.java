@@ -20,16 +20,35 @@ import bo.umss.market.umss_market_api.domain.model.Publication;
 import bo.umss.market.umss_market_api.domain.ports.OrderItemRepositoryPort;
 import bo.umss.market.umss_market_api.domain.ports.OrderRepositoryPort;
 import bo.umss.market.umss_market_api.domain.ports.PublicationRepositoryPort;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import bo.umss.market.umss_market_api.domain.ports.OrderOutboxPort;
+import bo.umss.market.umss_market_api.domain.enums.OrderEventType;
 
 @Service
-@RequiredArgsConstructor
 public class CreateOrderUseCase {
 
     private final OrderRepositoryPort orderRepository;
     private final OrderItemRepositoryPort orderItemRepository;
     private final PublicationRepositoryPort publicationRepository;
     private final InventoryReservationService reservations;
+    private final OrderOutboxPort outbox;
+
+    // Constructor de compatibilidad para pruebas unitarias antiguas que crean el use case con mocks.
+    public CreateOrderUseCase(OrderRepositoryPort orders, OrderItemRepositoryPort items,
+                              PublicationRepositoryPort publications, InventoryReservationService reservations) {
+        this(orders, items, publications, reservations, null);
+    }
+
+    @Autowired
+    public CreateOrderUseCase(OrderRepositoryPort orders, OrderItemRepositoryPort items,
+                              PublicationRepositoryPort publications, InventoryReservationService reservations,
+                              OrderOutboxPort outbox) {
+        this.orderRepository = orders;
+        this.orderItemRepository = items;
+        this.publicationRepository = publications;
+        this.reservations = reservations;
+        this.outbox = outbox;
+    }
 
     @Transactional
     public CreateOrderResponse execute(CreateOrderRequest request) {
@@ -118,6 +137,8 @@ public class CreateOrderUseCase {
         for (OrderItem item : items) {
             orderItemRepository.save(item);
         }
+        // El evento se persiste dentro de la misma transaccion del pedido.
+        if (outbox != null) outbox.record(orderId, OrderEventType.ORDER_CREATED, OrderStatus.PENDIENTE);
 
         return CreateOrderResponse.builder()
                 .success(true)
