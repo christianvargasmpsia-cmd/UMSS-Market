@@ -904,3 +904,30 @@ valido usa GENERATED; sin candidatos se omite IA y se devuelve NOT_REQUESTED.
 El texto del chat conserva la lista de productos e incorpora esta explicacion.
 No cambia la clasificacion de intencion anterior del chat ni los flujos bancarios.
 La firma JWT lee app.jwt.secret. Detalles: docs/M8_FEATURE_1_RECOMMENDATIONS.md.
+
+
+## Modulo 8 - resenas persistidas y resumen extractivo (2026-10-19)
+
+Feature 2 depende del issue local docs/issues/M8-DEP-002-review-persistence.md,
+registrado antes de implementar la persistencia ausente. ProductReview relaciona
+comprador y publicacion; product_reviews tiene FK a users/publications, rating 1..5,
+comentario 1..1000 e indice por publicacion/fecha/id. La migracion SQL versionada es
+backend/umss-market-api/src/main/resources/db/migration/V20261019_01__create_product_reviews.sql.
+El repositorio existente usa Hibernate ddl-auto; no se introduce Flyway ni se ejecuta
+la migracion sobre bases externas durante las pruebas.
+
+POST /api/publications/{id}/reviews exige JWT y usuario persistido. GET en la misma
+ruta lista resenas; GET /summary devuelve resumen del producto, 404 si no existe,
+y NO_REVIEWS sin IA si no hay resenas. No existen operaciones para editar o borrar.
+ReviewRepositoryPort acota las consultas en SQL y ReviewSummaryPort separa Ollama.
+Se consideran las 10 ultimas resenas y hasta 24 fragmentos de 4..240 caracteres.
+Ollama qwen2.5:1.5b en CPU selecciona indices de evidencia positivos/negativos.
+El backend valida listas, limites, duplicados y pertenencia; construye la sintesis
+con citas literales y reviewId. No acepta opiniones ni sintesis libres del modelo.
+reviewCount cuenta resenas distintas representadas en los fragmentos enviados;
+consideredReviewCount indica cuantas se consultaron para preparar esa muestra.
+Timeout total configurable de 45000 ms y una generacion concurrente por instancia
+para este adaptador. Fallas o referencias invalidas devuelven UNAVAILABLE, sin opiniones.
+No hay herramientas ejecutables para la IA. Se filtran conservadoramente fragmentos
+con marcadores frecuentes de instrucciones; la seguridad no depende solo del prompt.
+Los originales no se alteran. Detalles: docs/M8_FEATURE_2_REVIEWS.md.

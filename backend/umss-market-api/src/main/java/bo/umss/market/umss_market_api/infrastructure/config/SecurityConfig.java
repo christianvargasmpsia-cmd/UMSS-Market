@@ -90,6 +90,7 @@ public class SecurityConfig {
                                 "/api/auth/me", "/api/recommendations", "/api/interactions/**"
                         ).authenticated()
 
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/publications/*/reviews").authenticated()
                         .anyRequest().permitAll()
                 )
 
