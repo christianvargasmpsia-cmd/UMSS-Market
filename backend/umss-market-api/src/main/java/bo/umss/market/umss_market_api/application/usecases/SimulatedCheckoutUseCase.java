@@ -64,7 +64,7 @@ public class SimulatedCheckoutUseCase {
             BigDecimal subtotal = publication.getPrecio().multiply(BigDecimal.valueOf(entry.getValue()));
             items.add(OrderItem.builder().id(UUID.randomUUID()).orderId(request.requestId())
                     .publicationId(publication.getId()).quantity(entry.getValue())
-                    .unitPrice(publication.getPrecio()).subtotal(subtotal).build());
+                    .unitPrice(publication.getPrecio()).subtotal(subtotal).stockReserved(true).build());
             total = total.add(subtotal);
         }
 

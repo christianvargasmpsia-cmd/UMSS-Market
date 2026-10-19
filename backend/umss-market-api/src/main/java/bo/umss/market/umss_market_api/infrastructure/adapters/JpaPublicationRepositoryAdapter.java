@@ -67,6 +67,12 @@ public class JpaPublicationRepositoryAdapter
     }
 
     @Override
+    public Optional<Publication> findByIdForUpdate(UUID id) {
+        return repository.findByIdForUpdate(id)
+                .map(PublicationMapper::toDomain);
+    }
+
+    @Override
     public List<Publication> findByFilters(CatalogFilter filter) {
 
         return repository.findByFilters(

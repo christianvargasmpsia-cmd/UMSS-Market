@@ -15,6 +15,9 @@ public interface PublicationRepositoryPort {
 
     Optional<Publication> findById(UUID id);
 
+    /** Lectura bloqueada para ediciones que deban respetar reservas concurrentes. */
+    Optional<Publication> findByIdForUpdate(UUID id);
+
     List<Publication> findByFilters(CatalogFilter filter);
 
     // Actualizacion condicional atomica, indispensable contra la sobreventa.
