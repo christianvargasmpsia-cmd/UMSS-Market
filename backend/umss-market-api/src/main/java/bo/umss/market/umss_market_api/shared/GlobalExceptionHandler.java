@@ -17,6 +17,16 @@ import bo.umss.market.umss_market_api.domain.exceptions.UserAlreadyExistsExcepti
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleParameterType(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Parametro invalido: " + ex.getName());
+    }
+
+    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatus(org.springframework.web.server.ResponseStatusException ex) {
+        return buildErrorResponse(HttpStatus.valueOf(ex.getStatusCode().value()), ex.getReason());
+    }
+
 
     // =========================
     // 404 NOT FOUND

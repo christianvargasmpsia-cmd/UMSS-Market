@@ -15,14 +15,13 @@ public class GetInteractionByIdUseCase {
 
     private final InteractionRepositoryPort interactionRepository;
 
-    public InteractionResponse execute(UUID id) {
+    public InteractionResponse execute(UUID userId, UUID id) {
 
         Interaction interaction =
                 interactionRepository.findById(id)
+                        .filter(i -> i.getUserId().equals(userId))
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Interacción no encontrada"
-                                )
+                                new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Interaccion no encontrada")
                         );
 
         return toResponse(interaction);

@@ -224,4 +224,32 @@
 		</plugins>
 	</build>
 
+<profiles>
+    <profile>
+        <id>recommendations-coverage</id>
+        <build><plugins><plugin>
+            <groupId>org.jacoco</groupId><artifactId>jacoco-maven-plugin</artifactId>
+            <executions><execution>
+                <id>check</id>
+                <configuration>
+                    <!-- Include the HTTP adapter in this feature gate (the global gate excludes adapters). -->
+                    <excludes combine.self="override"/>
+                    <!-- Scope the existing 90% line / 80% branch gate to this feature and modified support classes. -->
+                    <includes>
+                        <include>**/GetRecommendationsUseCase.class</include>
+                        <include>**/OllamaRecommendationAdapter.class</include>
+                        <include>**/RecommendationsResponse*.class</include>
+                        <include>**/RecommendationsController.class</include>
+                        <include>**/GetInteractionByIdUseCase.class</include>
+                        <include>**/DeleteInteractionUseCase.class</include>
+                        <include>**/InteractionController.class</include>
+                        <include>**/SecurityConfig.class</include>
+                        <include>**/JwtService.class</include>
+                        <include>**/GlobalExceptionHandler.class</include>
+                    </includes>
+                </configuration>
+            </execution></executions>
+        </plugin></plugins></build>
+    </profile>
+</profiles>
 </project>

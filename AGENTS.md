@@ -279,3 +279,26 @@ no forma parte de esta demo. Las rutas CRUD anteriores conservan su comportamien
 Validación: `SimulatedCheckoutTest` usa H2 aislada para probar persistencia,
 rollback, stock insuficiente, reintentos y compras concurrentes. Ejecutar
 `./mvnw.cmd -Dtest=SimulatedCheckoutTest test jacoco:report` desde el backend.
+
+
+## Modulo 8 - recomendaciones personalizadas con Ollama (2026-10-19)
+
+GetRecommendationsUseCase ordena publicaciones disponibles por afinidad con las
+ultimas 30 interacciones del comprador autenticado, con pesos VIEW=1, LIKE/COMMENT=2,
+FAVORITE=3 y PURCHASE=4. Sin historial util devuelve recomendaciones generales.
+GET /api/recommendations toma el UUID exclusivamente del principal JWT. Las rutas
+/api/interactions requieren autenticacion y verifican propiedad al leer/borrar por ID.
+
+RecommendationTextPort separa la explicacion opcional del ranking. Su adaptador
+OllamaRecommendationAdapter usa qwen2.5:1.5b mediante POST /api/generate, enviando
+solo tres nombres acotados y el tipo de seleccion, sin IDs ni historial del usuario.
+Limita contexto a 1024 tokens y salida a 96; conserva el modelo 5 minutos en memoria.
+En este equipo fuerza CPU (num_gpu=0) por la demora observada al cargar con Vulkan/GT 630.
+URL, modelo y timeout son configurables. El timeout total por defecto es 20000 ms.
+Admite una generacion concurrente por instancia y no encola ni reintenta solicitudes.
+Errores HTTP, timeout, interrupcion, respuesta invalida o proveedor ocupado producen
+HTTP 200 con los mismos items, texto determinista y aiStatus=FALLBACK. Un resultado
+valido usa GENERATED; sin candidatos se omite IA y se devuelve NOT_REQUESTED.
+El texto del chat conserva la lista de productos e incorpora esta explicacion.
+No cambia la clasificacion de intencion anterior del chat ni los flujos bancarios.
+La firma JWT lee app.jwt.secret. Detalles: docs/M8_FEATURE_1_RECOMMENDATIONS.md.

@@ -13,13 +13,12 @@ public class DeleteInteractionUseCase {
 
     private final InteractionRepositoryPort interactionRepository;
 
-    public void execute(UUID id) {
+    public void execute(UUID userId, UUID id) {
 
         interactionRepository.findById(id)
+                        .filter(i -> i.getUserId().equals(userId))
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Interacción no encontrada"
-                        )
+                        new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Interaccion no encontrada")
                 );
 
         interactionRepository.deleteById(id);

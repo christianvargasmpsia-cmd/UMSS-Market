@@ -14,14 +14,12 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-    private static final String SECRET =
-            "umss-market-secret-key-for-jwt-authentication-2026";
+    private static final long EXPIRATION_TIME = 1000L * 60 * 60 * 24;
+    private final SecretKey key;
 
-    private static final long EXPIRATION_TIME =
-            1000L * 60 * 60 * 24;
-
-    private final SecretKey key =
-            Keys.hmacShaKeyFor(SECRET.getBytes());
+    public JwtService(@org.springframework.beans.factory.annotation.Value("${app.jwt.secret}") String secret) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
 
     public String generateToken(
             UUID userId,

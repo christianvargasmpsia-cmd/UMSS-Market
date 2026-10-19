@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +42,7 @@ public class InteractionController {
     @PostMapping
     public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody CreateInteractionRequest request,
-            Authentication authentication) {
-
-        UUID userId = getAuthenticatedUserId(authentication);
+            @AuthenticationPrincipal UUID userId) {
 
         InteractionResponse response =
                 createInteractionUseCase.execute(
@@ -63,9 +61,7 @@ public class InteractionController {
      */
     @GetMapping
     public ResponseEntity<List<InteractionResponse>> findAll(
-            Authentication authentication) {
-
-        UUID userId = getAuthenticatedUserId(authentication);
+            @AuthenticationPrincipal UUID userId) {
 
         List<InteractionResponse> response =
                 getUserInteractionsUseCase.execute(userId);
@@ -78,10 +74,10 @@ public class InteractionController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<InteractionResponse> findById(
-            @PathVariable UUID id) {
+            @PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
 
         InteractionResponse response =
-                getInteractionByIdUseCase.execute(id);
+                getInteractionByIdUseCase.execute(userId, id);
 
         return ResponseEntity.ok(response);
     }
@@ -91,39 +87,13 @@ public class InteractionController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @PathVariable UUID id) {
+            @PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
 
-        deleteInteractionUseCase.execute(id);
+        deleteInteractionUseCase.execute(userId, id);
 
         return ResponseEntity
                 .noContent()
                 .build();
     }
 
-    /**
-     * Obtiene el UUID del usuario autenticado
-     * desde el JWT.
-     */
-    private UUID getAuthenticatedUserId(
-            Authentication authentication) {
-
-        if (authentication == null
-                || authentication.getPrincipal() == null) {
-
-            throw new RuntimeException(
-                    "Usuario no autenticado"
-            );
-        }
-
-        Object principal =
-                authentication.getPrincipal();
-
-        if (principal instanceof UUID userId) {
-            return userId;
-        }
-
-        return UUID.fromString(
-                principal.toString()
-        );
-    }
 }
