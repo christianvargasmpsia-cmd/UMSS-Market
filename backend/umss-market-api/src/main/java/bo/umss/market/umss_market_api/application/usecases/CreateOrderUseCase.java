@@ -13,6 +13,7 @@ import bo.umss.market.umss_market_api.application.dto.CreateOrderItemRequest;
 import bo.umss.market.umss_market_api.application.dto.CreateOrderRequest;
 import bo.umss.market.umss_market_api.application.dto.CreateOrderResponse;
 import bo.umss.market.umss_market_api.domain.enums.OrderStatus;
+import bo.umss.market.umss_market_api.application.services.InventoryReservationService;
 import bo.umss.market.umss_market_api.domain.model.Order;
 import bo.umss.market.umss_market_api.domain.model.OrderItem;
 import bo.umss.market.umss_market_api.domain.model.Publication;
@@ -28,6 +29,7 @@ public class CreateOrderUseCase {
     private final OrderRepositoryPort orderRepository;
     private final OrderItemRepositoryPort orderItemRepository;
     private final PublicationRepositoryPort publicationRepository;
+    private final InventoryReservationService reservations;
 
     @Transactional
     public CreateOrderResponse execute(CreateOrderRequest request) {
@@ -78,13 +80,7 @@ public class CreateOrderUseCase {
                                 + publication.getNombre());
             }
 
-            if (publication.getStock() != null &&
-                    publication.getStock() < itemRequest.getQuantity()) {
-
-                throw new RuntimeException(
-                        "Stock insuficiente para: "
-                                + publication.getNombre());
-            }
+            boolean stockReserved = reservations.reserve(publication, itemRequest.getQuantity());
 
             BigDecimal unitPrice = publication.getPrecio();
 
@@ -98,6 +94,7 @@ public class CreateOrderUseCase {
                     .quantity(itemRequest.getQuantity())
                     .unitPrice(unitPrice)
                     .subtotal(subtotal)
+                    .stockReserved(stockReserved)
                     .build();
 
             items.add(orderItem);

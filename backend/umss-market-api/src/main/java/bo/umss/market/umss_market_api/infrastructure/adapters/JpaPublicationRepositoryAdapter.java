@@ -29,6 +29,24 @@ public class JpaPublicationRepositoryAdapter
     }
 
     @Override
+    public boolean reserveIfAvailable(UUID id, int quantity) {
+        if (id == null || quantity <= 0) {
+            throw new IllegalArgumentException("Publicacion/cantidad invalida");
+        }
+        return repository.reserveStock(id, quantity) == 1;
+    }
+
+    @Override
+    public void returnReservedStock(UUID id, int quantity) {
+        if (id == null || quantity <= 0) {
+            throw new IllegalArgumentException("Publicacion/cantidad invalida");
+        }
+        if (repository.returnStock(id, quantity) != 1) {
+            throw new IllegalStateException("No se pudo devolver el stock reservado: " + id);
+        }
+    }
+
+    @Override
     public void deleteById(UUID id) {
         repository.deleteById(id);
     }

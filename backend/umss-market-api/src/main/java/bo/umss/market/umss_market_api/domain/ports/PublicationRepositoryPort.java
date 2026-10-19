@@ -17,5 +17,11 @@ public interface PublicationRepositoryPort {
 
     List<Publication> findByFilters(CatalogFilter filter);
 
+    // Actualizacion condicional atomica, indispensable contra la sobreventa.
+    boolean reserveIfAvailable(UUID id, int quantity);
+
+    // Restituye inventario reservado; no aplica a servicios sin stock.
+    void returnReservedStock(UUID id, int quantity);
+
     void deleteById(UUID id);
 }

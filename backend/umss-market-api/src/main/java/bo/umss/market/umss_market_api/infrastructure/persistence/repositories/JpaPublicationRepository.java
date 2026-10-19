@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 
 import bo.umss.market.umss_market_api.domain.enums.PublicationType;
@@ -14,6 +15,27 @@ import bo.umss.market.umss_market_api.infrastructure.persistence.entities.Public
 
 public interface JpaPublicationRepository
         extends JpaRepository<PublicationEntity, UUID>, JpaSpecificationExecutor<PublicationEntity> {
+
+    // PostgreSQL: UPDATE con predicado de stock mantiene un row lock hasta commit.
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+            UPDATE PublicationEntity p
+               SET p.stock = p.stock - :quantity
+             WHERE p.id = :id
+               AND p.activa = true
+               AND p.stock IS NOT NULL
+               AND p.stock >= :quantity
+            """)
+    int reserveStock(@Param("id") UUID id, @Param("quantity") int quantity);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+            UPDATE PublicationEntity p
+               SET p.stock = p.stock + :quantity
+             WHERE p.id = :id
+               AND p.stock IS NOT NULL
+            """)
+    int returnStock(@Param("id") UUID id, @Param("quantity") int quantity);
 
     @Query("""
             SELECT p

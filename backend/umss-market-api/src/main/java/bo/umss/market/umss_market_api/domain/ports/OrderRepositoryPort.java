@@ -15,6 +15,8 @@ public interface OrderRepositoryPort {
 
     Optional<Order> findById(UUID id);
 
+    Optional<Order> findByIdForUpdate(UUID id);
+
     List<Order> findByUserId(UUID userId);
 
     List<Order> findByStatus(OrderStatus status);
