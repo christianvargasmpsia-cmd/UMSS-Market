@@ -28,6 +28,7 @@ import bo.umss.market.umss_market_api.infrastructure.adapters.*;
 import bo.umss.market.umss_market_api.infrastructure.controllers.SimulatedCheckoutController;
 import bo.umss.market.umss_market_api.infrastructure.persistence.entities.*;
 import bo.umss.market.umss_market_api.infrastructure.persistence.repositories.*;
+import bo.umss.market.umss_market_api.infrastructure.outbox.OutboxEventWriter;
 
 @DataJpaTest(showSql = false)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
@@ -35,7 +36,7 @@ import bo.umss.market.umss_market_api.infrastructure.persistence.repositories.*;
 @Import({SimulatedCheckoutUseCase.class, GetOrderByIdUseCase.class,
     JpaCheckoutRepositoryAdapter.class, JpaOrderRepositoryAdapter.class,
     JpaOrderItemRepositoryAdapter.class, JpaPublicationRepositoryAdapter.class,
-    UpdateOrderStatusUseCase.class, InventoryReservationService.class})
+    UpdateOrderStatusUseCase.class, InventoryReservationService.class, OutboxEventWriter.class})
 class SimulatedCheckoutTest {
     @Configuration
     @EnableJpaRepositories(basePackageClasses = JpaOrderRepository.class)
@@ -45,6 +46,7 @@ class SimulatedCheckoutTest {
     @Autowired SimulatedCheckoutUseCase checkout;
     @Autowired UpdateOrderStatusUseCase updateOrderStatus;
     @Autowired JpaOrderRepository orders;
+    @Autowired JpaOutboxEventRepository outboxEvents;
     @Autowired JpaOrderItemRepository items;
     @Autowired JpaUserRepository users;
     @Autowired JpaPublicationRepository publications;
@@ -52,7 +54,7 @@ class SimulatedCheckoutTest {
     UUID product;
 
     @BeforeEach void seed() {
-        items.deleteAll(); orders.deleteAll(); publications.deleteAll(); users.deleteAll();
+        outboxEvents.deleteAll(); items.deleteAll(); orders.deleteAll(); publications.deleteAll(); users.deleteAll();
         user = UUID.randomUUID();
         users.saveAndFlush(UserEntity.builder().id(user).ru(user.toString()).nombre("Comprador")
             .email(user + "@test.invalid").passwordHash("test-only").build());
@@ -73,7 +75,9 @@ class SimulatedCheckoutTest {
         assertEquals(2, result.getItems().getFirst().getCantidad());
         assertEquals("Libro", result.getItems().getFirst().getProducto());
         assertEquals(3, publications.findById(product).orElseThrow().getStock());
+        assertEquals(1, outboxEvents.count()); // evento persistido en la transaccion de compra
         assertEquals(result.getId(), checkout.execute(request).getId());
+        assertEquals(1, outboxEvents.count()); // no duplicar evento ante replay
         assertEquals(1, orders.count());
         assertEquals(1, items.count());
         assertEquals(3, publications.findById(product).orElseThrow().getStock());

@@ -14,14 +14,31 @@ import bo.umss.market.umss_market_api.domain.model.Order;
 import bo.umss.market.umss_market_api.domain.model.OrderItem;
 import bo.umss.market.umss_market_api.domain.ports.OrderItemRepositoryPort;
 import bo.umss.market.umss_market_api.domain.ports.OrderRepositoryPort;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import bo.umss.market.umss_market_api.domain.ports.OrderOutboxPort;
+import bo.umss.market.umss_market_api.domain.enums.OrderEventType;
 
 @Service
-@RequiredArgsConstructor
 public class UpdateOrderStatusUseCase {
     private final OrderRepositoryPort orders;
     private final OrderItemRepositoryPort items;
     private final InventoryReservationService reservations;
+    private final OrderOutboxPort outbox;
+
+    // Las pruebas existentes invocan este constructor sin entorno Spring.
+    public UpdateOrderStatusUseCase(OrderRepositoryPort orders, OrderItemRepositoryPort items,
+                                    InventoryReservationService reservations) {
+        this(orders, items, reservations, null);
+    }
+
+    @Autowired
+    public UpdateOrderStatusUseCase(OrderRepositoryPort orders, OrderItemRepositoryPort items,
+                                    InventoryReservationService reservations, OrderOutboxPort outbox) {
+        this.orders = orders;
+        this.items = items;
+        this.reservations = reservations;
+        this.outbox = outbox;
+    }
 
     @Transactional
     public Order execute(UUID orderId, UpdateOrderStatusRequest request) {
@@ -48,6 +65,8 @@ public class UpdateOrderStatusUseCase {
         }
         order.setStatus(target);
         order.setUpdatedAt(LocalDateTime.now());
-        return orders.save(order);
+        Order saved = orders.save(order);
+        if (outbox != null) outbox.record(orderId, OrderEventType.ORDER_STATUS_CHANGED, target);
+        return saved;
     }
 }

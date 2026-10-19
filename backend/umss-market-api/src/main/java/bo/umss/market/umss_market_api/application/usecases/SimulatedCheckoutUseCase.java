@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import bo.umss.market.umss_market_api.domain.ports.OrderOutboxPort;
+import bo.umss.market.umss_market_api.domain.enums.OrderEventType;
 import bo.umss.market.umss_market_api.application.dto.*;
 import bo.umss.market.umss_market_api.domain.enums.OrderStatus;
 import bo.umss.market.umss_market_api.domain.exceptions.CheckoutException;
@@ -12,12 +14,32 @@ import bo.umss.market.umss_market_api.domain.model.*;
 import bo.umss.market.umss_market_api.domain.ports.*;
 
 @Service
-@RequiredArgsConstructor
 public class SimulatedCheckoutUseCase {
     private final CheckoutRepositoryPort checkoutRepository;
     private final OrderRepositoryPort orderRepository;
     private final OrderItemRepositoryPort itemRepository;
     private final GetOrderByIdUseCase getOrderById;
+    private final OrderOutboxPort outbox;
+
+    // Compatible con construcciones directas que usan solo mocks en tests anteriores.
+    public SimulatedCheckoutUseCase(CheckoutRepositoryPort checkoutRepository,
+                                    OrderRepositoryPort orderRepository,
+                                    OrderItemRepositoryPort itemRepository,
+                                    GetOrderByIdUseCase getOrderById) {
+        this(checkoutRepository, orderRepository, itemRepository, getOrderById, null);
+    }
+
+    @Autowired
+    public SimulatedCheckoutUseCase(CheckoutRepositoryPort checkoutRepository,
+                                    OrderRepositoryPort orderRepository,
+                                    OrderItemRepositoryPort itemRepository,
+                                    GetOrderByIdUseCase getOrderById, OrderOutboxPort outbox) {
+        this.checkoutRepository = checkoutRepository;
+        this.orderRepository = orderRepository;
+        this.itemRepository = itemRepository;
+        this.getOrderById = getOrderById;
+        this.outbox = outbox;
+    }
 
     @Transactional
     public OrderResponse execute(SimulatedCheckoutRequest request) {
@@ -78,6 +100,8 @@ public class SimulatedCheckoutUseCase {
                 .paymentStatus(request.delivery() != null && "EFECTIVO".equals(request.delivery().paymentMethod()) ? "PENDIENTE" : "PAGADO_SIMULADO")
                 .total(total).status(OrderStatus.CONFIRMADO).createdAt(now).updatedAt(now).build());
         items.forEach(itemRepository::save);
+        // Reintentos del checkout salen antes de este punto: un solo evento por compra.
+        if (outbox != null) outbox.record(request.requestId(), OrderEventType.ORDER_CHECKOUT_CONFIRMED, OrderStatus.CONFIRMADO);
         return getOrderById.execute(request.requestId());
     }
 
