@@ -14,7 +14,8 @@ import bo.umss.market.umss_market_api.domain.exceptions.PublicationNotFoundExcep
 import bo.umss.market.umss_market_api.domain.exceptions.StoreAlreadyExistsException;
 import bo.umss.market.umss_market_api.domain.exceptions.StoreNotFoundException;
 import bo.umss.market.umss_market_api.domain.exceptions.UserAlreadyExistsException;
-
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
@@ -98,6 +99,26 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+public ResponseEntity<ErrorResponse> handleMethodNotAllowed(
+        HttpRequestMethodNotSupportedException ex) {
+
+    HttpHeaders headers = new HttpHeaders();
+
+    var supported = ex.getSupportedHttpMethods();
+    if (supported != null && !supported.isEmpty()) {
+        headers.setAllow(supported);
+    }
+
+    ErrorResponse body = ErrorResponse.builder()
+            .success(false)
+            .message("Metodo HTTP no permitido: " + ex.getMethod())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+    return new ResponseEntity<>(
+            body, headers, HttpStatus.METHOD_NOT_ALLOWED);
+}
     // =========================
     // 500 INTERNAL SERVER ERROR
     // =========================

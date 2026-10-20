@@ -1,6 +1,6 @@
 
 package bo.umss.market.umss_market_api.infrastructure.controllers;
-
+import bo.umss.market.umss_market_api.shared.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,9 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HealthControllerTest {
 
     private final MockMvc mockMvc =
-        MockMvcBuilders.standaloneSetup(
-            new HealthController()
-        ).build();
+    MockMvcBuilders.standaloneSetup(
+        new HealthController()
+    )
+    .setControllerAdvice(new GlobalExceptionHandler())
+    .build();
 
     @Test
     void healthReturnsStatusAndService() throws Exception {
