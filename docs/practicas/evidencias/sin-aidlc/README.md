@@ -45,10 +45,14 @@ Se ejecutaron las pruebas indicadas, no la suite completa del proyecto.
 4. Se detectó HTTP 500 al enviar POST. Se reprodujo mediante una prueba que incluía el manejador global de excepciones y se corrigió para devolver HTTP 405.
 
 ## Tiempos registrados
-- Inicio de implementación: 20/10/2026 14:46:06.
-- Primer commit: 20/10/2026 15:04:16.
-- Validación automatizada final registrada: 20/10/2026 15:41:28.
-- Tiempo total hasta cierre: pendiente de registrar con el último commit.
+
+- **Inicio:** 20/10/2026 — 14:46:06.
+- **Primer commit:** 20/10/2026 — 15:04:16.
+- **Validación automatizada final:** 20/10/2026 — 15:41:28.
+- **Cierre funcional y publicación:** 20/10/2026 — 15:51:42.
+- **Tiempo total registrado:** 1 hora, 5 minutos y 36 segundos.
+
+El tiempo incluye implementación, pruebas, correcciones, documentación y publicación de evidencias.
 
 ## Evaluación
 **Aspectos positivos:** implementación sencilla, pruebas rápidas, identificación y corrección de un problema real del manejo HTTP.
