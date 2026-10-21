@@ -1,0 +1,1 @@
+"Implementar un endpoint GET /api/health que verifique que el backend está funcionando y que existe conexión con la base de datos. Debe realizar una comprobación real de conectividad con la base de datos devolver el estado correspondiente y contar con pruebas automatizadas."

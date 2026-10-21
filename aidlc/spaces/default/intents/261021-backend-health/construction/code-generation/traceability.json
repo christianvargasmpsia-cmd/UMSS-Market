@@ -1,0 +1,20 @@
+{
+  "stage": "code-generation",
+  "upstream_ids": ["FR1", "FR2", "FR3", "FR4", "FR5", "NFR1", "NFR2", "NFR3", "NFR4", "NFR5"],
+  "coverage": [
+    {"id":"FR1","status":"OK","target":"backend/umss-market-api/src/test/java/bo/umss/market/umss_market_api/infrastructure/health/HealthIntegrationTest.java"},
+    {"id":"FR2","status":"OK","target":"backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/health/HealthDatabaseProbe.java"},
+    {"id":"FR3","status":"OK","target":"backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/controllers/HealthController.java"},
+    {"id":"FR4","status":"OK","target":"backend/umss-market-api/src/test/java/bo/umss/market/umss_market_api/infrastructure/health/HealthDatabaseProbeTest.java"},
+    {"id":"FR5","status":"OK","target":"backend/umss-market-api/src/test/java/bo/umss/market/umss_market_api/infrastructure/health/HealthDatabaseProbeTest.java"},
+    {"id":"NFR1","status":"OK","target":"backend/umss-market-api/src/test/java/bo/umss/market/umss_market_api/infrastructure/controllers/HealthControllerTest.java"},
+    {"id":"NFR2","status":"OK","target":"backend/umss-market-api/src/test/java/bo/umss/market/umss_market_api/infrastructure/controllers/HealthControllerTest.java"},
+    {"id":"NFR3","status":"OK","target":"backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/health/HealthDatabaseProbe.java"},
+    {"id":"NFR4","status":"OK","target":"aidlc/spaces/default/intents/261021-backend-health/construction/code-generation/code-summary.md"},
+    {"id":"NFR5","status":"Deferred","target":"aidlc/spaces/default/intents/261021-backend-health/construction/code-generation/code-summary.md","justification":"Regresión comparable 219/219 aprobada. Pendiente repetir 21 pruebas con Ollama real; baseline completo de 238 pruebas con 9 errores externos."}
+  ],
+  "reverse": [
+    {"id":"HealthDatabaseProbeTest.checksDatabaseAndReleasesResources","status":"OK","target":"FR2, FR5, NFR3"},
+    {"id":"HealthDatabaseProbeTest.recoversOnNextCheckAfterConnectionFailure","status":"OK","target":"FR5"}
+  ]
+}

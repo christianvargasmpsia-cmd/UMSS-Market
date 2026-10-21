@@ -27,6 +27,7 @@ Desde `backend/umss-market-api`:
 ```
 
 Las pruebas verifican ambos estados HTTP/JSON, fallo al obtener conexion, timeout
-SQL, resultado inesperado y liberacion de recursos. La integracion ejecuta el
+SQL, resultado inesperado, exito JDBC con cierre de recursos y recuperacion de
+la misma sonda despues de una conexion fallida (ocho casos en total). La integracion ejecuta el
 endpoint sin autenticacion, con los filtros reales y la base H2 de pruebas.
 El reporte JaCoCo se genera en `target/site/jacoco/index.html`.
