@@ -26,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/interactions")
 @RequiredArgsConstructor
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Interacciones", description = "Historial privado de interacciones del usuario autenticado")
+@io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")
 public class InteractionController {
 
     private final CreateInteractionUseCase createInteractionUseCase;
@@ -40,6 +42,9 @@ public class InteractionController {
      * Crear una interacción para el usuario autenticado.
      */
     @PostMapping
+    @io.swagger.v3.oas.annotations.Operation(summary = "Registrar una interacción propia",
+            description = "Asigna el usuario del JWT. Tipos: VIEW, LIKE, COMMENT, FAVORITE y PURCHASE. "
+                    + "El tipo PURCHASE es una señal declarada, no verifica una compra efectiva.")
     public ResponseEntity<InteractionResponse> create(
             @Valid @RequestBody CreateInteractionRequest request,
             @AuthenticationPrincipal UUID userId) {
@@ -60,6 +65,8 @@ public class InteractionController {
      * del usuario autenticado.
      */
     @GetMapping
+    @io.swagger.v3.oas.annotations.Operation(summary = "Listar las interacciones del usuario autenticado",
+            description = "Devuelve únicamente el historial propio identificado por el principal JWT.")
     public ResponseEntity<List<InteractionResponse>> findAll(
             @AuthenticationPrincipal UUID userId) {
 
@@ -73,6 +80,8 @@ public class InteractionController {
      * Obtener una interacción por ID.
      */
     @GetMapping("/{id}")
+    @io.swagger.v3.oas.annotations.Operation(summary = "Consultar una interacción propia",
+            description = "Una interacción ajena o inexistente devuelve 404.")
     public ResponseEntity<InteractionResponse> findById(
             @PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
 
@@ -86,6 +95,8 @@ public class InteractionController {
      * Eliminar una interacción.
      */
     @DeleteMapping("/{id}")
+    @io.swagger.v3.oas.annotations.Operation(summary = "Eliminar una interacción propia",
+            description = "Una interacción ajena o inexistente devuelve 404; eliminación exitosa devuelve 204.")
     public ResponseEntity<Void> delete(
             @PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
 
