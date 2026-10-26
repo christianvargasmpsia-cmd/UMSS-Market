@@ -1,0 +1,8 @@
+{
+  "name": "umss-demo2-contract-tools",
+  "private": true,
+  "version": "1.0.0",
+  "devDependencies": {
+    "@stoplight/spectral-cli": "6.15.0"
+  }
+}
