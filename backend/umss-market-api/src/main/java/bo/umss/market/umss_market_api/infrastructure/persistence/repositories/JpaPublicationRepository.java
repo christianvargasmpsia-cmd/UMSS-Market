@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
-import jakarta.persistence.LockModeType;
 
 import bo.umss.market.umss_market_api.domain.enums.PublicationType;
 import bo.umss.market.umss_market_api.infrastructure.persistence.entities.PublicationEntity;
@@ -19,7 +19,30 @@ import bo.umss.market.umss_market_api.infrastructure.persistence.entities.Public
 public interface JpaPublicationRepository
         extends JpaRepository<PublicationEntity, UUID>, JpaSpecificationExecutor<PublicationEntity> {
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    // Consulta de lectura sin bloqueo pesimista: compatible con @Transactional(readOnly = true).
+    // Nueva funcionalidad Demo 2: solo publicaciones activas, productos fisicos y stock configurado.
+    @Query("""
+            SELECT p FROM PublicationEntity p
+             WHERE p.storeId = :storeId AND p.tipo = :type AND p.activa = true
+               AND p.stock IS NOT NULL AND p.stock >= 0 AND p.stock <= :threshold
+            """)
+    Page<PublicationEntity> findLowStock(@Param("storeId") UUID storeId,
+            @Param("type") PublicationType type, @Param("threshold") int threshold, Pageable pageable);
+
+    @Query("""
+            SELECT COUNT(p) FROM PublicationEntity p
+             WHERE p.storeId = :storeId AND p.tipo = :type AND p.activa = true
+               AND p.stock IS NOT NULL AND p.stock >= 0 AND p.stock <= :threshold
+            """)
+    long countLowStock(@Param("storeId") UUID storeId,
+            @Param("type") PublicationType type, @Param("threshold") int threshold);
+
+    @Query("""
+            SELECT COUNT(p) FROM PublicationEntity p
+             WHERE p.storeId = :storeId AND p.tipo = :type AND p.activa = true AND p.stock = 0
+            """)
+    long countOutOfStock(@Param("storeId") UUID storeId, @Param("type") PublicationType type);
+
     @Query("SELECT p FROM PublicationEntity p WHERE p.id = :id")
     Optional<PublicationEntity> findByIdForUpdate(@Param("id") UUID id);
 

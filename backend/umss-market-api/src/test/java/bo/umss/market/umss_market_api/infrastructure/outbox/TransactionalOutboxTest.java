@@ -95,13 +95,26 @@ class TransactionalOutboxTest {
     }
 
     private UUID createEvent() {
-        return tx().execute(s -> writer.record(UUID.randomUUID(),
-                OrderEventType.ORDER_CREATED, OrderStatus.PENDIENTE));
+        return tx().execute(s -> {
+            UUID id = writer.record(UUID.randomUUID(),
+                    OrderEventType.ORDER_CREATED, OrderStatus.PENDIENTE);
+            // Evita falsos negativos intermitentes por redondeo temporal en H2.
+            OutboxEventEntity event = outbox.findById(id).orElseThrow();
+            event.setAvailableAt(LocalDateTime.now().minusSeconds(1));
+            outbox.saveAndFlush(event);
+            return id;
+        });
     }
 
     @Test void processesPendingAndIgnoresDuplicateDispatch() {
         UUID id = createEvent();
-        assertTrue(processor.process(id));
+        assertTrue(processor.process(id), () -> {
+            OutboxEventEntity actual = outbox.findById(id).orElseThrow();
+            return "No se proceso: estado=" + actual.getStatus()
+                    + " intentos=" + actual.getAttemptCount()
+                    + " availableAt=" + actual.getAvailableAt()
+                    + " error=" + actual.getLastError();
+        });
         assertEquals(OutboxStatus.PROCESSED, outbox.findById(id).orElseThrow().getStatus());
         assertEquals(1, consumed.count());
         assertFalse(processor.process(id));

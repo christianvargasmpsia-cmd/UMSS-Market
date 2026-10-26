@@ -90,6 +90,7 @@ public class SecurityConfig {
                                 "/api/auth/me", "/api/recommendations", "/api/interactions/**"
                         ).authenticated()
 
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/stores/*/inventory/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/publications/*/reviews").authenticated()
                         .requestMatchers("/api/stores/*/publications/duplicates").hasRole("EMPRENDEDOR")
                         .anyRequest().permitAll()
