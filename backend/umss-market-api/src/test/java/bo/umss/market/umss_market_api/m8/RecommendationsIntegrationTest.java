@@ -116,4 +116,29 @@ class RecommendationsIntegrationTest {
         assertTrue(jwt.isTokenValid(token));
         assertFalse(jwt.isTokenValid("invalid"));
     }
+
+    @Test void postingInteractionChangesRecommendationsAndOtherBuyerRemainsGeneral() throws Exception {
+        var source=product("tecnologia computadora",true,4);
+        var related=product("tecnologia portatil",true,4);
+        product("libro poesia",true,4);
+        mvc.perform(get("/api/recommendations").header("Authorization",auth(buyer)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.personalized").value(false));
+        mvc.perform(post("/api/interactions").header("Authorization",auth(buyer))
+                .contentType("application/json").content("{\"publicationId\":\""+source.getId()+"\",\"type\":\"FAVORITE\"}"))
+                .andExpect(status().isCreated());
+        mvc.perform(get("/api/recommendations").header("Authorization",auth(buyer)).param("limit","1"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.personalized").value(true))
+                .andExpect(jsonPath("$.items[0].id").value(related.getId().toString()));
+        mvc.perform(get("/api/recommendations").header("Authorization",auth(other)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.personalized").value(false));
+    }
+
+    @Test void requestedLimitsAreAppliedAfterAvailabilityFiltering() throws Exception {
+        for(int i=0;i<12;i++) product("Disponible "+i,true,5);
+        product("Inactivo",false,5); product("Agotado",true,0);
+        for(int limit:new int[]{1,5,10}) {
+            mvc.perform(get("/api/recommendations").header("Authorization",auth(buyer)).param("limit",""+limit))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.items.length()").value(limit));
+        }
+    }
 }
