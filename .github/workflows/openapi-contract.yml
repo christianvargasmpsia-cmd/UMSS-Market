@@ -12,9 +12,11 @@ permissions:
 jobs:
   test-and-contract:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Java 21
         uses: actions/setup-java@v4
         with:
@@ -22,19 +24,22 @@ jobs:
           java-version: '21'
           cache: maven
           cache-dependency-path: backend/umss-market-api/pom.xml
-      - name: Pruebas Issue 2, Issue 3, nueva funcionalidad y exportacion OpenAPI
+
+      - name: Pruebas y exportacion OpenAPI
         working-directory: backend/umss-market-api
         run: >-
           bash ./mvnw -B -ntp
           -Dtest=JpaPublicationAtomicReservationTest,TransactionalOutboxTest,InventoryAlertsIntegrationTest,OpenApiContractExportTest
           test
-      - name: Drift - el contrato versionado debe coincidir con el generado
-        run: |
-          test -f openapi.json || { echo 'Falta openapi.json; ejecute scripts/demo2-bootstrap-openapi.ps1 y haga commit.'; exit 1; }
-          diff -u openapi.json backend/umss-market-api/target/generated-openapi.json
+
       - name: Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Validar drift OpenAPI
+        run: |
+          node docs/demos/check-openapi.cjs backend/umss-market-api/target/generated-openapi.json openapi.json
+
       - name: Spectral - lint de OpenAPI
         run: npx --yes @stoplight/spectral-cli@6.17.0 lint openapi.json --ruleset .spectral.yaml --fail-severity error
