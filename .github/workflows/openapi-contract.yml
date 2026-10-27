@@ -1,0 +1,45 @@
+name: Demo 2 - pruebas y contrato OpenAPI
+
+on:
+  pull_request:
+  push:
+    branches: ["release/8.2.0"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-contract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend/umss-market-api/pom.xml
+
+      - name: Pruebas y exportacion OpenAPI
+        working-directory: backend/umss-market-api
+        run: >-
+          bash ./mvnw -B -ntp
+          -Dtest=JpaPublicationAtomicReservationTest,TransactionalOutboxTest,InventoryAlertsIntegrationTest,OpenApiContractExportTest
+          test
+
+      - name: Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validar drift OpenAPI
+        run: |
+          node docs/demos/check-openapi.cjs backend/umss-market-api/target/generated-openapi.json openapi.json
+
+      - name: Spectral - lint de OpenAPI
+        run: npx --yes @stoplight/spectral-cli@6.17.0 lint openapi.json --ruleset .spectral.yaml --fail-severity error
