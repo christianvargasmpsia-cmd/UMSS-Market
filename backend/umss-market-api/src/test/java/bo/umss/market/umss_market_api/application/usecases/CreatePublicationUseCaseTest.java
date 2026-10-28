@@ -1,240 +1,104 @@
 package bo.umss.market.umss_market_api.application.usecases;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import bo.umss.market.umss_market_api.application.dto.CreatePublicationRequest;
-import bo.umss.market.umss_market_api.application.dto.CreatePublicationResponse;
-import bo.umss.market.umss_market_api.domain.enums.PaymentMode;
-import bo.umss.market.umss_market_api.domain.enums.PublicationType;
-import bo.umss.market.umss_market_api.domain.enums.StoreStatus;
-import bo.umss.market.umss_market_api.domain.model.Publication;
-import bo.umss.market.umss_market_api.domain.model.Store;
-import bo.umss.market.umss_market_api.domain.ports.AIProviderPort;
-import bo.umss.market.umss_market_api.domain.ports.PublicationRepositoryPort;
-import bo.umss.market.umss_market_api.domain.ports.StoreRepositoryPort;
+import bo.umss.market.umss_market_api.domain.enums.*;
+import bo.umss.market.umss_market_api.domain.model.*;
+import bo.umss.market.umss_market_api.domain.ports.*;
+import bo.umss.market.umss_market_api.infrastructure.controllers.PublicationController;
 
 class CreatePublicationUseCaseTest {
+    private final PublicationRepositoryPort publications = mock(PublicationRepositoryPort.class);
+    private final StoreRepositoryPort stores = mock(StoreRepositoryPort.class);
+    private final CreatePublicationUseCase useCase = new CreatePublicationUseCase(publications, stores);
+    private CreatePublicationRequest request;
 
-    private PublicationRepositoryPort publicationRepository;
-    private StoreRepositoryPort storeRepository;
-    private AIProviderPort aiProvider;
-    private ObjectMapper objectMapper;
-
-    private CreatePublicationUseCase useCase;
-
-    @BeforeEach
-    void setUp() {
-
-        publicationRepository = mock(PublicationRepositoryPort.class);
-        storeRepository = mock(StoreRepositoryPort.class);
-        aiProvider = mock(AIProviderPort.class);
-
-        objectMapper = new ObjectMapper();
-
-        useCase = new CreatePublicationUseCase(
-                publicationRepository,
-                storeRepository,
-                aiProvider,
-                objectMapper
-        );
+    @BeforeEach void setup() {
+        request = new CreatePublicationRequest();
+        request.setStoreId(UUID.randomUUID());
+        request.setNombre("Laptop Lenovo ThinkPad");
+        request.setDescripcion("Laptop para estudio");
+        request.setPrecio(new BigDecimal("4200"));
+        request.setTipo(PublicationType.PRODUCTO);
+        request.setStock(8);
+        request.setModalidadCobro(PaymentMode.COMPLETO);
+        when(stores.findById(request.getStoreId())).thenReturn(Optional.of(
+            Store.builder().id(request.getStoreId()).status(StoreStatus.ACTIVE).build()));
+        when(publications.save(any())).thenAnswer(i -> i.getArgument(0));
     }
 
-    @Test
-    void shouldCreateProductSuccessfully() {
-
-        UUID storeId = UUID.randomUUID();
-        UUID publicationId = UUID.randomUUID();
-
-        Store store = Store.builder()
-                .id(storeId)
-                .status(StoreStatus.ACTIVE)
-                .build();
-
-        when(storeRepository.findById(storeId))
-                .thenReturn(Optional.of(store));
-
-        // Mock del embedding generado por Ollama
-        when(aiProvider.generateEmbedding(any(String.class)))
-                .thenReturn(List.of(
-                        0.1,
-                        0.2,
-                        0.3
-                ));
-
-        when(publicationRepository.save(any(Publication.class)))
-                .thenAnswer(invocation -> {
-
-                    Publication publication =
-                            invocation.getArgument(0);
-
-                    return Publication.builder()
-                            .id(publicationId)
-                            .storeId(publication.getStoreId())
-                            .nombre(publication.getNombre())
-                            .descripcion(publication.getDescripcion())
-                            .precio(publication.getPrecio())
-                            .tipo(publication.getTipo())
-                            .stock(publication.getStock())
-                            .modalidadCobro(publication.getModalidadCobro())
-                            .activa(publication.getActiva())
-                            .createdAt(publication.getCreatedAt())
-                            .updatedAt(publication.getUpdatedAt())
-                            .embedding(publication.getEmbedding())
-                            .build();
-                });
-
-        CreatePublicationRequest request =
-                new CreatePublicationRequest();
-
-        request.setStoreId(storeId);
-        request.setNombre("Brownie");
-        request.setDescripcion("Brownie artesanal");
-        request.setPrecio(BigDecimal.valueOf(10));
-        request.setTipo(PublicationType.PRODUCTO);
-        request.setStock(5);
-
-        CreatePublicationResponse response =
-                useCase.execute(request);
-
+    @Test void createsProductWithoutAnyAiProvider() {
+        var response = useCase.execute(request);
         assertTrue(response.isSuccess());
-
-        assertEquals(
-                publicationId,
-                response.getPublicationId()
-        );
-
-        // Verificar que se generó el embedding
-        verify(aiProvider)
-                .generateEmbedding(any(String.class));
-
-        // Verificar que la publicación guardada tiene embedding
-        verify(publicationRepository)
-                .save(argThat(publication ->
-                        publication.getEmbedding() != null
-                                && !publication.getEmbedding().isBlank()
-                ));
+        verify(publications).save(argThat(p -> p.getId().equals(response.getPublicationId())
+            && p.getEmbedding() == null && p.getStock() == 8 && p.getActiva()
+            && p.getNombre().equals(request.getNombre()) && p.getDescripcion().equals(request.getDescripcion())
+            && p.getPrecio().equals(request.getPrecio()) && p.getStoreId().equals(request.getStoreId())
+            && p.getTipo() == PublicationType.PRODUCTO && p.getModalidadCobro() == PaymentMode.COMPLETO
+            && p.getCreatedAt() != null && p.getUpdatedAt() != null));
     }
 
-    @Test
-    void shouldThrowWhenProductStockIsInvalid() {
-
-        UUID storeId = UUID.randomUUID();
-
-        Store store = Store.builder()
-                .id(storeId)
-                .status(StoreStatus.ACTIVE)
-                .build();
-
-        when(storeRepository.findById(storeId))
-                .thenReturn(Optional.of(store));
-
-        CreatePublicationRequest request =
-                new CreatePublicationRequest();
-
-        request.setStoreId(storeId);
-        request.setTipo(PublicationType.PRODUCTO);
-        request.setStock(0);
-
-        RuntimeException exception =
-                assertThrows(
-                        RuntimeException.class,
-                        () -> useCase.execute(request)
-                );
-
-        assertEquals(
-                "Los productos deben tener stock mayor a cero",
-                exception.getMessage()
-        );
-
-        // No debe generar embedding porque la validación
-        // de stock falla antes.
-        verify(aiProvider, never())
-                .generateEmbedding(any(String.class));
-    }
-
-    @Test
-    void shouldCreateServiceSuccessfully() {
-
-        UUID storeId = UUID.randomUUID();
-        UUID publicationId = UUID.randomUUID();
-
-        Store store = Store.builder()
-                .id(storeId)
-                .status(StoreStatus.ACTIVE)
-                .build();
-
-        when(storeRepository.findById(storeId))
-                .thenReturn(Optional.of(store));
-
-        // Mock del embedding
-        when(aiProvider.generateEmbedding(any(String.class)))
-                .thenReturn(List.of(
-                        0.4,
-                        0.5,
-                        0.6
-                ));
-
-        when(publicationRepository.save(any(Publication.class)))
-                .thenAnswer(invocation -> {
-
-                    Publication publication =
-                            invocation.getArgument(0);
-
-                    return Publication.builder()
-                            .id(publicationId)
-                            .storeId(publication.getStoreId())
-                            .nombre(publication.getNombre())
-                            .descripcion(publication.getDescripcion())
-                            .precio(publication.getPrecio())
-                            .tipo(publication.getTipo())
-                            .stock(publication.getStock())
-                            .modalidadCobro(publication.getModalidadCobro())
-                            .activa(publication.getActiva())
-                            .createdAt(publication.getCreatedAt())
-                            .updatedAt(publication.getUpdatedAt())
-                            .embedding(publication.getEmbedding())
-                            .build();
-                });
-
-        CreatePublicationRequest request =
-                new CreatePublicationRequest();
-
-        request.setStoreId(storeId);
-        request.setNombre("Diseño de Logos");
-        request.setDescripcion("Diseño gráfico");
-        request.setPrecio(BigDecimal.valueOf(50));
+    @Test void createsServiceWithoutEmbedding() {
         request.setTipo(PublicationType.SERVICIO);
-        request.setModalidadCobro(PaymentMode.ANTICIPADO);
+        request.setStock(null);
+        assertTrue(useCase.execute(request).isSuccess());
+        verify(publications).save(argThat(p -> p.getEmbedding() == null && p.getStock() == null));
+    }
 
-        CreatePublicationResponse response =
-                useCase.execute(request);
+    @Test void rejectsMissingStore() {
+        when(stores.findById(request.getStoreId())).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> useCase.execute(request));
+        verifyNoInteractions(publications);
+    }
 
-        assertTrue(response.isSuccess());
+    @Test void rejectsInactiveStore() {
+        when(stores.findById(request.getStoreId())).thenReturn(Optional.of(
+            Store.builder().status(StoreStatus.INACTIVE).build()));
+        assertThrows(RuntimeException.class, () -> useCase.execute(request));
+        verifyNoInteractions(publications);
+    }
 
-        assertEquals(
-                publicationId,
-                response.getPublicationId()
-        );
+    @Test void rejectsInvalidStock() {
+        for (Integer stock : new Integer[]{null, 0, -1}) {
+            request.setStock(stock);
+            assertThrows(RuntimeException.class, () -> useCase.execute(request));
+        }
+        verifyNoInteractions(publications);
+    }
 
-        verify(aiProvider)
-                .generateEmbedding(any(String.class));
+    @Test void rejectsServiceWithoutPaymentMode() {
+        request.setTipo(PublicationType.SERVICIO);
+        request.setModalidadCobro(null);
+        assertThrows(RuntimeException.class, () -> useCase.execute(request));
+        verifyNoInteractions(publications);
+    }
 
-        verify(publicationRepository)
-                .save(argThat(publication ->
-                        publication.getEmbedding() != null
-                                && !publication.getEmbedding().isBlank()
-                ));
+    @Test void doesNotHidePersistenceFailures() {
+        when(publications.save(any())).thenThrow(new IllegalStateException("Database unavailable"));
+        assertThrows(IllegalStateException.class, () -> useCase.execute(request));
+    }
+
+    @Test void httpCreationIntegratesControllerAndUseCaseWithoutOllama() throws Exception {
+        var controller = new PublicationController(useCase, mock(SearchCatalogUseCase.class),
+            mock(GetPublicationByIdUseCase.class), mock(UpdatePublicationUseCase.class),
+            mock(UpdatePublicationStatusUseCase.class), mock(DeletePublicationUseCase.class));
+        MockMvcBuilders.standaloneSetup(controller).build().perform(post("/api/publications")
+            .contentType("application/json").content("""
+                {"storeId":"%s","nombre":"Laptop Lenovo ThinkPad",
+                 "descripcion":"Laptop para estudio","precio":4200,"tipo":"PRODUCTO",
+                 "stock":8,"modalidadCobro":"COMPLETO"}
+                """.formatted(request.getStoreId())))
+            .andExpect(status().isCreated()).andExpect(jsonPath("success").value(true))
+            .andExpect(jsonPath("publicationId").isNotEmpty());
+        verify(publications).save(argThat(p -> p.getEmbedding() == null && p.getStock() == 8));
     }
 }

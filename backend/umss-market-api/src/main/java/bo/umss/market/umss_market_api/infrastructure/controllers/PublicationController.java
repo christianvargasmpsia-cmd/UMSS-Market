@@ -60,8 +60,7 @@ public class PublicationController {
     /**
      * Crear una publicación.
      *
-     * El CreatePublicationUseCase genera automáticamente
-     * el embedding de la publicación antes de guardarla.
+     * El alta no requiere Ollama. El embedding se genera por separado mediante reindexacion.
      */
     @PostMapping
     public ResponseEntity<CreatePublicationResponse> createPublication(

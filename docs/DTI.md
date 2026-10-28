@@ -945,3 +945,12 @@ Compara coseno, ordena descendente y aplica umbral/limite externos (0.90 y 5).
 Errores y vectores invalidos producen 503 explicito, nunca ausencia de coincidencias.
 Las coincidencias son advertencias para revision humana; no modifica ni bloquea CRUD.
 No hay cambios de esquema. Detalles y limites: docs/M8_FEATURE_3_DUPLICATES.md.
+
+## Alta de publicaciones independiente de Ollama (2026-10-27)
+
+POST /api/publications valida y persiste sin invocar AIProviderPort ni Ollama.
+El embedding inicial es null. La indexacion semantica queda a cargo del endpoint
+existente POST /api/admin/embeddings/reindex cuando Ollama este disponible.
+Hasta reindexar, las nuevas publicaciones no cuentan con vector para las busquedas
+semanticas que lo requieren; el catalogo tradicional sigue disponible.
+No se modifica el contrato de deteccion de duplicados ni sus errores explicitos.
