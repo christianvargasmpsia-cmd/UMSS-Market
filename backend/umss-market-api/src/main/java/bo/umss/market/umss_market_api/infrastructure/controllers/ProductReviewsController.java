@@ -4,13 +4,13 @@ import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import bo.umss.market.umss_market_api.application.dto.*;
-import bo.umss.market.umss_market_api.application.usecases.*;
+import bo.umss.market.umss_market_api.application.ports.ReviewsPort;
 import lombok.RequiredArgsConstructor;
 @RestController @RequiredArgsConstructor
 @RequestMapping("/api/publications/{publicationId}/reviews")
 public class ProductReviewsController {
-    private final ProductReviewsUseCase reviews;
-    private final SummarizeProductReviewsUseCase summary;
+    private final ReviewsPort reviews;
+
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public ReviewResponse create(@PathVariable UUID publicationId,@AuthenticationPrincipal UUID userId,@RequestBody ReviewRequest request) {
         return reviews.create(publicationId,userId,request);
@@ -19,7 +19,7 @@ public class ProductReviewsController {
         return reviews.list(publicationId,limit);
     }
     @GetMapping("/summary") public ReviewSummaryResponse summarize(@PathVariable UUID publicationId) {
-        return summary.execute(publicationId);
+        return reviews.summarize(publicationId);
     }
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
