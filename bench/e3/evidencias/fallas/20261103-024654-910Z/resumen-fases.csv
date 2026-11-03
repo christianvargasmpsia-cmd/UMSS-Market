@@ -1,0 +1,4 @@
+﻿"corrida","fase","solicitudes","publicaciones","resenas","erroresPublicaciones","erroresResenasInesperados","checks","droppedIterations","p95PublicacionMs","p95ResenasMs"
+"r01-antes","antes","301","151","150","0","0","1","0","8.328","28.811"
+"r01-falla","falla","300","150","150","0","0","1","0","7.277","7.884"
+"r01-despues","despues","302","151","151","0","0","1","0","6.099","28.377"

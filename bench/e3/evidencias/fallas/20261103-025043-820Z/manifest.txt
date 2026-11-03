@@ -1,0 +1,14 @@
+git=bf6cb8330b206fa86d6e8247e369f113d1e4238d
+sha256_fallas_js=9DCF3A5BCDECF208B7A6DEFCD4A93CF0761C78E4ACF34D8D09A8B85316CD4670
+image_k6=grafana/k6:1.8.2
+arquitectura=B
+rondas=5
+duracion_fase=30s
+calentamiento_excluido=15s
+rate_por_ruta=5/s
+orden_por_ronda=antes,falla,despues
+falla_inyectada=deshabilitar_proxy_reviews
+falla_http_resenas_esperado=503
+publicaciones_durante_falla_esperado=200
+postgres_compartido=si
+sin_reiniciar_db=si

@@ -1,0 +1,14 @@
+﻿git=bf6cb8330b206fa86d6e8247e369f113d1e4238d
+image_api=sha256:38b036caf4a68ad41387277e1e39cad3d970b5472beacb16c26a49c34d46192c
+image_k6=sha256:00fdcebafbc86cb0137d429529b1caa401a02e09025f02fc74866fa6e2b004d8
+db=postgres:16-alpine (proyecto umss-e3)
+rondas=1
+duracion_medida=30s
+calentamiento_excluido=15s
+rate_por_ruta=5/s
+orden=A1 B1 A2 B2 ...
+misma_base_datos=si (solo consultas GET)
+toxiproxy_sin_toxicos=esperado
+sha256_bench_e3_compose.yaml=DBBFF9427D94734E5AAFDD9955EB662C9AD0C3C2B583831AC34BBD1A8BA4A18F
+sha256_bench_e3_carga.js=28BA9A45E929998E8370A96A677EEAAE5FB331184F2D5FA8B6D06F8100BC9267
+sha256_bench_e3_seed.sql=71BB9A36A58ED3E8201EAD6D7388F6D6B862CE0B776F82DB07876AB560FBF75B

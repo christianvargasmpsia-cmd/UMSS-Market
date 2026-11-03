@@ -1,0 +1,12 @@
+experimento=E3-H4
+rondas=5
+fechaUTC=2026-11-03T03:14:56.4489405Z
+imagen=sha256:38b036caf4a68ad41387277e1e39cad3d970b5472beacb16c26a49c34d46192c
+mecanismo=docker start contenedores preexistentes; hasta HTTP 200 simultaneo en dos rutas
+condicion=arranque de procesos Java con PostgreSQL E3 y Toxiproxy ya activos
+nota=el proxy Toxiproxy y la base de datos NO forman parte del tiempo medido
+nota2=las operaciones docker start son secuenciales para reviews-b y api-b
+nota3=sin build, sin recrear contenedores, sin eliminar volumenes ni reinsertar seed
+nota4=desviacion explicita de HIPOTESIS.md: NO se usa docker compose down -v para preservar el volumen E3
+nota5=poll HTTP cada 200ms con timeout de 1s por URL; contiene el overhead del comando Docker
+timeoutSegundos=120

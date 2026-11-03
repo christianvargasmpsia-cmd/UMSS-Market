@@ -1,0 +1,149 @@
+{
+    "metrics": {
+        "iterations": {
+            "count": 302,
+            "rate": 10.065052427854758
+        },
+        "checks": {
+            "fails": 0,
+            "passes": 453,
+            "value": 1
+        },
+        "vus_max": {
+            "value": 16,
+            "min": 16,
+            "max": 16
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_sending": {
+            "avg": 0.0704369205298013,
+            "min": 0.012371,
+            "med": 0.060468,
+            "max": 0.36042,
+            "p(90)": 0.13684030000000003,
+            "p(95)": 0.17101704999999998
+        },
+        "http_reqs": {
+            "count": 302,
+            "rate": 10.065052427854758
+        },
+        "http_req_connecting": {
+            "avg": 0.14813940397351,
+            "min": 0,
+            "med": 0.169346,
+            "max": 0.721726,
+            "p(90)": 0.3545144,
+            "p(95)": 0.43947659999999994
+        },
+        "data_received": {
+            "count": 189791,
+            "rate": 6325.352203095968
+        },
+        "http_req_failed": {
+            "passes": 151,
+            "fails": 151,
+            "value": 0.5
+        },
+        "http_req_waiting": {
+            "p(90)": 3.797961800000002,
+            "p(95)": 4.508123099999998,
+            "avg": 2.647638056291388,
+            "min": 1.571551,
+            "med": 2.383528,
+            "max": 5.918795
+        },
+        "iteration_duration": {
+            "p(95)": 5.595296449999999,
+            "avg": 3.3420399668874192,
+            "min": 2.021488,
+            "med": 3.0260545,
+            "max": 7.674097,
+            "p(90)": 4.698807500000003
+        },
+        "http_req_receiving": {
+            "avg": 0.20554856622516562,
+            "min": 0.035596,
+            "med": 0.183944,
+            "max": 0.85544,
+            "p(90)": 0.34353020000000006,
+            "p(95)": 0.44899079999999997
+        },
+        "http_req_blocked": {
+            "avg": 0.2156914635761591,
+            "min": 0.00433,
+            "med": 0.2505045,
+            "max": 0.851242,
+            "p(90)": 0.4979147000000003,
+            "p(95)": 0.6576744999999999
+        },
+        "data_sent": {
+            "rate": 1283.2941845514815,
+            "count": 38505
+        },
+        "http_req_duration": {
+            "p(90)": 4.1511021,
+            "p(95)": 4.995305899999998,
+            "avg": 2.9236235430463586,
+            "min": 1.719015,
+            "med": 2.6416265,
+            "max": 6.801818
+        },
+        "http_req_duration{expected_response:true}": {
+            "min": 1.885916,
+            "med": 2.667472,
+            "max": 6.079697,
+            "p(90)": 4.119019,
+            "p(95)": 4.950791,
+            "avg": 2.9327073245033115
+        },
+        "vus": {
+            "min": 0,
+            "max": 0,
+            "value": 0
+        },
+        "checks{ruta:resenas}": {
+            "passes": 151,
+            "fails": 0,
+            "thresholds": {
+                "rate==1": false
+            },
+            "value": 1
+        }
+    },
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "publicacion HTTP 200": {
+                    "fails": 0,
+                    "name": "publicacion HTTP 200",
+                    "path": "::publicacion HTTP 200",
+                    "id": "3c54d12574489df049a21a8a07c1d2e5",
+                    "passes": 151
+                },
+                "resenas HTTP 503 esperado": {
+                    "path": "::resenas HTTP 503 esperado",
+                    "id": "33ede1bf272381b84baa68a2fc2bbb61",
+                    "passes": 151,
+                    "fails": 0,
+                    "name": "resenas HTTP 503 esperado"
+                },
+                "UUID correcto": {
+                    "fails": 0,
+                    "name": "UUID correcto",
+                    "path": "::UUID correcto",
+                    "id": "538b78ebfbb0556c23d34bc348f81eeb",
+                    "passes": 151
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}

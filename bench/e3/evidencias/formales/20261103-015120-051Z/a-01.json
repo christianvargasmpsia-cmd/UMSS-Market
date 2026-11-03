@@ -1,0 +1,180 @@
+{
+    "metrics": {
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 301,
+            "value": 0
+        },
+        "http_req_sending": {
+            "min": 0.003514,
+            "med": 0.020491,
+            "max": 0.218473,
+            "p(90)": 0.056971,
+            "p(95)": 0.065652,
+            "avg": 0.02807542857142857
+        },
+        "checks": {
+            "passes": 602,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_connecting": {
+            "avg": 0.014910106312292363,
+            "min": 0,
+            "med": 0,
+            "max": 0.479848,
+            "p(90)": 0,
+            "p(95)": 0.127125
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "iteration_duration": {
+            "avg": 6.015925843853817,
+            "min": 2.618167,
+            "med": 5.535361,
+            "max": 27.127301,
+            "p(90)": 8.689249,
+            "p(95)": 9.785997
+        },
+        "http_req_failed{ruta:resenas}": {
+            "passes": 0,
+            "fails": 151,
+            "thresholds": {
+                "rate==0": false
+            },
+            "value": 0
+        },
+        "http_reqs": {
+            "count": 301,
+            "rate": 10.031753704971646
+        },
+        "http_req_waiting": {
+            "avg": 5.281960013289038,
+            "min": 2.069753,
+            "med": 4.840055,
+            "max": 26.174998,
+            "p(90)": 7.961463,
+            "p(95)": 8.936031
+        },
+        "checks{ruta:publicacion}": {
+            "passes": 300,
+            "fails": 0,
+            "thresholds": {
+                "rate==1": false
+            },
+            "value": 1
+        },
+        "checks{ruta:resenas}": {
+            "passes": 302,
+            "fails": 0,
+            "thresholds": {
+                "rate==1": false
+            },
+            "value": 1
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 5.696327990033228,
+            "min": 2.412344,
+            "med": 5.26314,
+            "max": 26.794573,
+            "p(90)": 8.320489,
+            "p(95)": 9.390059
+        },
+        "http_req_receiving": {
+            "avg": 0.38629254817275754,
+            "min": 0.038507,
+            "med": 0.372638,
+            "max": 1.011335,
+            "p(90)": 0.602213,
+            "p(95)": 0.737459
+        },
+        "http_req_blocked": {
+            "p(90)": 0.009275,
+            "p(95)": 0.180053,
+            "avg": 0.08362288372093028,
+            "min": 0.001911,
+            "med": 0.006366,
+            "max": 9.10885
+        },
+        "data_received": {
+            "count": 748377,
+            "rate": 24941.972566330784
+        },
+        "iterations": {
+            "rate": 10.031753704971646,
+            "count": 301
+        },
+        "data_sent": {
+            "count": 38386,
+            "rate": 1279.3318861097728
+        },
+        "vus_max": {
+            "min": 16,
+            "max": 16,
+            "value": 16
+        },
+        "http_req_duration": {
+            "avg": 5.696327990033228,
+            "min": 2.412344,
+            "med": 5.26314,
+            "max": 26.794573,
+            "p(90)": 8.320489,
+            "p(95)": 9.390059
+        },
+        "vus": {
+            "value": 0,
+            "min": 0,
+            "max": 0
+        },
+        "http_req_failed{ruta:publicacion}": {
+            "passes": 0,
+            "fails": 150,
+            "thresholds": {
+                "rate==0": false
+            },
+            "value": 0
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "publicacion HTTP 200": {
+                    "name": "publicacion HTTP 200",
+                    "path": "::publicacion HTTP 200",
+                    "id": "3c54d12574489df049a21a8a07c1d2e5",
+                    "passes": 150,
+                    "fails": 0
+                },
+                "UUID correcto": {
+                    "name": "UUID correcto",
+                    "path": "::UUID correcto",
+                    "id": "538b78ebfbb0556c23d34bc348f81eeb",
+                    "passes": 150,
+                    "fails": 0
+                },
+                "resenas HTTP 200": {
+                    "name": "resenas HTTP 200",
+                    "path": "::resenas HTTP 200",
+                    "id": "98affca0b996baad955223536838150e",
+                    "passes": 151,
+                    "fails": 0
+                },
+                "20 resenas recibidas": {
+                    "fails": 0,
+                    "name": "20 resenas recibidas",
+                    "path": "::20 resenas recibidas",
+                    "id": "167ad9ce365c8b0fdd4bc946979d76bf",
+                    "passes": 151
+                }
+            }
+    }
+}
