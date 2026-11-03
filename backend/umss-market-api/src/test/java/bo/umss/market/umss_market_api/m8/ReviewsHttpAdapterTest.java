@@ -25,6 +25,9 @@ import bo.umss.market.umss_market_api.infrastructure.adapters.ReviewsHttpAdapter
 
 class ReviewsHttpAdapterTest {
 
+    private static final String TEST_TOKEN =
+        "e3-test-token-only-not-for-production-123456789";
+
     private HttpServer server;
     private ObjectMapper mapper;
     private ReviewsHttpAdapter adapter;
@@ -43,7 +46,8 @@ class ReviewsHttpAdapterTest {
         adapter = new ReviewsHttpAdapter(
             mapper,
             "http://127.0.0.1:" + server.getAddress().getPort(),
-            2000
+            2000,
+            TEST_TOKEN
         );
     }
 
@@ -86,12 +90,18 @@ class ReviewsHttpAdapterTest {
         );
 
         AtomicReference<String> request = new AtomicReference<>();
+        AtomicReference<String> receivedToken = new AtomicReference<>();
 
         server.createContext("/internal/e3/reviews/", exchange -> {
             request.set(
                 exchange.getRequestMethod()
                     + " "
                     + exchange.getRequestURI()
+            );
+
+            receivedToken.set(
+                exchange.getRequestHeaders()
+                    .getFirst("X-E3-Internal-Token")
             );
 
             respond(
@@ -111,6 +121,8 @@ class ReviewsHttpAdapterTest {
                 + "?limit=20",
             request.get()
         );
+
+        assertEquals(TEST_TOKEN, receivedToken.get());
     }
 
     @Test
@@ -260,5 +272,18 @@ class ReviewsHttpAdapterTest {
         );
 
         assertEquals(502, error.getStatusCode().value());
+    }
+
+    @Test
+    void rejectsMissingInternalToken() {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new ReviewsHttpAdapter(
+                mapper,
+                "http://127.0.0.1:8081",
+                2000,
+                ""
+            )
+        );
     }
 }

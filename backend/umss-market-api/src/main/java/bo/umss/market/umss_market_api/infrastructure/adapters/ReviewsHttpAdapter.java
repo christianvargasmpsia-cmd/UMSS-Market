@@ -37,6 +37,7 @@ public class ReviewsHttpAdapter implements ReviewsPort {
     private final ObjectMapper mapper;
     private final String baseUrl;
     private final Duration timeout;
+    private final String internalToken;
 
     public record CreateCommand(
         UUID buyerId,
@@ -48,7 +49,7 @@ public class ReviewsHttpAdapter implements ReviewsPort {
         @Value("${e3.reviews.base-url:http://localhost:8081}")
         String baseUrl,
         @Value("${e3.reviews.timeout-ms:800}")
-        long timeoutMs
+        long timeoutMs, @Value("${E3_INTERNAL_TOKEN:}") String internalToken
     ) {
         if (timeoutMs <= 0) {
             throw new IllegalArgumentException(
@@ -59,6 +60,14 @@ public class ReviewsHttpAdapter implements ReviewsPort {
         this.mapper = mapper;
         this.baseUrl = baseUrl.replaceAll("/+$", "");
         this.timeout = Duration.ofMillis(timeoutMs);
+
+        if (internalToken == null || internalToken.length() < 32) {
+            throw new IllegalArgumentException(
+                "E3_INTERNAL_TOKEN debe tener al menos 32 caracteres"
+            );
+        }
+
+        this.internalToken = internalToken;
 
         this.client = HttpClient.newBuilder()
             .connectTimeout(
@@ -122,7 +131,8 @@ public class ReviewsHttpAdapter implements ReviewsPort {
     ) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
             .uri(URI.create(baseUrl + path))
-            .timeout(timeout);
+            .timeout(timeout)
+            .header("X-E3-Internal-Token", internalToken);
 
         if ("POST".equals(method)) {
             String json;
