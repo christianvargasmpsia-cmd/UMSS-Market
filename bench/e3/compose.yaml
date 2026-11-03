@@ -1,0 +1,82 @@
+name: umss-e3
+
+x-backend-env: &backend-env
+  SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/e3_umss
+  SPRING_DATASOURCE_USERNAME: e3
+  SPRING_DATASOURCE_PASSWORD: ${E3_DB_PASSWORD:?Falta E3_DB_PASSWORD}
+  SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  SPRING_JPA_SHOW_SQL: "false"
+  APP_DB_SEED_ENABLED: "false"
+  IA_HABILITADA: "false"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: e3_umss
+      POSTGRES_USER: e3
+      POSTGRES_PASSWORD: ${E3_DB_PASSWORD:?Falta E3_DB_PASSWORD}
+    volumes:
+      - e3_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U e3 -d e3_umss"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api-a:
+    profiles: ["a"]
+    image: umss-e3-benchmark:local
+    environment:
+      <<: *backend-env
+      SERVER_PORT: "8080"
+      E3_REVIEWS_MODE: local
+    ports:
+      - "127.0.0.1:18080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  reviews-b:
+    profiles: ["b"]
+    image: umss-e3-benchmark:local
+    environment:
+      <<: *backend-env
+      SERVER_PORT: "8081"
+      LOADER_MAIN: bo.umss.market.e3.E3ReviewsServiceApplication
+      E3_INTERNAL_TOKEN: ${E3_INTERNAL_TOKEN:?Falta E3_INTERNAL_TOKEN}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  toxiproxy:
+    profiles: ["b"]
+    image: ghcr.io/shopify/toxiproxy:2.12.0
+    ports:
+      - "127.0.0.1:8474:8474"
+    depends_on:
+      reviews-b:
+        condition: service_started
+
+  api-b:
+    profiles: ["b"]
+    image: umss-e3-benchmark:local
+    environment:
+      <<: *backend-env
+      SERVER_PORT: "8080"
+      E3_REVIEWS_MODE: http
+      E3_REVIEWS_BASE_URL: http://toxiproxy:8666
+      E3_REVIEWS_TIMEOUT_MS: "800"
+      E3_INTERNAL_TOKEN: ${E3_INTERNAL_TOKEN:?Falta E3_INTERNAL_TOKEN}
+    ports:
+      - "127.0.0.1:18080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      reviews-b:
+        condition: service_started
+      toxiproxy:
+        condition: service_started
+
+volumes:
+  e3_pgdata:
