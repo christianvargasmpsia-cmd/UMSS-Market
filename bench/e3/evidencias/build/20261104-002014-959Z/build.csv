@@ -1,0 +1,6 @@
+﻿"ronda","componente","dockerfile","contexto","etiqueta","cache","build_ms","build_s","docker_version","log"
+"1","imagen_compartida_A_B","backend/umss-market-api/Dockerfile","backend/umss-market-api","umss-e3-build:local","no-cache","7365,298","7,365","29.9.1","logs/build-01.log"
+"2","imagen_compartida_A_B","backend/umss-market-api/Dockerfile","backend/umss-market-api","umss-e3-build:local","no-cache","7026,09","7,026","29.9.1","logs/build-02.log"
+"3","imagen_compartida_A_B","backend/umss-market-api/Dockerfile","backend/umss-market-api","umss-e3-build:local","no-cache","6962,264","6,962","29.9.1","logs/build-03.log"
+"4","imagen_compartida_A_B","backend/umss-market-api/Dockerfile","backend/umss-market-api","umss-e3-build:local","no-cache","7250,872","7,251","29.9.1","logs/build-04.log"
+"5","imagen_compartida_A_B","backend/umss-market-api/Dockerfile","backend/umss-market-api","umss-e3-build:local","no-cache","6733,328","6,733","29.9.1","logs/build-05.log"

@@ -1,0 +1,42 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 303B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/eclipse-temurin:21-jre-noble
+#2 DONE 0.3s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 151B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 91B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/eclipse-temurin:21-jre-noble@sha256:0eda5830ed7b669abc246a8dc520ea8a23cab06f9a8d4b6964109e2f2394e46f
+#5 resolve docker.io/library/eclipse-temurin:21-jre-noble@sha256:0eda5830ed7b669abc246a8dc520ea8a23cab06f9a8d4b6964109e2f2394e46f 0.0s done
+#5 DONE 0.0s
+
+#6 [2/4] WORKDIR /app
+#6 CACHED
+
+#7 [3/4] RUN groupadd --system appgroup &&     useradd --system --gid appgroup appuser
+#7 DONE 0.6s
+
+#8 [4/4] COPY target/umss-market-api-0.0.1-SNAPSHOT.jar app.jar
+#8 DONE 0.4s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 3.8s done
+#9 exporting manifest sha256:6fdcd3bbbcbb790353de7ac45d39f28433c72de3c8408f3a65a732f760b4f540 0.0s done
+#9 exporting config sha256:1b44fa7cd044010bb838f5589607438672bff7fa0982b3442f98352b7d14f184 0.0s done
+#9 exporting attestation manifest sha256:ff494fccf203c25c8eed5ec4e082f0ca50eea89ae09612a120a699f1c65dee58 0.0s done
+#9 exporting manifest list sha256:cc3858366dd56787fc0e9e968bcf25cf41d46ab3a5f860ec861aaae625f94afb 0.0s done
+#9 naming to docker.io/library/umss-e3-build:local
+#9 naming to docker.io/library/umss-e3-build:local done
+#9 unpacking to docker.io/library/umss-e3-build:local
+#9 unpacking to docker.io/library/umss-e3-build:local 0.7s done
+#9 DONE 4.7s
