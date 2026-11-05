@@ -2,7 +2,7 @@
 
 **Rama de trabajo:** `feature/8.3-melani-pedidos-catalogo`  
 **Base inicial:** `release/8.2.0` (`e142632`).  
-**Integracion objetivo:** `release/8.3.0`, pendiente de creacion por el equipo.  
+**Integracion objetivo:** `release/8.3.0`, rama ya creada por el equipo; integración mediante revisión de PR pendiente.  
 **Autoria de commits:** `melrodriguez1133`.
 
 Este documento describe exclusivamente los aportes de Melani; la infraestructura Docker, analisis E3/k6 y release son responsabilidades coordinadas del equipo, pero no se atribuyen a Melani.
@@ -59,6 +59,16 @@ Antes de integrar, ejecutar tambien las pruebas preexistentes relevantes:
 8. Enviar `GET /api/catalog/publications?page=-1&size=2`; comprobar error 400.
 9. Mostrar que `GET /api/publications` conserva el contrato anterior.
 
-**Verificaciones pendientes:** ejecucion local de Maven, pruebas HTTP reales con datos, seguridad por JWT, OpenAPI/CI y PR de integracion. No se afirma que los criterios esten aprobados hasta contar con dichas evidencias.
+## Validacion ejecutada (2026-11-04)
+
+Evidencia detallada y resultados observados: [Registro HTTP y Maven](evidencias/demo-3-melani-http-2026-11-04.md).
+
+- Suite completa Maven: **265 contabilizadas, 256 aprobadas, 0 fallidas, 0 errores, 9 omitidas**; BUILD SUCCESS. No sustituye una ejecución de CI.
+- Clases nuevas: **9/9**; regresión de catálogo y GraphQL: **29/29**.
+- UC-010: página 0, tamaño 2: HTTP 200, 2 ítems, 105 publicaciones y 53 páginas. Página -1: HTTP 400.
+- UC-009: registro sintético HTTP 201, login correcto, tres consultas de estado con JWT HTTP 200; seguimiento de un pedido de PENDIENTE a CONFIRMADO y CANCELADO, con inclusión positiva y exclusión negativa correctas.
+- **Observación:** sin JWT, /api/orders/me respondió HTTP **403**, no 401. Acceso bloqueado; revisar semántica si se exige 401.
+- **Pendientes:** prueba de aislamiento entre dos compradores, segunda página y filtros combinados, token inválido, estado inválido, CI y revisión/merge del PR.
+
 
 **Nota de alcance:** hay otros endpoints antiguos de pedidos con `userId` explicito que no se modifican en esta demo. El endpoint nuevo usa identidad autenticada.
