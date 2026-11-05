@@ -1189,3 +1189,10 @@ JWT Secrets  → NUNCA
 ```
 
 El repositorio debe poder ser clonado y configurado por otro integrante o por el docente sin necesidad de acceder a credenciales privadas.
+
+## Desarrollo reproducible y rendimiento (Módulo 4)
+
+- Stack local con Docker multi-stage, PostgreSQL persistente y healthchecks: [`compose.yaml`](compose.yaml) y [`docs/feature-1-docker-stack.md`](docs/feature-1-docker-stack.md).
+- Prueba de catálogo con k6, tres corridas y mediana p95/errores: [`bench/README.md`](bench/README.md) y [`docs/feature-2-k6-performance.md`](docs/feature-2-k6-performance.md).
+
+Para iniciar el stack: `docker compose up -d --wait`. Para ejecutar la prueba de rendimiento en Windows: `bench\run-three.ps1`.

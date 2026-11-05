@@ -1,0 +1,148 @@
+{
+    "metrics": {
+        "http_req_blocked": {
+            "avg": 0.0551982449999999,
+            "min": 0.0061,
+            "med": 0.0074,
+            "max": 5.318047,
+            "p(90)": 0.011101,
+            "p(95)": 0.016001
+        },
+        "http_req_sending": {
+            "min": 0.015201,
+            "med": 0.053904,
+            "max": 0.192613,
+            "p(90)": 0.067735,
+            "p(95)": 0.07290999999999999,
+            "avg": 0.05460930333333334
+        },
+        "vus_max": {
+            "value": 10,
+            "min": 10,
+            "max": 10
+        },
+        "http_reqs": {
+            "count": 600,
+            "rate": 10.000596422236494
+        },
+        "data_sent": {
+            "count": 73800,
+            "rate": 1230.0733599350888
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 600,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_connecting": {
+            "avg": 0.03864219166666667,
+            "min": 0,
+            "med": 0,
+            "max": 2.962393,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "data_received": {
+            "rate": 3850.2296225610503,
+            "count": 231000
+        },
+        "http_req_waiting": {
+            "med": 4.952372,
+            "max": 55.705456,
+            "p(90)": 5.486067900000001,
+            "p(95)": 5.6972330499999995,
+            "avg": 5.172348868333335,
+            "min": 4.149368
+        },
+        "http_req_duration": {
+            "min": 4.367584,
+            "med": 5.1929885,
+            "max": 56.007476,
+            "p(90)": 5.763047200000001,
+            "p(95)": 5.95885435,
+            "avg": 5.414273686666666,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "iteration_duration": {
+            "avg": 5.775892270000002,
+            "min": 4.6365,
+            "med": 5.5041685000000005,
+            "max": 56.344898,
+            "p(90)": 6.1448401,
+            "p(95)": 6.476929749999997
+        },
+        "iterations": {
+            "rate": 10.000596422236494,
+            "count": 600
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "checks": {
+            "passes": 1200,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_receiving": {
+            "p(90)": 0.25685790000000003,
+            "p(95)": 0.3655349,
+            "avg": 0.187315515,
+            "min": 0.102507,
+            "med": 0.162561,
+            "max": 2.725077
+        },
+        "vus": {
+            "value": 0,
+            "min": 0,
+            "max": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 5.414273686666666,
+            "min": 4.367584,
+            "med": 5.1929885,
+            "max": 56.007476,
+            "p(90)": 5.763047200000001,
+            "p(95)": 5.95885435
+        },
+        "catalog_failed_checks": {
+            "passes": 0,
+            "fails": 600,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        }
+    },
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "catalog responds HTTP 200": {
+                    "name": "catalog responds HTTP 200",
+                    "path": "::catalog responds HTTP 200",
+                    "id": "03b970f995c8569503b0ff3cf55a89aa",
+                    "passes": 600,
+                    "fails": 0
+                },
+                "catalog response is JSON": {
+                    "path": "::catalog response is JSON",
+                    "id": "d8a865f46059c5f5f12cbf671158583b",
+                    "passes": 600,
+                    "fails": 0,
+                    "name": "catalog response is JSON"
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}

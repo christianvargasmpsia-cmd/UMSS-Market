@@ -1,0 +1,148 @@
+{
+    "metrics": {
+        "http_req_blocked": {
+            "p(90)": 0.011611000000000003,
+            "p(95)": 0.016101050000000002,
+            "avg": 0.0594241716666668,
+            "min": 0.006,
+            "med": 0.0079,
+            "max": 5.857095
+        },
+        "http_reqs": {
+            "count": 600,
+            "rate": 10.000561916073194
+        },
+        "http_req_duration": {
+            "max": 78.913694,
+            "p(90)": 7.632355200000001,
+            "p(95)": 9.976893199999992,
+            "avg": 6.836221078333336,
+            "min": 4.599699,
+            "med": 5.7297695,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_waiting": {
+            "med": 5.455904,
+            "max": 78.635577,
+            "p(90)": 7.042935500000001,
+            "p(95)": 9.285256299999997,
+            "avg": 6.503576828333334,
+            "min": 4.368883
+        },
+        "catalog_failed_checks": {
+            "passes": 0,
+            "fails": 600,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_connecting": {
+            "med": 0,
+            "max": 3.394829,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.041365454999999995,
+            "min": 0
+        },
+        "iteration_duration": {
+            "p(95)": 10.751532299999996,
+            "avg": 7.21296451,
+            "min": 4.916719,
+            "med": 6.0623380000000004,
+            "max": 79.225915,
+            "p(90)": 8.226080500000002
+        },
+        "vus": {
+            "value": 0,
+            "min": 0,
+            "max": 0
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 600,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "data_received": {
+            "count": 231000,
+            "rate": 3850.2163376881795
+        },
+        "vus_max": {
+            "value": 10,
+            "min": 10,
+            "max": 10
+        },
+        "checks": {
+            "passes": 1200,
+            "fails": 0,
+            "value": 1
+        },
+        "iterations": {
+            "count": 600,
+            "rate": 10.000561916073194
+        },
+        "data_sent": {
+            "count": 73800,
+            "rate": 1230.0691156770029
+        },
+        "http_req_duration{expected_response:true}": {
+            "max": 78.913694,
+            "p(90)": 7.632355200000001,
+            "p(95)": 9.976893199999992,
+            "avg": 6.836221078333336,
+            "min": 4.599699,
+            "med": 5.7297695
+        },
+        "http_req_sending": {
+            "max": 0.210614,
+            "p(90)": 0.07082490000000001,
+            "p(95)": 0.081215,
+            "avg": 0.05815343,
+            "min": 0.016701,
+            "med": 0.055304
+        },
+        "http_req_receiving": {
+            "max": 4.256474,
+            "p(90)": 0.5019830000000001,
+            "p(95)": 0.6142409999999996,
+            "avg": 0.2744908200000001,
+            "min": 0.093706,
+            "med": 0.185512
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0
+        }
+    },
+    "root_group": {
+        "groups": {},
+        "checks": {
+                "catalog responds HTTP 200": {
+                    "id": "03b970f995c8569503b0ff3cf55a89aa",
+                    "passes": 600,
+                    "fails": 0,
+                    "name": "catalog responds HTTP 200",
+                    "path": "::catalog responds HTTP 200"
+                },
+                "catalog response is JSON": {
+                    "id": "d8a865f46059c5f5f12cbf671158583b",
+                    "passes": 600,
+                    "fails": 0,
+                    "name": "catalog response is JSON",
+                    "path": "::catalog response is JSON"
+                }
+            },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+}
