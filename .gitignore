@@ -1,0 +1,11 @@
+# Local environment secrets
+.env
+.env.*
+!.env.example
+
+# Build output and local benchmark artifacts
+backend/umss-market-api/target/
+backend/umss-market-api/logs/
+bench/results/
+
+umss-market-api.tar

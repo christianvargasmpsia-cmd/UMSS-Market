@@ -1,0 +1,81 @@
+name: umss-market
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-umss_market}
+      POSTGRES_USER: ${POSTGRES_USER:-umss_market}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-only-change-me}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - umss-market
+
+  api:
+    build:
+      context: ./backend/umss-market-api
+      dockerfile: Dockerfile
+    image: umss-market-api:feature1
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-umss_market}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-umss_market}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-only-change-me}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+      SPRING_JPA_SHOW_SQL: "false"
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: ${SECURITY_LOG_LEVEL:-WARN}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-local-development-jwt-secret-change-before-production-32chars}
+      SERVER_PORT: 8080
+      IA_HABILITADA: ${IA_HABILITADA:-false}
+      RECOMMENDATIONS_OLLAMA_BASE_URL: ${RECOMMENDATIONS_OLLAMA_BASE_URL:-http://ollama:11434}
+      REVIEWS_OLLAMA_BASE_URL: ${REVIEWS_OLLAMA_BASE_URL:-http://ollama:11434}
+      DUPLICATES_OLLAMA_BASE_URL: ${DUPLICATES_OLLAMA_BASE_URL:-http://ollama:11434}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/actuator/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - umss-market
+
+  # Optional AI runtime. The default stack does not require model downloads.
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - umss-market
+
+volumes:
+  postgres_data:
+  ollama_data:
+
+networks:
+  umss-market:
+    driver: bridge
