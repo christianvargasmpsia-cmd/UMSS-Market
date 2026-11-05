@@ -87,7 +87,7 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(
-                                "/api/auth/me", "/api/recommendations", "/api/interactions/**"
+                                "/api/auth/me", "/api/recommendations", "/api/interactions/**", "/api/orders/me"
                         ).authenticated()
 
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/stores/*/inventory/**").hasRole("EMPRENDEDOR")

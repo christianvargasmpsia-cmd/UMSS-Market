@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import bo.umss.market.umss_market_api.application.dto.OrderItemResponse;
 import bo.umss.market.umss_market_api.application.dto.OrderResponse;
+import bo.umss.market.umss_market_api.domain.enums.OrderStatus;
 import bo.umss.market.umss_market_api.domain.model.Order;
 import bo.umss.market.umss_market_api.domain.model.OrderItem;
 import bo.umss.market.umss_market_api.domain.model.Publication;
@@ -24,8 +25,17 @@ public class GetOrdersUseCase {
     private final PublicationRepositoryPort publicationRepository;
 
     public List<OrderResponse> execute(UUID userId) {
+        return execute(userId, null);
+    }
 
-        List<Order> orders = orderRepository.findByUserId(userId);
+    /**
+     * Consulta pedidos de un unico usuario. El filtro de estado es opcional;
+     * nunca se accede a los pedidos de otros compradores.
+     */
+    public List<OrderResponse> execute(UUID userId, OrderStatus status) {
+        List<Order> orders = status == null
+                ? orderRepository.findByUserId(userId)
+                : orderRepository.findByUserIdAndStatus(userId, status);
 
         return orders.stream()
                 .map(this::toResponse)
