@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import bo.umss.market.umss_market_api.infrastructure.persistence.entities.*;
 import bo.umss.market.umss_market_api.infrastructure.persistence.repositories.JpaConsumedOrderEventRepository;
 
 /** Efecto demostrable/idempotente: registrar una recepcion durable por eventId. */
 @Component
+@ConditionalOnProperty(name = "notifications.email.enabled", havingValue = "false", matchIfMissing = true)
 public class InboxOrderEventConsumer implements OrderEventConsumer {
     private static final Logger log = LoggerFactory.getLogger(InboxOrderEventConsumer.class);
     private final JpaConsumedOrderEventRepository receipts;
