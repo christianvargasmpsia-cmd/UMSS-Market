@@ -79,7 +79,7 @@ class RecommendationsIntegrationTest {
                 .andExpect(jsonPath("$.explanation").value("Opciones disponibles para explorar."));
     }
     @Test void rejectsAnonymousInvalidTokenAndInvalidLimits() throws Exception {
-        mvc.perform(get("/api/recommendations")).andExpect(status().isForbidden());
+        mvc.perform(get("/api/recommendations")).andExpect(status().isUnauthorized());
         mvc.perform(get("/api/recommendations").header("Authorization","Bearer invalid"))
                 .andExpect(status().isUnauthorized());
         for(String limit:new String[]{"0","51","abc"}) mvc.perform(get("/api/recommendations")
@@ -88,7 +88,7 @@ class RecommendationsIntegrationTest {
     @Test void cannotReadOrDeleteAnotherBuyersPersistedInteraction() throws Exception {
         var entry=history(other,product("Libro",true,5));
         String url="/api/interactions/"+entry.getId();
-        mvc.perform(get(url)).andExpect(status().isForbidden());
+        mvc.perform(get(url)).andExpect(status().isUnauthorized());
         mvc.perform(get(url).header("Authorization",auth(buyer))).andExpect(status().isNotFound());
         mvc.perform(delete(url).header("Authorization",auth(buyer))).andExpect(status().isNotFound());
         assertTrue(interactions.existsById(entry.getId()));

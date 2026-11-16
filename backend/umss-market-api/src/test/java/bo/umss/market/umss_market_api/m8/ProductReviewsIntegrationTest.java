@@ -88,7 +88,7 @@ class ProductReviewsIntegrationTest {
         assertEquals(0,reviews.count());
     }
     @Test void rejectsAnonymousMissingBuyerInvalidBodyAndInvalidLimits() throws Exception {
-        mvc.perform(post(url(product)).contentType("application/json").content("{}" )).andExpect(status().isForbidden());
+        mvc.perform(post(url(product)).contentType("application/json").content("{}" )).andExpect(status().isUnauthorized());
         String fake="Bearer "+jwt.generateToken(UUID.randomUUID(),"fake@example.invalid","COMPRADOR");
         mvc.perform(post(url(product)).header("Authorization",fake).contentType("application/json").content("{}"))
                 .andExpect(status().isUnauthorized());

@@ -55,7 +55,7 @@ class DuplicateDetectionIntegrationTest {
         assertEquals(0,publications.findById(own).orElseThrow().getStock());
     }
     @Test void authorizationRejectsAnonymousBuyerOtherShopAndSpoofedJwtIdentity() throws Exception {
-        mvc.perform(post(url(store)).contentType("application/json").content(body)).andExpect(status().isForbidden());
+        mvc.perform(post(url(store)).contentType("application/json").content(body)).andExpect(status().isUnauthorized());
         mvc.perform(post(url(store)).header("Authorization",auth(owner,"COMPRADOR")).contentType("application/json").content(body)).andExpect(status().isForbidden());
         mvc.perform(post(url(store)).header("Authorization",auth(otherOwner,"EMPRENDEDOR")).contentType("application/json")
                 .content(body.substring(0,body.length()-1)+",\"userId\":\""+owner+"\"}")).andExpect(status().isForbidden());

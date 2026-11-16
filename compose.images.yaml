@@ -1,0 +1,10 @@
+services:
+  api:
+    environment:
+      PUBLICATION_IMAGES_DIRECTORY: /app/uploads/publications
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 5MB
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: 6MB
+    volumes:
+      - publication-images:/app/uploads/publications
+volumes:
+  publication-images:

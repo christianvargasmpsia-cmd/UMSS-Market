@@ -130,7 +130,7 @@ class InventoryAlertsIntegrationTest {
 
     @Test void requiresJwtAndPersistsNoInventoryChanges() throws Exception {
         long count = publications.count();
-        mvc.perform(get(lowStockUrl(shop))).andExpect(status().isForbidden());
+        mvc.perform(get(lowStockUrl(shop))).andExpect(status().isUnauthorized());
         mvc.perform(get(lowStockUrl(shop)).header("Authorization", token(owner,"EMPRENDEDOR")))
                 .andExpect(status().isOk());
         assertEquals(count, publications.count(), "La consulta no debe crear ni eliminar publicaciones");

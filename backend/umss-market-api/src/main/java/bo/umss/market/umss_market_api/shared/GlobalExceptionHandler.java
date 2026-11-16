@@ -112,6 +112,19 @@ public ResponseEntity<ErrorResponse> handleInvalidJson(
     }
 
     // =========================
+    // 413 PAYLOAD TOO LARGE
+    // =========================
+
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxUploadSize(
+            org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
+
+        return buildErrorResponse(
+                HttpStatus.PAYLOAD_TOO_LARGE,
+                "El archivo supera el tamaño máximo permitido de 5 MB"
+        );
+    }
+    // =========================
     // 500 INTERNAL SERVER ERROR
     // =========================
 

@@ -52,4 +52,17 @@ class GlobalExceptionHandlerTest {
 
         assertEquals(500, response.getStatusCode().value());
     }
+
+    @Test
+    void oversizedUploadReturns413() {
+
+        var exception =
+                new org.springframework.web.multipart.MaxUploadSizeExceededException(
+                        5L * 1024 * 1024);
+
+        var response = handler.handleMaxUploadSize(exception);
+
+        assertEquals(413, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+    }
 }

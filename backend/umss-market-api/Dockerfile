@@ -22,6 +22,11 @@ RUN addgroup -S -g 10001 appgroup \
 
 WORKDIR /app
 
+# Prepare image storage for the non-root application user.
+RUN mkdir -p /app/uploads/publications \
+    && chown -R 10001:10001 /app/uploads \
+    && chmod 750 /app/uploads /app/uploads/publications
+
 COPY --from=build --chown=appuser:appgroup \
     /workspace/target/umss-market-api-0.0.1-SNAPSHOT.jar ./app.jar
 
