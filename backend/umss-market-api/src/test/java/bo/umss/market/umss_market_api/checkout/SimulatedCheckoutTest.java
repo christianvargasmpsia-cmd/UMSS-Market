@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.*;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import bo.umss.market.umss_market_api.application.dto.SimulatedCheckoutRequest;
@@ -204,13 +205,32 @@ class SimulatedCheckoutTest {
         MockMvc mvc = MockMvcBuilders.standaloneSetup(new SimulatedCheckoutController(checkout)).build();
         String body = "{\"requestId\":\"" + UUID.randomUUID() + "\",\"userId\":\"" + user
             + "\",\"items\":[{\"publicationId\":\"" + product + "\",\"quantity\":2}]}";
-        mvc.perform(post("/api/orders/checkout/simulated").contentType(MediaType.APPLICATION_JSON).content(body))
+        mvc.perform(post("/api/orders/checkout/simulated")
+            .principal(new UsernamePasswordAuthenticationToken(user, null, List.of()))
+            .contentType(MediaType.APPLICATION_JSON).content(body))
             .andExpect(status().isOk()).andExpect(jsonPath("$.estado").value("CONFIRMADO"))
             .andExpect(jsonPath("$.total").value(25.0)).andExpect(jsonPath("$.items[0].cantidad").value(2));
         mvc.perform(post("/api/orders/checkout/simulated").contentType(MediaType.APPLICATION_JSON)
+            .principal(new UsernamePasswordAuthenticationToken(user, null, List.of()))
             .content(body.replace("\"quantity\":2", "\"quantity\":99").replaceAll(
                 "(?<=requestId\\\":\\\")[^\\\"]+", UUID.randomUUID().toString())))
             .andExpect(status().isConflict()).andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test void checkoutUsesAuthenticatedPrincipalInsteadOfClientSuppliedUserId() throws Exception {
+        UUID attackerChosenUser = UUID.randomUUID();
+        MockMvc mvc = MockMvcBuilders.standaloneSetup(new SimulatedCheckoutController(checkout)).build();
+        String body = "{\"requestId\":\"" + UUID.randomUUID() + "\",\"userId\":\"" + attackerChosenUser
+            + "\",\"items\":[{\"publicationId\":\"" + product + "\",\"quantity\":1}]}";
+
+        mvc.perform(post("/api/orders/checkout/simulated")
+                .principal(new UsernamePasswordAuthenticationToken(user, null, List.of()))
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+            .andExpect(status().isOk());
+
+        var persistedOrder = orders.findAll().getFirst();
+        assertEquals(user, persistedOrder.getUserId());
+        assertNotEquals(attackerChosenUser, persistedOrder.getUserId());
     }
 
     @Test void savesDeliveryAndDifferentiatesCashFromSimulatedQr() {
