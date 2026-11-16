@@ -17,6 +17,19 @@ import bo.umss.market.umss_market_api.domain.exceptions.UserAlreadyExistsExcepti
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(
+    org.springframework.http.converter.HttpMessageNotReadableException.class
+)
+public ResponseEntity<ErrorResponse> handleInvalidJson(
+        org.springframework.http.converter.HttpMessageNotReadableException ex) {
+
+    return buildErrorResponse(
+            HttpStatus.BAD_REQUEST,
+            "Cuerpo JSON invalido o contiene valores no permitidos"
+    );
+}
+
     @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleParameterType(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Parametro invalido: " + ex.getName());

@@ -93,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/stores/*/inventory/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/publications/*/reviews").authenticated()
                         .requestMatchers("/api/stores/*/publications/duplicates").hasRole("EMPRENDEDOR")
+                        .requestMatchers("/api/stores/*/orders/**").hasRole("EMPRENDEDOR")
                         .anyRequest().permitAll()
                 )
 
