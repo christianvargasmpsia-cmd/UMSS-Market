@@ -10,10 +10,31 @@ function canonical(value) {
   return value;
 }
 const contract = JSON.parse(fs.readFileSync(generated, 'utf8').replace(/^\uFEFF/, ''));
-for (const [path, methods] of Object.entries({
-  '/api/recommendations': ['get'], '/api/interactions': ['get', 'post'],
-  '/api/interactions/{id}': ['get', 'delete']
-})) for (const method of methods) assert.ok(contract.paths?.[path]?.[method], `${method} ${path}`);
+const requiredOperations = {
+  // Demo 2: recomendaciones e interacciones.
+  '/api/recommendations': ['get'],
+  '/api/interactions': ['get', 'post'],
+  '/api/interactions/{id}': ['get', 'delete'],
+
+  // Demo 4 - UC-001: imagenes de publicaciones.
+  '/api/publications/{publicationId}/images': ['get', 'post'],
+  '/api/publications/{publicationId}/images/{imageId}': ['delete'],
+  '/api/publications/{publicationId}/images/{imageId}/content': ['get'],
+
+  // Demo 4 - UC-002: pedidos recibidos.
+  '/api/stores/{storeId}/orders': ['get'],
+  '/api/stores/{storeId}/orders/{orderId}': ['get'],
+  '/api/stores/{storeId}/orders/{orderId}/status': ['patch']
+};
+
+for (const [path, methods] of Object.entries(requiredOperations)) {
+  for (const method of methods) {
+    assert.ok(
+      contract.paths?.[path]?.[method],
+      `Operacion OpenAPI requerida ausente: ${method.toUpperCase()} ${path}`
+    );
+  }
+}
 const content = JSON.stringify(canonical(contract), null, 2) + '\n';
 if (process.argv.includes('--update')) {
   fs.writeFileSync(committed, content);
@@ -21,5 +42,5 @@ if (process.argv.includes('--update')) {
 } else {
   const expected = JSON.stringify(canonical(JSON.parse(fs.readFileSync(committed, 'utf8'))), null, 2) + '\n';
   assert.equal(content, expected, 'OpenAPI drift: regenerar openapi.json desde Spring Boot y revisar el diff');
-  console.log('OpenAPI: 5 operaciones requeridas presentes; sin drift.');
+  console.log('OpenAPI: 12 operaciones requeridas presentes (5 Demo 2 + 7 Demo 4); sin drift.');
 }

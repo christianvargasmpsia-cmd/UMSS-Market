@@ -3,7 +3,7 @@ name: Demo 2 - pruebas y contrato OpenAPI
 on:
   pull_request:
   push:
-    branches: ["release/8.2.0"]
+    branches: ["release/8.2.0", "release/8.4.0"]
   workflow_dispatch:
 
 permissions:
