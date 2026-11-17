@@ -1,4 +1,3 @@
-
 // Stable structural comparison: ignore whitespace and object-key order, not API content.
 const fs = require('node:fs');
 const assert = require('node:assert/strict');

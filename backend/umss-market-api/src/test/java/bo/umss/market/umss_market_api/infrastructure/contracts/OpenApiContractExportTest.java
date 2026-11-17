@@ -47,7 +47,7 @@ class OpenApiContractExportTest {
         assertTrue(paths.has("/api/publications/{publicationId}/images/{imageId}/content"),
                 "Contrato: contenido de imagen");
 
-// Demo 4: gestión de pedidos recibidos por el emprendedor.
+        // Demo 4: gestión de pedidos recibidos por el emprendedor.
         assertTrue(paths.has("/api/stores/{storeId}/orders"),
                 "Contrato: pedidos recibidos");
         assertTrue(paths.has("/api/stores/{storeId}/orders/{orderId}"),

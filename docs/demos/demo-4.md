@@ -6,7 +6,7 @@
 **Módulo:** Arquitectura del Producto y Especificaciones Funcionales  
 **Entrega:** 16 de noviembre de 2026  
 **Versión:** 8.4.0  
-**Rama:** `release/8.4.0`
+**Rama objetivo:** `release/8.4.0`
 
 ---
 
@@ -14,29 +14,35 @@
 
 Presentar las funcionalidades implementadas para la Demo Evaluada 4 de UMSS Market, demostrando su funcionamiento en el producto, su correspondencia con el Functional Specification Document (FSD), sus criterios de aceptación y sus contratos de API.
 
-Las funcionalidades se integran con el backend desarrollado en Spring Boot, PostgreSQL, Spring Security, autenticación JWT y la infraestructura de procesamiento de eventos del proyecto.
+Las funcionalidades se integran con el backend desarrollado en Spring Boot, PostgreSQL, Spring Security, autenticación JWT y la infraestructura de procesamiento de eventos del proyecto. La demo también presenta aportes transversales de seguridad, observabilidad, rendimiento y validación del contrato OpenAPI.
 
-La demostración contempla tres funcionalidades:
+La demostración contempla las tres funcionalidades del equipo:
 
 1. Gestión de imágenes de publicaciones.
 2. Gestión de pedidos recibidos por tienda.
 3. Notificaciones de pedidos mediante el patrón Transactional Outbox.
 
+Además, se presentan los aportes individuales de Christian relacionados con seguridad/autorización, observabilidad y rendimiento, y contrato OpenAPI/CI.
+
 ## 2. Funcionalidades por integrante
 
-| Integrante | Funcionalidad | Caso de uso | Alcance |
+| Integrante | Funcionalidad / aporte | Caso de uso | Alcance |
 |---|---|---|---|
 | Melani | Gestión de imágenes de publicaciones | UC-001 | Carga, listado, consulta y eliminación de imágenes |
-| Christian | Gestión de pedidos recibidos por tienda | UC-002 | Consulta, detalle y actualización de estado |
-| Christian | Notificaciones de pedidos mediante Outbox | UC-002 | Procesamiento de eventos y envío de correos HTML |
+| Melani | Gestión de pedidos recibidos por tienda | UC-002 | Consulta, detalle y actualización de estado |
+| Melani | Notificaciones de pedidos mediante Outbox | UC-002 | Consumidor de eventos y envío de correos HTML |
+| Christian | Seguridad y autorización por roles | Transversal a UC-001 / UC-002 | Configuración Spring Security, filtro JWT y verificación de acceso |
+| Christian | Observabilidad y pruebas de rendimiento | Transversal | OpenTelemetry, Tempo, Grafana y pruebas k6 |
+| Christian | Contrato OpenAPI y validación en CI | Transversal | Exportación desde Spring, verificación de operaciones y detección de drift |
+| Christian | Integración de checkout y Outbox | UC-002 | Ajustes de seguridad e integración, pruebas y evidencias del procesamiento |
 
-**Nota sobre trazabilidad:** La tabla representa la distribución funcional del equipo. Los commits identificados en el repositorio deben contrastarse con la participación efectiva de cada integrante. Los tres commits de referencia consultados registran como autor Git a `melrodriguez1133`. La participación individual adicional debe respaldarse con evidencias correspondientes.
+**Nota sobre trazabilidad:** la autoría Git de los commits `abe8cb3`, `3096704` y `e0969a4` corresponde a `melrodriguez1133`. Los aportes de Christian se respaldan separadamente con los commits `fdc8928`, `a452425` y `755f787`. La autoría de un commit se distingue de la participación funcional y de la colaboración del equipo.
 
 ---
 
 ## 3. Funcionalidad 1 — Gestión de imágenes de publicaciones
 
-**Responsable funcional:** Melani  
+**Responsable funcional e implementación respaldada por commit:** Melani  
 **Caso de uso:** UC-001 — Gestión de publicaciones.
 
 ### 3.1. Descripción
@@ -89,8 +95,6 @@ Los códigos anteriores representan los resultados esperados de los escenarios d
 
 ### 3.5. Evidencia técnica
 
-Archivos principales:
-
 - `PublicationImageController.java`
 - `PublicationImageResponse.java`
 - `PublicationImageEntity.java`
@@ -105,11 +109,7 @@ Archivos principales:
 
 `abe8cb3`
 
-Descripción:
-
-`feat(images): add publication image management for UC-001`
-
-Commit completo:
+Descripción: `feat(images): add publication image management for UC-001`
 
 https://github.com/christianvargasmpsia-cmd/UMSS-Market/commit/abe8cb30a4a629e4abdf65deef12babf302294ee
 
@@ -117,7 +117,7 @@ https://github.com/christianvargasmpsia-cmd/UMSS-Market/commit/abe8cb30a4a629e4a
 
 ## 4. Funcionalidad 2 — Gestión de pedidos recibidos por tienda
 
-**Responsable funcional:** Christian  
+**Responsable funcional e implementación respaldada por commit:** Melani  
 **Caso de uso:** UC-002 — Procesar pedido.
 
 ### 4.1. Descripción
@@ -169,8 +169,6 @@ Los resultados deben comprobarse mediante pruebas automatizadas y pruebas HTTP c
 
 ### 4.5. Evidencia técnica
 
-Archivos principales:
-
 - `StoreReceivedOrdersController.java`
 - `StoreReceivedOrdersControllerTest.java`
 - `UpdateOrderStatusUseCase.java`
@@ -183,11 +181,7 @@ Archivos principales:
 
 `3096704`
 
-Descripción:
-
-`feat(orders): implement entrepreneur received orders management`
-
-Commit completo:
+Descripción: `feat(orders): implement entrepreneur received orders management`
 
 https://github.com/christianvargasmpsia-cmd/UMSS-Market/commit/3096704f4af210d08892c4eda581b652dd4aeeba
 
@@ -195,7 +189,7 @@ https://github.com/christianvargasmpsia-cmd/UMSS-Market/commit/3096704f4af210d08
 
 ## 5. Funcionalidad 3 — Notificaciones de pedidos mediante Outbox
 
-**Responsable funcional:** Christian  
+**Responsable funcional e implementación respaldada por commit:** Melani  
 **Caso de uso:** UC-002 — Procesar pedido.
 
 ### 5.1. Descripción
@@ -209,8 +203,6 @@ Cuando se genera un evento relacionado con un pedido, el consumidor correspondie
 La infraestructura utiliza Spring Mail, SMTP y Mailpit para las pruebas y demostraciones locales.
 
 ### 5.2. Arquitectura de procesamiento
-
-El flujo de notificación contempla las siguientes etapas:
 
 1. El comprador realiza una operación relacionada con un pedido.
 2. El backend registra el pedido y su evento correspondiente.
@@ -231,16 +223,7 @@ Consumidor responsable del procesamiento de eventos de pedidos y del envío de n
 
 **OrderEmailTemplate.java**
 
-Plantilla encargada de generar el contenido HTML de las notificaciones.
-
-Incluye:
-
-- Identificación de UMSS Market.
-- Saludo al comprador.
-- Identificador del pedido.
-- Estado del pedido.
-- Descripción de la notificación.
-- Codificación UTF-8.
+Plantilla encargada de generar el contenido HTML de las notificaciones. Incluye identificación de UMSS Market, saludo al comprador, identificador y estado del pedido, descripción de la notificación y codificación UTF-8.
 
 **InboxOrderEventConsumer.java**
 
@@ -264,19 +247,9 @@ Se reutiliza la infraestructura existente para procesar eventos y gestionar los 
 
 ### 5.5. Configuración de demostración
 
-Archivo `compose.email.yaml`:
+`compose.email.yaml` habilita el consumidor de correo, configura el servidor SMTP y define tiempos de espera de conexión y envío.
 
-- Habilita el consumidor de correo.
-- Configura el servidor SMTP.
-- Define los tiempos de espera de conexión y envío.
-
-Archivo `compose.mailpit.yaml`:
-
-- Incorpora Mailpit como servidor SMTP de pruebas.
-- Expone la interfaz web en el puerto 8025.
-- Expone el servidor SMTP en el puerto 1025.
-
-Configuración principal:
+`compose.mailpit.yaml` incorpora Mailpit como servidor SMTP de pruebas, con interfaz web en el puerto 8025 y SMTP en el puerto 1025.
 
 | Parámetro | Valor |
 |---|---|
@@ -287,11 +260,7 @@ Configuración principal:
 | Formato del mensaje | HTML |
 | Codificación | UTF-8 |
 
-Mailpit permite visualizar los correos generados durante la demostración sin utilizar un servicio externo de correo electrónico.
-
 ### 5.6. Evidencia técnica
-
-Archivos principales:
 
 - `EmailOrderEventConsumer.java`
 - `OrderEmailTemplate.java`
@@ -306,187 +275,309 @@ Archivos principales:
 
 `e0969a4`
 
-Descripción:
-
-`feat(demo4): notificaciones HTML de pedidos con Outbox y Mailpit`
-
-Commit completo:
+Descripción: `feat(demo4): notificaciones HTML de pedidos con Outbox y Mailpit`
 
 https://github.com/christianvargasmpsia-cmd/UMSS-Market/commit/e0969a4abf0c0029cf7ec5254333a56f4374a976
 
 ### 5.8. Consideraciones técnicas
 
-La implementación registra el evento consumido después del envío SMTP satisfactorio.
-
-El envío SMTP y el registro de recepción en PostgreSQL no constituyen una única transacción atómica.
-
-Por esta razón, no se debe afirmar que existe garantía de entrega exactamente una vez.
-
-La verificación del reprocesamiento de eventos en el entorno integrado debe complementarse con pruebas específicas.
+El envío SMTP y el registro de recepción en PostgreSQL no constituyen una única transacción atómica. Por esta razón, no se debe afirmar que existe garantía de entrega exactamente una vez. La verificación del reprocesamiento de eventos en el entorno integrado debe complementarse con pruebas específicas.
 
 ---
 
-## 6. Contrato OpenAPI
+## 6. Aportes individuales de Christian
+
+Esta sección agrega las contribuciones transversales de Christian, sin reemplazar ni reasignar las funcionalidades implementadas por Melani.
+
+### 6.1. Seguridad JWT y autorización por roles
+
+**Responsable:** Christian  
+**Commit:** `a452425` — `feat: completar seguridad y observabilidad para demo 4`.
+
+Se trabajó en la configuración y validación de la seguridad del backend mediante Spring Security y JWT.
+
+Archivos modificados:
+
+- `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/config/SecurityConfig.java`
+- `backend/umss-market-api/src/main/java/bo/umss/market/umss_market_api/infrastructure/security/JwtAuthenticationFilter.java`
+
+Evidencias:
+
+- `backend/umss-market-api/evidencias/demo4/01-emprendedor-inventario-200.png`
+- `backend/umss-market-api/evidencias/demo4/02-comprador-inventario-403.png`
+- `backend/umss-market-api/evidencias/demo4/03-security-config.png`
+
+Resultados demostrados:
+
+| Escenario | Resultado observado |
+|---|---|
+| Emprendedor autorizado consulta inventario | HTTP 200 |
+| Comprador intenta acceder al endpoint restringido | HTTP 403 |
+
+Este aporte respalda la demostración de autenticación y autorización por roles. No sustituye las reglas de propiedad específicas implementadas en cada caso de uso.
+
+### 6.2. Observabilidad con OpenTelemetry, Tempo y Grafana
+
+**Responsable:** Christian  
+**Commit:** `a452425`.
+
+Se incorporó y configuró infraestructura de observabilidad distribuida para recolectar y consultar trazas del backend.
+
+Archivos versionados:
+
+- `observability/tempo/tempo.yaml`
+- `observability/otel/collector.yaml`
+- `observability/grafana/provisioning/datasources/tempo.yaml`
+- `compose.yaml`
+
+La configuración contempla Micrometer Tracing y exportación OTLP desde el backend, OpenTelemetry Collector como receptor y encaminador, Grafana Tempo como almacenamiento de trazas y Grafana como interfaz de consulta.
+
+| Variable | Valor |
+|---|---|
+| `MANAGEMENT_TRACING_SAMPLING_PROBABILITY` | `1.0` |
+| `MANAGEMENT_OTLP_TRACING_ENDPOINT` | `http://otel-collector:4318/v1/traces` |
+
+Versiones de infraestructura registradas: Tempo 2.8.2, OpenTelemetry Collector 0.128.0 y Grafana 12.1.0.
+
+Evidencias:
+
+- `15-grafana-tempo-trazas.png`
+- `16-grafana-tempo-detalle-traza.png`
+
+En Tempo se observaron trazas de operaciones del servicio `umss-market-api`, incluyendo solicitudes HTTP y la tarea `outbox-dispatcher.dispatch`.
+
+**Precisión:** las evidencias confirman que Tempo recibe y permite consultar trazas del backend. No se ha confirmado todavía que la traza seleccionada corresponda a una solicitud concreta de k6. La correlación directa debe verificarse antes de presentarla como demostrada.
+
+### 6.3. Pruebas de rendimiento con k6
+
+**Responsable:** Christian  
+**Commit de evidencia:** `a452425`.
+
+**Endpoint público de publicaciones:** se registraron tres ejecuciones con 10 solicitudes por segundo durante 60 segundos. Cada ejecución procesó 601 solicitudes, sin errores.
+
+| Ejecución | Solicitudes | Errores | p95 |
+|---|---:|---:|---:|
+| 1 | 601 | 0 | 6.05 ms |
+| 2 | 601 | 0 | 4.79 ms |
+| 3 | 601 | 0 | 4.62 ms |
+
+La mediana de los tres valores p95 fue de **4.79 ms**.
+
+**Endpoint de inventario low-stock:**
+
+| Métrica | Resultado |
+|---|---:|
+| Usuarios virtuales | 2 |
+| Duración | 15 s |
+| Solicitudes | 3,155 |
+| Solicitudes fallidas | 0 |
+| Promedio | 9.19 ms |
+| Mediana | 7.28 ms |
+| p95 | 18.37 ms |
+| p99 | 26.78 ms |
+| Máximo | 60.49 ms |
+| Throughput aproximado | 210.255 req/s |
+
+Evidencia versionada: `backend/umss-market-api/evidencias/demo4/13-k6-inventario-resultados.png`.
+
+El percentil 95 indica que el 95 % de las solicitudes medidas tuvo una duración igual o inferior al valor reportado, mientras que el 5 % restante tardó más. Los resultados corresponden a las ejecuciones documentadas y no deben extrapolarse a cargas o entornos diferentes.
+
+### 6.4. Contrato OpenAPI y validación en CI
+
+**Responsable:** Christian  
+**Commit:** `755f787` — `test(demo4): validate OpenAPI contract and CI`.
+
+Se fortaleció la validación del contrato de API para comprobar que las operaciones requeridas por la Demo 4 estén presentes en el documento OpenAPI generado desde el código Spring Boot.
+
+Archivos modificados:
+
+- `.github/workflows/openapi-contract.yml`
+- `backend/umss-market-api/src/test/java/bo/umss/market/umss_market_api/infrastructure/contracts/OpenApiContractExportTest.java`
+- `docs/demos/check-openapi.cjs`
+- `openapi.json`
+
+Actividades realizadas:
+
+1. Exportación del contrato OpenAPI desde Spring Boot mediante `OpenApiContractExportTest`.
+2. Actualización del archivo versionado `openapi.json` a partir del contrato generado.
+3. Ampliación del verificador para comprobar las operaciones requeridas.
+4. Aserciones para rutas de imágenes y pedidos recibidos.
+5. Configuración del workflow de GitHub Actions para ejecutar pruebas Maven, verificar el contrato y ejecutar el análisis de Spectral.
+
+Resultado de validación local:
+
+- **14 operaciones requeridas presentes.**
+- **Sin diferencias (drift) entre el contrato generado y el versionado.**
+- **31 pruebas Maven ejecutadas en la selección configurada: cero fallos, cero errores y cero omitidas.**
+
+| Grupo | Operaciones |
+|---|---:|
+| Recomendaciones | 1 |
+| Interacciones | 4 |
+| Imágenes de publicaciones | 4 |
+| Alertas de inventario | 2 |
+| Pedidos recibidos | 3 |
+| **Total** | **14** |
+
+Comando de exportación, ejecutado desde `backend/umss-market-api`:
+
+```powershell
+.\mvnw.cmd -B -ntp "-Dtest=OpenApiContractExportTest" test
+```
+
+Actualización del contrato versionado, desde la raíz del repositorio:
+
+```powershell
+node ..\..\docs\demos\check-openapi.cjs target\generated-openapi.json ..\..\openapi.json --update
+```
+
+Comprobación:
+
+```powershell
+node docs/demos/check-openapi.cjs
+```
+
+Salida: `OpenAPI: 14 operaciones requeridas presentes; sin drift.`
+
+La validación local no equivale a una ejecución exitosa del workflow remoto. El resultado de GitHub Actions debe comprobarse en el repositorio después de publicar los commits.
+
+### 6.5. Integración de checkout y Outbox
+
+**Responsable del aporte registrado:** Christian  
+**Commit:** `fdc8928` — `Transactional Outbox y notificaciones`.
+
+Este commit contiene ajustes relacionados con la integración del checkout, la seguridad y las pruebas/evidencias del procesamiento de eventos.
+
+Archivos registrados:
+
+- `SecurityConfig.java`
+- `SimulatedCheckoutController.java`
+- `JwtAuthenticationFilter.java`
+- `SimulatedCheckoutTest.java`
+- `backend/umss-market-api/evidencias/demo4/demo-4.md`
+- `logs-consumer.txt`
+- `outbox-processed.txt`
+
+El aporte se describe como integración, ajustes de seguridad y checkout, pruebas y generación de evidencias del procesamiento. La implementación inicial de `EmailOrderEventConsumer` y `OrderEmailTemplate` se mantiene atribuida al commit de Melani `e0969a4`; no se atribuye su autoría a Christian.
+
+---
+
+## 7. Contrato OpenAPI
 
 Los endpoints expuestos por las funcionalidades deben formar parte del contrato OpenAPI generado desde el código Spring Boot.
 
-### 6.1. Endpoints UC-001
+### 7.1. Endpoints UC-001 — Imágenes
 
 - POST `/api/publications/{publicationId}/images`
 - GET `/api/publications/{publicationId}/images`
 - GET `/api/publications/{publicationId}/images/{imageId}/content`
 - DELETE `/api/publications/{publicationId}/images/{imageId}`
 
-### 6.2. Endpoints UC-002
+### 7.2. Endpoints UC-002 — Pedidos recibidos
 
 - GET `/api/stores/{storeId}/orders`
 - GET `/api/stores/{storeId}/orders/{orderId}`
 - PATCH `/api/stores/{storeId}/orders/{orderId}/status`
 
-### 6.3. Workflows de validación
+### 7.3. Validación del contrato
 
-Los workflows existentes son:
+El verificador también comprueba operaciones de recomendaciones, interacciones y alertas de inventario. El resultado local fue de 14 operaciones requeridas presentes y sin drift entre el contrato generado y `openapi.json`.
+
+### 7.4. Workflows
+
+Workflows identificados:
 
 - `.github/workflows/openapi.yml`
 - `.github/workflows/openapi-contract.yml`
 
-El archivo `openapi.json` debe generarse desde Spring Boot y mantenerse actualizado en el repositorio.
+El workflow `openapi-contract.yml` incluye pruebas Maven, exportación/validación del contrato y chequeo de Spectral.
 
-**Verificación pendiente de entrega:**
-
-- Comprobar que las siete operaciones nuevas estén incluidas en el contrato.
-- Verificar que los parámetros y respuestas estén documentados.
-- Verificar los esquemas de seguridad JWT.
-- Comprobar que ambos workflows finalicen correctamente.
-- Confirmar que no existan diferencias entre el contrato generado y el versionado.
-
-La presencia de los workflows no implica por sí sola que hayan finalizado correctamente.
+**Estado:** la validación local se completó correctamente. La ejecución remota de GitHub Actions debe comprobarse en la pestaña Actions del repositorio; no se declara como exitosa hasta disponer de ese resultado.
 
 ---
 
-## 7. Pruebas y validación
+## 8. Pruebas y validación
 
-La validación de la Demo 4 debe contemplar los siguientes niveles:
+La validación de la Demo 4 contempla pruebas unitarias y de integración, autenticación JWT, roles y propiedad de recursos, respuestas HTTP, imágenes, pedidos, notificaciones, OpenAPI/CI, rendimiento k6 y observabilidad.
 
-1. Ejecución de pruebas unitarias.
-2. Ejecución de pruebas de integración.
-3. Verificación de autenticación JWT.
-4. Verificación de roles y propiedad de recursos.
-5. Verificación de respuestas HTTP.
-6. Prueba de carga y almacenamiento de imágenes.
-7. Prueba de consulta y actualización de pedidos recibidos.
-8. Prueba del procesamiento de notificaciones.
-9. Validación de OpenAPI y CI.
+### 8.1. Resultado de pruebas Maven
 
-### 7.1. Evidencias de ejecución
+Se ejecutó la selección de pruebas configurada para la validación de Demo 4:
 
-Se deben registrar los resultados reales de:
+- `JpaPublicationAtomicReservationTest`
+- `TransactionalOutboxTest`
+- `InventoryAlertsIntegrationTest`
+- `PublicationImageControllerTest`
+- `StoreReceivedOrdersControllerTest`
+- `OpenApiContractExportTest`
 
-- Ejecuciones Maven.
-- Pruebas HTTP mediante Postman.
-- Pruebas de autorización.
-- Consultas a PostgreSQL.
-- Pruebas de almacenamiento de imágenes.
-- Procesamiento de eventos Outbox.
-- Recepción de correos en Mailpit.
-- Resultados de GitHub Actions.
+Resultado registrado: **31 tests, cero failures, cero errors y cero skipped; BUILD SUCCESS**.
 
-No se deben sustituir resultados reales por valores estimados.
+Este resultado corresponde a la selección indicada y no debe interpretarse como ejecución de la totalidad de pruebas existentes en todo el repositorio.
 
-### 7.2. Pruebas específicas de imágenes
+### 8.2. Evidencias de ejecución
 
-Se deben comprobar los siguientes escenarios:
+Evidencias versionadas en `backend/umss-market-api/evidencias/demo4/`:
 
-- Carga de una imagen válida.
-- Listado de imágenes de una publicación.
-- Consulta del contenido de una imagen.
-- Eliminación de una imagen.
-- Intento de carga sin autenticación.
-- Intento de carga con rol comprador.
-- Intento de modificación de una publicación ajena.
-- Archivo con formato no permitido.
-- Archivo superior al tamaño máximo.
+- `01-emprendedor-inventario-200.png`
+- `02-comprador-inventario-403.png`
+- `03-security-config.png`
+- `13-k6-inventario-resultados.png`
+- `15-grafana-tempo-trazas.png`
+- `16-grafana-tempo-detalle-traza.png`
+- `uc002-pedidos-recibidos.json`
 
-### 7.3. Pruebas específicas de pedidos
+### 8.3. Pruebas específicas de imágenes
 
-Se deben comprobar:
+Se deben comprobar carga de imagen válida, listado, consulta del contenido, eliminación, intentos sin autenticación, con rol comprador, modificación de publicación ajena, formato no permitido y tamaño superior al máximo.
 
-- Listado de pedidos de la tienda propia.
-- Filtrado por estado.
-- Consulta del detalle.
-- Intento de acceso a una tienda ajena.
-- Intento de acceso con rol comprador.
-- Pedido inexistente.
-- Pedido multitienda.
-- Actualización de estado.
-- Transiciones de estado no permitidas.
+### 8.4. Pruebas específicas de pedidos
 
-### 7.4. Pruebas específicas de notificaciones
+Se deben comprobar listado de pedidos de tienda propia, filtrado por estado, consulta del detalle, acceso a tienda ajena, acceso con rol comprador, pedido inexistente, pedido multitienda, actualización de estado y transiciones no permitidas.
 
-Se deben comprobar:
+### 8.5. Pruebas específicas de notificaciones
 
-- Generación del evento.
-- Ejecución del consumidor de correo.
-- Construcción del mensaje HTML.
-- Envío mediante SMTP.
-- Recepción en Mailpit.
-- Manejo de errores SMTP.
-- Registro del evento consumido.
-- Prevención del procesamiento duplicado en condiciones normales.
+Se deben comprobar generación del evento, ejecución del consumidor de correo, construcción HTML, envío SMTP, recepción en Mailpit, manejo de errores SMTP, registro del evento consumido y prevención de procesamiento duplicado en condiciones normales.
 
 ---
 
-## 8. Pregunta obligatoria: k6 y OpenTelemetry
+## 9. Pregunta obligatoria: k6 y OpenTelemetry
 
-La demostración debe incluir las pruebas de rendimiento y observabilidad del sistema.
+### 9.1. Resultados k6
 
-### 8.1. k6
+**Endpoint de publicaciones:** tres pruebas con 10 solicitudes por segundo durante 60 segundos. Cada una registró 601 solicitudes y cero errores. Los valores p95 fueron 6.05 ms, 4.79 ms y 4.62 ms; la mediana fue 4.79 ms.
 
-Se debe abrir el reporte de la prueba ejecutada e identificar:
+**Endpoint de inventario low-stock:** 2 usuarios virtuales durante 15 segundos, 3,155 solicitudes sin errores, promedio 9.19 ms, mediana 7.28 ms, p95 18.37 ms, p99 26.78 ms y máximo 60.49 ms. Throughput aproximado: 210.255 solicitudes por segundo.
 
-- El endpoint sometido a carga.
-- El número de usuarios virtuales.
-- La duración de la prueba.
-- La métrica `http_req_duration`.
-- El percentil 95 (`p(95)`).
-- Los resultados de solicitudes exitosas y fallidas.
+El percentil 95 indica el tiempo que no supera el 95 % de las solicitudes observadas. No representa el tiempo máximo ni el promedio.
 
-Se debe explicar qué representa el percentil 95 y cómo permite evaluar el comportamiento del sistema bajo carga.
+### 9.2. OpenTelemetry y Grafana Tempo
 
-### 8.2. OpenTelemetry y Grafana Tempo
+La infraestructura configurada permite abrir Grafana, ingresar a Explore, seleccionar Tempo, consultar trazas del servicio `umss-market-api`, abrir el detalle, identificar spans y explicar sus duraciones.
 
-Se debe realizar la siguiente demostración:
+En las evidencias disponibles se muestran trazas HTTP y la tarea `outbox-dispatcher.dispatch`.
 
-1. Abrir Grafana.
-2. Ingresar a Explore.
-3. Seleccionar Tempo.
-4. Localizar una traza correspondiente a la ejecución de k6.
-5. Mostrar la duración total de la traza.
-6. Identificar los spans principales.
-7. Explicar qué operación consume más tiempo.
-8. Relacionar el resultado con el comportamiento observado durante la prueba de rendimiento.
+**Pendiente para completar la pregunta obligatoria:** seleccionar una traza generada por una solicitud de k6, verificar su correspondencia temporal o por atributos y registrar su Trace ID, duración total y span de mayor duración. No se debe afirmar que una traza genérica de Tempo corresponde a k6 sin comprobarlo.
 
-### 8.3. Registro de resultados
+### 9.3. Registro de resultados
 
-| Métrica | Evidencia |
+| Métrica | Resultado |
 |---|---|
-| Endpoint probado | Registrar endpoint real |
-| Usuarios virtuales | Registrar configuración de k6 |
-| Duración | Registrar configuración de k6 |
-| p95 | Registrar resultado real |
-| Trace ID | Registrar identificador real |
-| Duración total de la traza | Registrar valor observado |
-| Tramo de mayor duración | Explicar según la traza |
-
-Los resultados deben corresponder a ejecuciones reales y estar respaldados por reportes o capturas.
+| Endpoint de inventario | `/api/stores/{storeId}/inventory/low-stock` |
+| Usuarios virtuales | 2 |
+| Duración | 15 s |
+| Solicitudes | 3,155 |
+| Errores | 0 |
+| p95 | 18.37 ms |
+| Trace ID de una solicitud k6 | Pendiente de correlacionar |
+| Duración total de esa traza | Pendiente de registrar |
+| Span de mayor duración | Pendiente de identificar en la traza correlacionada |
 
 ---
 
-## 9. Arquitectura y despliegue
+## 10. Arquitectura y despliegue
 
-Las funcionalidades de la Demo 4 se integran en el backend de UMSS Market.
-
-### 9.1. Tecnologías involucradas
+### 10.1. Tecnologías involucradas
 
 - Java 21.
 - Spring Boot.
@@ -504,7 +595,7 @@ Las funcionalidades de la Demo 4 se integran en el backend de UMSS Market.
 - OpenTelemetry.
 - Grafana Tempo.
 
-### 9.2. Componentes principales
+### 10.2. Componentes principales
 
 | Componente | Responsabilidad |
 |---|---|
@@ -524,28 +615,21 @@ Las funcionalidades de la Demo 4 se integran en el backend de UMSS Market.
 
 ---
 
-## 10. Resultado esperado
+## 11. Resultado y estado de cierre
 
-El release 8.4.0 integra las tres funcionalidades definidas para la Demo Evaluada 4:
+El release 8.4.0 integra las tres funcionalidades del equipo: gestión de imágenes de publicaciones (UC-001), gestión de pedidos recibidos por tienda (UC-002) y notificaciones de pedidos mediante Outbox (UC-002).
 
-1. Gestión de imágenes de publicaciones correspondiente a UC-001.
-2. Gestión de pedidos recibidos por tienda correspondiente a UC-002.
-3. Notificaciones de pedidos mediante Outbox correspondiente a UC-002.
+Además, se documentan los aportes individuales de Christian en seguridad/autorización, observabilidad y rendimiento, y contrato OpenAPI/CI.
 
-La implementación incorpora control de acceso, persistencia de datos, almacenamiento de archivos, administración de pedidos y procesamiento de notificaciones.
+Resultados comprobados localmente:
 
-La aceptación final de la demostración requiere verificar:
+- Seguridad: evidencia de HTTP 200 para emprendedor y HTTP 403 para comprador en el endpoint de inventario.
+- k6: pruebas registradas con cero errores en los escenarios documentados.
+- Maven: 31 pruebas de la selección configurada, sin fallos ni errores.
+- OpenAPI: 14 operaciones requeridas presentes y sin drift local.
+- Tempo: trazas del servicio visibles en Grafana.
 
-- El funcionamiento de los endpoints.
-- Los criterios de aceptación.
-- La seguridad y propiedad de los recursos.
-- Las pruebas automatizadas.
-- El contrato OpenAPI.
-- La integración continua.
-- Las evidencias de rendimiento mediante k6.
-- Las trazas de OpenTelemetry mediante Grafana Tempo.
-
-La documentación y las evidencias deben representar los resultados efectivamente obtenidos durante la ejecución del producto.
+Antes de declarar cerrada la demostración deben verificarse la ejecución exitosa de GitHub Actions, la traza de Tempo correspondiente a una solicitud concreta de k6, la publicación de la rama `release/8.4.0` con documentos y evidencias definitivos, y el enlace del video con permisos para el docente.
 
 ---
 
