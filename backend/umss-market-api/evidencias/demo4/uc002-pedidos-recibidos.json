@@ -1,0 +1,16 @@
+﻿{
+    "orderId":  "a2c82f0e-9126-49bc-9e53-e2357ac23e63",
+    "buyerId":  "f6b32e44-2868-42d0-99b5-26923fbb6149",
+    "status":  "CONFIRMADO",
+    "createdAt":  "2026-11-16T22:14:08.529723",
+    "items":  [
+                  {
+                      "publicationId":  "36b18919-1810-495c-ba1b-95a290f0d676",
+                      "productName":  "Bolsa Tote UMSS",
+                      "quantity":  1,
+                      "unitPrice":  55.00,
+                      "subtotal":  55.00
+                  }
+              ],
+    "storeSubtotal":  55.00
+}

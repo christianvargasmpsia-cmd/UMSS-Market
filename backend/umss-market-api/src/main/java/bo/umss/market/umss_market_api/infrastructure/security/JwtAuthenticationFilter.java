@@ -1,4 +1,3 @@
-
 package bo.umss.market.umss_market_api.infrastructure.security;
 
 import java.io.IOException;
@@ -64,8 +63,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String role = claims.get("role", String.class);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
+
+            UsernamePasswordAuthenticationToken authentication
+                    = new UsernamePasswordAuthenticationToken(
                             userId,
                             null,
                             java.util.List.of(
@@ -73,12 +73,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
-
         } catch (Exception e) {
-
             SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
+
         }
 
         filterChain.doFilter(request, response);

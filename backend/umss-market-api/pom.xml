@@ -66,7 +66,17 @@
     <version>0.12.7</version>
     <scope>runtime</scope>
 </dependency>
+<!-- Distributed tracing con Micrometer -->
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-tracing-bridge-otel</artifactId>
+</dependency>
 
+<!-- Exportación de trazas mediante OTLP -->
+<dependency>
+    <groupId>io.opentelemetry</groupId>
+    <artifactId>opentelemetry-exporter-otlp</artifactId>
+</dependency>
 <dependency>
     <groupId>io.jsonwebtoken</groupId>
     <artifactId>jjwt-jackson</artifactId>

@@ -18,7 +18,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import bo.umss.market.umss_market_api.infrastructure.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
 /**
  * Configuración de seguridad de UMSS Market.
@@ -42,6 +44,17 @@ public class SecurityConfig {
      * Filtro encargado de procesar el token JWT.
      */
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterRegistration() {
+
+        FilterRegistrationBean<JwtAuthenticationFilter> registration
+                = new FilterRegistrationBean<>(jwtAuthenticationFilter);
+
+        registration.setEnabled(false);
+
+        return registration;
+    }
 
     /**
      * Codificador de contraseñas.
@@ -152,9 +165,10 @@ public class SecurityConfig {
                  */
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(
-                                new HttpStatusEntryPoint(
-                                        HttpStatus.UNAUTHORIZED
-                                )
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+                        )
+                        .accessDeniedHandler((request, response, exception)
+                                -> response.sendError(HttpServletResponse.SC_FORBIDDEN)
                         )
                 )
                 /*
@@ -164,6 +178,7 @@ public class SecurityConfig {
                  * de UMSS Market.
                  */
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/error").permitAll()
                         /*
                          * Autenticación y registro.
                          *
@@ -260,7 +275,6 @@ public class SecurityConfig {
                         // Tiendas: consulta pública, administración protegida.
                         .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*").permitAll()
-                        .requestMatchers("/api/stores/*/orders/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.POST, "/api/stores").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.PUT, "/api/stores/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.PATCH, "/api/stores/**").hasRole("EMPRENDEDOR")
@@ -280,6 +294,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 /*
