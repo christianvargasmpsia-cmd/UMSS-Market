@@ -17,15 +17,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-/** Exporta el contrato desde Springdoc; NO crea ejemplos ficticios. */
+/**
+ * Exporta el contrato desde Springdoc; NO crea ejemplos ficticios.
+ */
 @SpringBootTest(properties = {"ia.enabled=false", "ai.monitoring.enabled=false"})
 @AutoConfigureMockMvc
 class OpenApiContractExportTest {
-    @Autowired MockMvc mvc;
-    @Autowired ObjectMapper mapper;
 
-    @Test void exportsCanonicalCodeFirstOpenApi() throws Exception {
+    @Autowired
+    MockMvc mvc;
+    @Autowired
+    ObjectMapper mapper;
+
+    @Test
+    void exportsCanonicalCodeFirstOpenApi() throws Exception {
         String json = mvc.perform(get("/v3/api-docs"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         JsonNode document = mapper.readTree(json);
@@ -34,6 +39,21 @@ class OpenApiContractExportTest {
         assertTrue(paths.has("/api/orders"), "Contrato: endpoint de pedidos");
         assertTrue(paths.has("/api/stores/{storeId}/inventory/low-stock"), "Contrato: stock bajo");
         assertTrue(paths.has("/api/stores/{storeId}/inventory/summary"), "Contrato: resumen de inventario");
+        // Demo 4: gestión de imágenes de publicaciones.
+        assertTrue(paths.has("/api/publications/{publicationId}/images"),
+                "Contrato: imágenes de publicaciones");
+        assertTrue(paths.has("/api/publications/{publicationId}/images/{imageId}"),
+                "Contrato: eliminación de imagen");
+        assertTrue(paths.has("/api/publications/{publicationId}/images/{imageId}/content"),
+                "Contrato: contenido de imagen");
+
+        // Demo 4: gestión de pedidos recibidos por el emprendedor.
+        assertTrue(paths.has("/api/stores/{storeId}/orders"),
+                "Contrato: pedidos recibidos");
+        assertTrue(paths.has("/api/stores/{storeId}/orders/{orderId}"),
+                "Contrato: detalle de pedido recibido");
+        assertTrue(paths.has("/api/stores/{storeId}/orders/{orderId}/status"),
+                "Contrato: actualización de estado de pedido");
         assertTrue(paths.path("/api/stores/{storeId}/inventory/low-stock").has("get"));
         assertEquals("listLowStock", paths.path("/api/stores/{storeId}/inventory/low-stock")
                 .path("get").path("operationId").asText());
@@ -50,7 +70,7 @@ class OpenApiContractExportTest {
                 "El esquema de inventario no debe apuntar al Item de checkout");
         JsonNode itemProperties = document.path("components").path("schemas")
                 .path("InventoryAlertItem").path("properties");
-        for (String property : new String[] {"publicationId", "nombre", "stock", "estado"}) {
+        for (String property : new String[]{"publicationId", "nombre", "stock", "estado"}) {
             assertTrue(itemProperties.has(property), "Falta propiedad OpenAPI: " + property);
         }
         Path output = Path.of("target", "generated-openapi.json");

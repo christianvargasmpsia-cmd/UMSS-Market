@@ -1,4 +1,3 @@
-
 package bo.umss.market.umss_market_api.infrastructure.config;
 
 import java.util.List;
@@ -19,24 +18,23 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import bo.umss.market.umss_market_api.infrastructure.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
 /**
  * Configuración de seguridad de UMSS Market.
  *
  * Responsabilidades:
  *
- * 1. Configurar la autenticación mediante JWT.
- * 2. Definir permisos según el rol del usuario.
- * 3. Proteger las operaciones de compradores y emprendedores.
- * 4. Configurar CORS para el frontend Angular.
- * 5. Deshabilitar las sesiones HTTP para la autenticación.
- * 6. Responder HTTP 401 cuando falta autenticación.
- * 7. Mantener HTTP 403 para usuarios sin autorización.
+ * 1. Configurar la autenticación mediante JWT. 2. Definir permisos según el rol
+ * del usuario. 3. Proteger las operaciones de compradores y emprendedores. 4.
+ * Configurar CORS para el frontend Angular. 5. Deshabilitar las sesiones HTTP
+ * para la autenticación. 6. Responder HTTP 401 cuando falta autenticación. 7.
+ * Mantener HTTP 403 para usuarios sin autorización.
  *
- * Nota:
- * La validación de propiedad de publicaciones y tiendas
- * debe realizarse también en la lógica de negocio.
+ * Nota: La validación de propiedad de publicaciones y tiendas debe realizarse
+ * también en la lógica de negocio.
  */
 @Configuration
 @RequiredArgsConstructor
@@ -47,22 +45,33 @@ public class SecurityConfig {
      */
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterRegistration() {
+
+        FilterRegistrationBean<JwtAuthenticationFilter> registration
+                = new FilterRegistrationBean<>(jwtAuthenticationFilter);
+
+        registration.setEnabled(false);
+
+        return registration;
+    }
+
     /**
      * Codificador de contraseñas.
      *
-     * BCrypt permite almacenar contraseñas mediante
-     * hashes seguros, en lugar de texto plano.
+     * BCrypt permite almacenar contraseñas mediante hashes seguros, en lugar de
+     * texto plano.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
     /**
      * Configuración CORS.
      *
-     * Permite que el frontend Angular, ejecutándose en
-     * http://localhost:4200, consuma la API.
+     * Permite que el frontend Angular, ejecutándose en http://localhost:4200,
+     * consuma la API.
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -94,8 +103,8 @@ public class SecurityConfig {
         // Permitir credenciales en solicitudes CORS.
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source
+                = new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration(
                 "/**",
@@ -108,8 +117,8 @@ public class SecurityConfig {
     /**
      * Configuración principal de Spring Security.
      *
-     * Define autenticación, autorización y manejo
-     * de sesiones para los endpoints de UMSS Market.
+     * Define autenticación, autorización y manejo de sesiones para los
+     * endpoints de UMSS Market.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -117,7 +126,6 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
-
                 /*
                  * 1. Deshabilitar CSRF.
                  *
@@ -125,12 +133,11 @@ public class SecurityConfig {
                  * Authorization para autenticación.
                  */
                 .csrf(csrf -> csrf.disable())
-
                 /*
                  * 2. Habilitar la configuración CORS.
                  */
-                .cors(cors -> {})
-
+                .cors(cors -> {
+                })
                 /*
                  * 3. Configurar sesiones sin estado.
                  *
@@ -146,7 +153,6 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         )
                 )
-
                 /*
                  * 4. Configurar respuesta para usuarios
                  * no autenticados.
@@ -159,12 +165,12 @@ public class SecurityConfig {
                  */
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(
-                                new HttpStatusEntryPoint(
-                                        HttpStatus.UNAUTHORIZED
-                                )
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+                        )
+                        .accessDeniedHandler((request, response, exception)
+                                -> response.sendError(HttpServletResponse.SC_FORBIDDEN)
                         )
                 )
-
                 /*
                  * 5. Reglas de autorización.
                  *
@@ -172,7 +178,7 @@ public class SecurityConfig {
                  * de UMSS Market.
                  */
                 .authorizeHttpRequests(auth -> auth
-
+                        .requestMatchers("/error").permitAll()
                         /*
                          * Autenticación y registro.
                          *
@@ -182,7 +188,6 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/register/entrepreneur", "/api/auth/register/customer"
                         ).permitAll()
-
                         /*
                          * Endpoints que requieren
                          * un usuario autenticado.
@@ -194,7 +199,6 @@ public class SecurityConfig {
                                 "/api/interactions/**",
                                 "/api/orders/me"
                         ).authenticated()
-
                         /*
                          * Inventario.
                          *
@@ -204,7 +208,6 @@ public class SecurityConfig {
                                 HttpMethod.GET,
                                 "/api/stores/*/inventory/**"
                         ).hasRole("EMPRENDEDOR")
-
                         /*
                          * Reseñas.
                          *
@@ -214,7 +217,6 @@ public class SecurityConfig {
                                 HttpMethod.POST,
                                 "/api/publications/*/reviews"
                         ).authenticated()
-
                         /*
                          * UC-001: Imágenes de publicaciones.
                          *
@@ -225,7 +227,6 @@ public class SecurityConfig {
                                 HttpMethod.POST,
                                 "/api/publications/*/images"
                         ).hasRole("EMPRENDEDOR")
-
                         /*
                          * UC-001: Eliminación de imágenes.
                          *
@@ -239,7 +240,6 @@ public class SecurityConfig {
                                 HttpMethod.DELETE,
                                 "/api/publications/*/images/*"
                         ).hasRole("EMPRENDEDOR")
-
                         /*
                          * Detección de publicaciones
                          * duplicadas.
@@ -247,7 +247,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/stores/*/publications/duplicates"
                         ).hasRole("EMPRENDEDOR")
-
                         /*
                          * Administración de pedidos
                          * de una tienda.
@@ -255,7 +254,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/stores/*/orders/**"
                         ).hasRole("EMPRENDEDOR")
-
                         /*
                          * Mantener el comportamiento
                          * actual de los demás endpoints.
@@ -266,7 +264,7 @@ public class SecurityConfig {
                          * Las rutas restantes deben
                          * revisarse antes de producción.
                          */
-                                                // Operaciones de publicaciones.
+                        // Operaciones de publicaciones.
                         .requestMatchers(HttpMethod.GET, "/api/publications/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/publications/*/reviews").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/publications/*/reviews/**").permitAll()
@@ -274,27 +272,21 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/publications/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.PATCH, "/api/publications/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/publications/**").hasRole("EMPRENDEDOR")
-
                         // Tiendas: consulta pública, administración protegida.
                         .requestMatchers(HttpMethod.GET, "/api/stores").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*").permitAll()
-                        .requestMatchers("/api/stores/*/orders/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.POST, "/api/stores").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.PUT, "/api/stores/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.PATCH, "/api/stores/**").hasRole("EMPRENDEDOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/stores/**").hasRole("EMPRENDEDOR")
-
                         // Usuarios y administración.
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
                         // Pedidos.
                         .requestMatchers("/api/orders/**").authenticated()
-
                         // Imágenes.
                         .requestMatchers("/api/publications/*/images").hasRole("EMPRENDEDOR")
                         .requestMatchers("/api/publications/*/images/**").hasRole("EMPRENDEDOR")
-
                         // Cualquier otra operación requiere JWT.
                                                 .requestMatchers(
                                 "/actuator/health",
@@ -303,10 +295,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
                 /*
                  * 6. Registrar el filtro JWT.
                  *

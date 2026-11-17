@@ -1,0 +1,5 @@
+﻿
+2026-11-16T22:14:11.334Z  INFO 1 --- [umss-market-api] [   scheduling-1] b.u.m.u.i.outbox.OutboxEventProcessor    : 
+OUTBOX PROCESSED eventId=a92895d4-b3e3-40cd-9678-1bf9a1e522e6 orderId=a2c82f0e-9126-49bc-9e53-e2357ac23e63 attempts=0
+
+

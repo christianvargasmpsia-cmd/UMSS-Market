@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-
     private final TokenBlacklistService tokenBlacklistService;
 
     @Override
@@ -31,73 +30,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorizationHeader =
-                request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader == null ||
-                !authorizationHeader.startsWith("Bearer ")) {
+        if (authorizationHeader == null
+                || !authorizationHeader.startsWith("Bearer ")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token =
-                authorizationHeader.substring(7);
+        String token = authorizationHeader.substring(7);
 
         try {
 
             // Verificar si el token fue cerrado mediante logout
             if (tokenBlacklistService.isBlacklisted(token)) {
-
                 SecurityContextHolder.clearContext();
-
-                response.setStatus(
-                        HttpServletResponse.SC_UNAUTHORIZED);
-
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
             // Verificar firma y expiración
             if (!jwtService.isTokenValid(token)) {
-
                 SecurityContextHolder.clearContext();
-
-                response.setStatus(
-                        HttpServletResponse.SC_UNAUTHORIZED);
-
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
-            Claims claims =
-                    jwtService.extractAllClaims(token);
+            Claims claims = jwtService.extractAllClaims(token);
 
-            UUID userId =
-                    UUID.fromString(
-                            claims.getSubject());
+            UUID userId = UUID.fromString(claims.getSubject());
 
-            String role =
-                    claims.get("role", String.class);
+            String role = claims.get("role", String.class);
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
+
+            UsernamePasswordAuthenticationToken authentication
+                    = new UsernamePasswordAuthenticationToken(
                             userId,
                             null,
                             java.util.List.of(
-                                    new SimpleGrantedAuthority(
-                                            "ROLE_" + role)));
+                                    new SimpleGrantedAuthority("ROLE_" + role)));
 
-            SecurityContextHolder
-                    .getContext()
+            SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
-
         } catch (Exception e) {
-
             SecurityContextHolder.clearContext();
-
-            response.setStatus(
-                    HttpServletResponse.SC_UNAUTHORIZED);
-
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
+
         }
 
         filterChain.doFilter(request, response);
