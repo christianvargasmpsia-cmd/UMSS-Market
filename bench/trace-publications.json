@@ -1,0 +1,333 @@
+﻿{
+    "batches":  [
+                    {
+                        "resource":  {
+                                         "attributes":  [
+                                                            {
+                                                                "key":  "telemetry.sdk.language",
+                                                                "value":  {
+                                                                              "stringValue":  "java"
+                                                                          }
+                                                            },
+                                                            {
+                                                                "key":  "telemetry.sdk.name",
+                                                                "value":  {
+                                                                              "stringValue":  "opentelemetry"
+                                                                          }
+                                                            },
+                                                            {
+                                                                "key":  "telemetry.sdk.version",
+                                                                "value":  {
+                                                                              "stringValue":  "1.49.0"
+                                                                          }
+                                                            },
+                                                            {
+                                                                "key":  "service.name",
+                                                                "value":  {
+                                                                              "stringValue":  "umss-market-api"
+                                                                          }
+                                                            }
+                                                        ]
+                                     },
+                        "scopeSpans":  [
+                                           {
+                                               "scope":  {
+                                                             "name":  "org.springframework.boot",
+                                                             "version":  "3.5.15"
+                                                         },
+                                               "spans":  [
+                                                             {
+                                                                 "traceId":  "AIldqO8aG3N/iob4S16XJA==",
+                                                                 "spanId":  "Wx/D7pIoIeI=",
+                                                                 "name":  "http get /api/publications",
+                                                                 "kind":  "SPAN_KIND_SERVER",
+                                                                 "startTimeUnixNano":  "1794880232544352379",
+                                                                 "endTimeUnixNano":  "1794880232553157160",
+                                                                 "attributes":  [
+                                                                                    {
+                                                                                        "key":  "exception",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "none"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "method",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "GET"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "outcome",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "SUCCESS"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "status",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "200"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "uri",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "/api/publications"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "http.url",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "/api/publications"
+                                                                                                  }
+                                                                                    }
+                                                                                ],
+                                                                 "status":  {
+
+                                                                            }
+                                                             },
+                                                             {
+                                                                 "traceId":  "AIldqO8aG3N/iob4S16XJA==",
+                                                                 "spanId":  "8N4eKJkopPQ=",
+                                                                 "parentSpanId":  "Wx/D7pIoIeI=",
+                                                                 "name":  "security filterchain after",
+                                                                 "kind":  "SPAN_KIND_INTERNAL",
+                                                                 "startTimeUnixNano":  "1794880232552723835",
+                                                                 "endTimeUnixNano":  "1794880232553060188",
+                                                                 "attributes":  [
+                                                                                    {
+                                                                                        "key":  "spring.security.filterchain.position",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "13"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.filterchain.size",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "13"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.reached.filter.name",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "DisableEncodeUrlFilter"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.reached.filter.section",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "after"
+                                                                                                  }
+                                                                                    }
+                                                                                ],
+                                                                 "events":  [
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after AuthorizationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after ExceptionTranslationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after SessionManagementFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after AnonymousAuthenticationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after SecurityContextHolderAwareRequestFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after RequestCacheAwareFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after JwtAuthenticationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after LogoutFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after CorsFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after HeaderWriterFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after SecurityContextHolderFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after WebAsyncManagerIntegrationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232552000000",
+                                                                                    "name":  "after DisableEncodeUrlFilter"
+                                                                                }
+                                                                            ],
+                                                                 "status":  {
+                                                                                "code":  "STATUS_CODE_OK"
+                                                                            }
+                                                             },
+                                                             {
+                                                                 "traceId":  "AIldqO8aG3N/iob4S16XJA==",
+                                                                 "spanId":  "iy5/waXCP+s=",
+                                                                 "parentSpanId":  "Wx/D7pIoIeI=",
+                                                                 "name":  "secured request",
+                                                                 "kind":  "SPAN_KIND_INTERNAL",
+                                                                 "startTimeUnixNano":  "1794880232545634666",
+                                                                 "endTimeUnixNano":  "1794880232552668996",
+                                                                 "status":  {
+                                                                                "code":  "STATUS_CODE_OK"
+                                                                            }
+                                                             },
+                                                             {
+                                                                 "traceId":  "AIldqO8aG3N/iob4S16XJA==",
+                                                                 "spanId":  "AAJzE2QBWQE=",
+                                                                 "parentSpanId":  "keZB1HkRSDI=",
+                                                                 "name":  "authorize request",
+                                                                 "kind":  "SPAN_KIND_INTERNAL",
+                                                                 "startTimeUnixNano":  "1794880232545314417",
+                                                                 "endTimeUnixNano":  "1794880232545539060",
+                                                                 "attributes":  [
+                                                                                    {
+                                                                                        "key":  "spring.security.authentication.authorities",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "n/a"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.authentication.type",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "n/a"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.authorization.decision",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "true"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.authorization.decision.details",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "AuthorizationDecision [granted=true]"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.object",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "request"
+                                                                                                  }
+                                                                                    }
+                                                                                ],
+                                                                 "status":  {
+                                                                                "code":  "STATUS_CODE_OK"
+                                                                            }
+                                                             },
+                                                             {
+                                                                 "traceId":  "AIldqO8aG3N/iob4S16XJA==",
+                                                                 "spanId":  "keZB1HkRSDI=",
+                                                                 "parentSpanId":  "Wx/D7pIoIeI=",
+                                                                 "name":  "security filterchain before",
+                                                                 "kind":  "SPAN_KIND_INTERNAL",
+                                                                 "startTimeUnixNano":  "1794880232545059879",
+                                                                 "endTimeUnixNano":  "1794880232545610142",
+                                                                 "attributes":  [
+                                                                                    {
+                                                                                        "key":  "spring.security.filterchain.position",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "13"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.filterchain.size",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "13"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.reached.filter.name",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "AuthorizationFilter"
+                                                                                                  }
+                                                                                    },
+                                                                                    {
+                                                                                        "key":  "spring.security.reached.filter.section",
+                                                                                        "value":  {
+                                                                                                      "stringValue":  "before"
+                                                                                                  }
+                                                                                    }
+                                                                                ],
+                                                                 "events":  [
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before DisableEncodeUrlFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before WebAsyncManagerIntegrationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before SecurityContextHolderFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before HeaderWriterFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before CorsFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before LogoutFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before JwtAuthenticationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before RequestCacheAwareFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before SecurityContextHolderAwareRequestFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before AnonymousAuthenticationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before SessionManagementFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before ExceptionTranslationFilter"
+                                                                                },
+                                                                                {
+                                                                                    "timeUnixNano":  "1794880232545000000",
+                                                                                    "name":  "before AuthorizationFilter"
+                                                                                }
+                                                                            ],
+                                                                 "status":  {
+                                                                                "code":  "STATUS_CODE_OK"
+                                                                            }
+                                                             }
+                                                         ]
+                                           }
+                                       ]
+                    }
+                ]
+}

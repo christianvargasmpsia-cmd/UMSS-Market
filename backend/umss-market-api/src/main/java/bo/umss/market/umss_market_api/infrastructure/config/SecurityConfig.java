@@ -297,6 +297,7 @@ public class SecurityConfig {
 
                         // Cualquier otra operación requiere JWT.
                                                 .requestMatchers(
+                                "/actuator/health",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
