@@ -820,6 +820,29 @@
         },
         "type": "object"
       },
+      "PublicationImageResponse": {
+        "properties": {
+          "contentType": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "publicationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sizeBytes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "PublicationInStoreResponse": {
         "properties": {
           "activa": {
@@ -900,6 +923,62 @@
               "SERVICIO"
             ],
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ReceivedItem": {
+        "properties": {
+          "productName": {
+            "type": "string"
+          },
+          "publicationId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "quantity": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "ReceivedOrder": {
+        "properties": {
+          "buyerId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ReceivedItem"
+            },
+            "type": "array"
+          },
+          "orderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "PENDIENTE",
+              "CONFIRMADO",
+              "CANCELADO"
+            ],
+            "type": "string"
+          },
+          "storeSubtotal": {
+            "type": "number"
           }
         },
         "type": "object"
@@ -1602,7 +1681,7 @@
     },
     "/api/admin/embeddings/status": {
       "get": {
-        "operationId": "status",
+        "operationId": "status_1",
         "responses": {
           "200": {
             "content": {
@@ -1846,7 +1925,7 @@
     "/api/catalog/publications": {
       "get": {
         "description": "Paginas base cero, orden estable, filtros combinables",
-        "operationId": "list_2",
+        "operationId": "list_4",
         "parameters": [
           {
             "in": "query",
@@ -2175,7 +2254,7 @@
     "/api/orders/me": {
       "get": {
         "description": "Solo pedidos asociados al usuario del JWT; estado opcional",
-        "operationId": "list_1",
+        "operationId": "list_3",
         "parameters": [
           {
             "in": "query",
@@ -2738,6 +2817,161 @@
         },
         "tags": [
           "publication-controller"
+        ]
+      }
+    },
+    "/api/publications/{publicationId}/images": {
+      "get": {
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicationId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PublicationImageResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "publication-image-controller"
+        ]
+      },
+      "post": {
+        "operationId": "upload",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicationId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicationImageResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "publication-image-controller"
+        ]
+      }
+    },
+    "/api/publications/{publicationId}/images/{imageId}": {
+      "delete": {
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicationId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "imageId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "publication-image-controller"
+        ]
+      }
+    },
+    "/api/publications/{publicationId}/images/{imageId}/content": {
+      "get": {
+        "operationId": "content",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "publicationId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "imageId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "publication-image-controller"
         ]
       }
     },
@@ -3317,6 +3551,162 @@
         "summary": "Resumen de alertas de stock de mi tienda",
         "tags": [
           "inventory-alerts-controller"
+        ]
+      }
+    },
+    "/api/stores/{storeId}/orders": {
+      "get": {
+        "description": "Solo items de la tienda autenticada; estado opcional",
+        "operationId": "list_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "storeId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "PENDIENTE",
+                "CONFIRMADO",
+                "CANCELADO"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ReceivedOrder"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Listar pedidos recibidos de mi tienda",
+        "tags": [
+          "store-received-orders-controller"
+        ]
+      }
+    },
+    "/api/stores/{storeId}/orders/{orderId}": {
+      "get": {
+        "operationId": "detail",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "storeId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "orderId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivedOrder"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Consultar detalle de pedido recibido de mi tienda",
+        "tags": [
+          "store-received-orders-controller"
+        ]
+      }
+    },
+    "/api/stores/{storeId}/orders/{orderId}/status": {
+      "patch": {
+        "operationId": "status",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "storeId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "orderId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivedOrder"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Actualizar estado de pedido de mi tienda",
+        "tags": [
+          "store-received-orders-controller"
         ]
       }
     },
