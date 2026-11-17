@@ -34,6 +34,8 @@ import bo.umss.market.umss_market_api.application.usecases.UpdatePublicationUseC
 import bo.umss.market.umss_market_api.domain.model.Publication;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/publications")
@@ -63,16 +65,17 @@ public class PublicationController {
      * El alta no requiere Ollama. El embedding se genera por separado mediante reindexacion.
      */
     @PostMapping
-    public ResponseEntity<CreatePublicationResponse> createPublication(
-            @RequestBody CreatePublicationRequest request) {
+public ResponseEntity<CreatePublicationResponse> createPublication(
+        @RequestBody CreatePublicationRequest request,
+        @AuthenticationPrincipal UUID userId) {
 
-        CreatePublicationResponse response =
-                createPublicationUseCase.execute(request);
+    CreatePublicationResponse response =
+            createPublicationUseCase.execute(request, userId);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(response);
+}
 
 
     // ============================================================
